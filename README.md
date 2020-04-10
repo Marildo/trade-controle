@@ -1,11 +1,11 @@
-# TradeControle
+# Trade Controle
 
  * Projeto pessoal para aprendizado;
  * O TradeControle tem por finalidade o controle de investimentos em bolsa de valores e renda fixa;
  
 ------------------------------------------------------------------------------------------------------------------
 
-* Requisitos Não Funcionais
+### Requisitos Não Funcionais
 
 - RNF01 -> Teconlogias: Sistema deve ser desenvolvido em linguagem Javascript utilizando NodeJs, ExpressJS, Knex, GraphGL, VueJS,  HTML e CSS.
 
@@ -17,7 +17,7 @@
 
 ------------------------------------------------------------------------------------------------------------------
 
-* Requisitos Funcionais
+### Requisitos Funcionais
 
 - RF01 -> Cadastrar ações: Este requisito deve prover  o cadastro de ações, possibilitando inserção, edição e exclusão de ações sem movimentação e o cadastro compras, vendas, dividendos, juros sob capital e taxas.
 - RF02 -> Cadastro de carteira: Este requisito deve prover o cadastro carteiras  e relacioná-las com ações, títulos do tesouro direto, renda fixas e fundos de investimentos,  além de fornecer gráficos de pizza mostrando a proporção de cada ação na respectiva carteira.
