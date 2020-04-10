@@ -32,3 +32,34 @@
 - RF11 -> Cadastro de setores: Este requisito deve prover o cadastro de setores e subsetores e relacioná-los entre sim e com o cadastro de ações.
 - RF12 -> Cadastro de Corretoras: Este requisito deve prover o cadastro de corretoras e relacioná-las aos ativos cadastrado.
 - RF13 -> Busca de informação no CEI: Este requisito deve possibilitar a busca de informação diretamente no Canal Eletrônico do Investidor.
+
+
+# trade-controle-front-end
+
+## Project setup
+```
+npm install
+```
+
+### Compiles and hot-reloads for development
+```
+npm run serve
+```
+
+### Compiles and minifies for production
+```
+npm run build
+```
+
+### Run your unit tests
+```
+npm run test:unit
+```
+
+### Lints and fixes files
+```
+npm run lint
+```
+
+### Customize configuration
+See [Configuration Reference](https://cli.vuejs.org/config/).
