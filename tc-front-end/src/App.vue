@@ -1,6 +1,6 @@
 <template>
    <div id="app">
-     <Header />
+     <Header :hideMenu="false" />
      <Menu />
      <Content />
      <Footer />

@@ -1,20 +1,69 @@
 <template>
-    <header class="header">Header</header>
+  <header class="header">
+    <a class="toggle" @click="toggleMenu" v-if="!hideMenu">
+      <i class="fas fa-angle-left" :class="icon"></i>
+    </a>
+    <h1 class="title"><a> Tela Controle </a></h1>
+  </header>
 </template>
 
 <script>
 export default {
-    name:"Header"
-}
+  name: "Header",
+
+  props: {
+    hideMenu: Boolean
+  },
+
+  computed: {
+    icon() {
+      return "fa-angle-left";
+    }
+  },
+
+  methods: {
+    toggleMenu() {
+      console.log("testando tog menu");
+    }
+  }
+};
 </script>
 
-<style scoped>
-    .header {
-        grid-area: header;
-        background: linear-gradient(to top, #1c6aa6, #76acd6);
+<style>
+.header {
+  grid-area: header;
+  background: linear-gradient(to top, #1c6aa6, #76acd6);
 
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.title {
+  font-size: 1.2rem;
+  color: #fff;
+  font-weight: 100;
+  flex-grow: 1;
+  text-align: center;
+}
+
+.title a {
+  color: #fff;
+  text-decoration: none;
+}
+
+header.header > a.toggle {
+  width: 5%;
+  height: 100%;
+  color: #fff;
+  justify-self: flex-start;
+  text-decoration: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+header.header > a.toggle:hover {
+  background-color: rgba(0, 0, 0, 0.2);
+}
 </style>
