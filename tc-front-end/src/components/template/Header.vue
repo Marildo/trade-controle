@@ -1,9 +1,11 @@
 <template>
   <header class="header">
     <a class="toggle" @click="toggleMenu" v-if="!hideMenu">
-      <i class="fas fa-angle-left" :class="icon"></i>
+      <i class="fa fa-lg" :class="icon"></i>
     </a>
-    <h1 class="title"><a> Tela Controle </a></h1>
+    <h1 class="title">
+      <a>Tela Controle</a>
+    </h1>
   </header>
 </template>
 
@@ -17,13 +19,15 @@ export default {
 
   computed: {
     icon() {
-      return "fa-angle-left";
+      return this.$store.state.isMenuVisible
+        ? "fa-angle-left"
+        : "fa-angle-down"
     }
   },
-
+  
   methods: {
     toggleMenu() {
-      console.log("testando tog menu");
+      this.$store.commit("toggleMenu");
     }
   }
 };
@@ -53,7 +57,7 @@ export default {
 }
 
 header.header > a.toggle {
-  width: 5%;
+  width: 4%;
   height: 100%;
   color: #fff;
   justify-self: flex-start;
