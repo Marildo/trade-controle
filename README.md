@@ -7,7 +7,7 @@
 
 ### Requisitos Não Funcionais
 
-- RNF01 -> Teconlogias: Sistema deve ser desenvolvido em linguagem Javascript utilizando NodeJs, ExpressJS, Knex, GraphGL, VueJS,  HTML e CSS.
+- RNF01 -> Teconlogias: Sistema deve ser desenvolvido em linguagem Javascript utilizando NodeJs, ExpressJS, Knex, Apollo, GraphGL, VueJS,  HTML e CSS.
 
 - RNF02 -> Bando de dados: O banco de dados deve ser desenvolvido no PostgreSQL.
 
