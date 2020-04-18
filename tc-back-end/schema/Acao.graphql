@@ -1,0 +1,7 @@
+type Acao {
+    id:ID!
+    sigla:String!
+    empresa:String!
+    cotacao:Float
+    quantidade:Float
+}

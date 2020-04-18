@@ -1,0 +1,7 @@
+type Query{
+    helo:String
+    carteira(id:ID):Carteira
+    carteiras:[Carteira]!
+    acao(id:ID):Acao
+    acoes:[Acao]!
+}

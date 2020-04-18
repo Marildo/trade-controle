@@ -1,0 +1,5 @@
+type Carteira{
+    id: ID!
+    nome: String!
+    acoes:[Acao]     
+}
