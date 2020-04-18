@@ -15,6 +15,28 @@ const carteiras = [
     }
 ]
 
+const acoes = [
+    {
+        id: 10,
+        sigla: 'LCAM3',
+        empresa: 'Locamerica',
+        cotacao: '18.90'
+    },
+    {
+        id: 01,
+        sigla: 'IRBR3',
+        empresa: 'IRBBRASIL',
+        cotacao: '11,20'
+    },
+    {
+        id: 05,
+        sigla: 'VVAR3',
+        empresa: 'VIAVAREJO ',
+        cotacao: '7,25'
+    }
+
+]
+
 const typeDefs = gql`
 
     type Carteira{
@@ -36,6 +58,7 @@ const typeDefs = gql`
         carteiras:[Carteira]!
 
         acao:Acao
+        acoes:[Acao]!
     }
 
 `
@@ -64,6 +87,10 @@ const resolvers = {
                 empresa: 'Locamerica',
                 cotacao: '18.90'
             }
+        },
+
+        acoes() {
+            return acoes
         }
     }
 }
