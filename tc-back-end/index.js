@@ -54,10 +54,10 @@ const typeDefs = gql`
     type Query{
         helo:String
 
-        carteira:Carteira
+        carteira(id:ID):Carteira
         carteiras:[Carteira]!
 
-        acao:Acao
+        acao(id:ID):Acao
         acoes:[Acao]!
     }
 
@@ -69,24 +69,18 @@ const resolvers = {
             return `Api rodando!  ${new Date}`
         },
 
-        carteira() {
-            return {
-                id: '12',
-                nome: 'Modal'
-            }
+        carteira(_, args) {
+            const selected = carteiras.filter(a => a.id == args.id)
+            return  selected ? selected[0]: null
         },
 
         carteiras(){
             return carteiras
         },
 
-        acao() {
-            return {
-                id: 10,
-                sigla: 'LCAM3',
-                empresa: 'Locamerica',
-                cotacao: '18.90'
-            }
+        acao(_,args) {
+            const selected = acoes.filter(a => a.id == args.id)
+            return  selected ? selected[0]: null
         },
 
         acoes() {
