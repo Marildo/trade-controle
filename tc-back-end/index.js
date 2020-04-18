@@ -2,15 +2,15 @@ const { ApolloServer, gql } = require('apollo-server')
 
 const carteiras = [
     {
-        id: '12',
+        id: 1,
         nome: 'Modal'
     },
     {
-        id: 10,
+        id: 2,
         nome: 'Pioneiros'
     },
     {
-        id :1,
+        id :3,
         nome: 'Buy Holder'
     }
 ]
@@ -20,21 +20,30 @@ const acoes = [
         id: 10,
         sigla: 'LCAM3',
         empresa: 'Locamerica',
-        cotacao: '18.90'
+        cotacao: '18.90',
+        carteira_id:1
     },
     {
         id: 01,
         sigla: 'IRBR3',
         empresa: 'IRBBRASIL',
-        cotacao: '11,20'
+        cotacao: '11,20',
+        carteira_id:2
     },
     {
         id: 05,
         sigla: 'VVAR3',
         empresa: 'VIAVAREJO ',
-        cotacao: '7,25'
+        cotacao: '7,25',
+        carteira_id:3
+    },
+    {
+        id: 04,
+        sigla: 'CIEL3',
+        empresa: 'Cielo ',
+        cotacao: '7,25',
+        carteira_id:2
     }
-
 ]
 
 const typeDefs = gql`
@@ -42,6 +51,7 @@ const typeDefs = gql`
     type Carteira{
         id: ID!
         nome: String!
+        acoes:[Acao]
     }
 
     type Acao {
@@ -85,6 +95,13 @@ const resolvers = {
 
         acoes() {
             return acoes
+        }
+    },
+
+    Carteira:{
+        acoes(carteira){
+            const selected = acoes.filter(a => a.carteira_id == carteira.id )
+            return selected ? selected: null
         }
     }
 }
