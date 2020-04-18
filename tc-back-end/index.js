@@ -1,5 +1,20 @@
 const { ApolloServer, gql } = require('apollo-server')
 
+const carteiras = [
+    {
+        id: '12',
+        nome: 'Modal'
+    },
+    {
+        id: 10,
+        nome: 'Pioneiros'
+    },
+    {
+        id :1,
+        nome: 'Buy Holder'
+    }
+]
+
 const typeDefs = gql`
 
     type Carteira{
@@ -16,7 +31,9 @@ const typeDefs = gql`
 
     type Query{
         helo:String
+
         carteira:Carteira
+        carteiras:[Carteira]!
 
         acao:Acao
     }
@@ -36,10 +53,14 @@ const resolvers = {
             }
         },
 
+        carteiras(){
+            return carteiras
+        },
+
         acao() {
             return {
-                id:10,
-                sigla:'LCAM3',
+                id: 10,
+                sigla: 'LCAM3',
                 empresa: 'Locamerica',
                 cotacao: '18.90'
             }
