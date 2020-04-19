@@ -1,13 +1,23 @@
-const {carteiras, nextId} = require('../../data/db')
+const db = require('../../config/db')
 
 module.exports = {
-    newCarteira(_, {nome}) {
-        const carteria = {
-            id: nextId,
-            nome
-        }
+    async  newCarteira(_, { nome }) {
+        try {
+            const carteira = {
+                nome
+            }
 
-        carteiras.push(carteria)
-        return carteria
+            const [id] = await db('carteiras')
+                .insert(carteira)
+                .returning('id')
+
+            return result = {
+                ...carteira,
+                id
+            }
+        } catch (e) {
+            console.log(e)
+            throw new Error(e.detail)
+        }
     }
 }
