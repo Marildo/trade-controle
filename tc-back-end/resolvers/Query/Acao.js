@@ -1,4 +1,4 @@
-const { acaoModel } = require('../../config/model')
+const { acaoModel } = require('../../model')
 
 module.exports = {
     acao(_, args) {

@@ -1,4 +1,4 @@
-const {carteiraModel} = require('../../config/model')
+const {carteiraModel} = require('../../model')
 
 // TODO Alterar para async/await ?
 module.exports = {

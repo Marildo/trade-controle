@@ -1,4 +1,4 @@
-const {carteiraModel} = require('../../config/model')
+const {carteiraModel} = require('../../model')
 
 module.exports = {
     async newCarteira(_, { nome }) {
