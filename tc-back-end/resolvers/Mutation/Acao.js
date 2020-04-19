@@ -1,4 +1,4 @@
-const {acoes, carteiras, nextId} = require('../data/db')
+const {acoes,  nextId} = require('../../data/db')
 
 module.exports = {
     newAcao(_,{sigla}){
@@ -13,14 +13,4 @@ module.exports = {
         acoes.push(acao)
         return acao
     },
-
-    newCarteira(_, {nome}) {
-        const carteria = {
-            id: nextId,
-            nome
-        }
-
-        carteiras.push(carteria)
-        return carteria
-    }
 }
