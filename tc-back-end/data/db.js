@@ -1,3 +1,9 @@
+let id = 1;
+
+function nextId(){
+    return id++
+}
+
 const carteiras = [
     {
         id: 1,
@@ -15,28 +21,28 @@ const carteiras = [
 
 const acoes = [
     {
-        id: 10,
+        id: nextId(),
         sigla: 'LCAM3',
         empresa: 'Locamerica',
         cotacao: '18.90',
         carteira_id: 1
     },
     {
-        id: 01,
+        id: nextId(),
         sigla: 'IRBR3',
         empresa: 'IRBBRASIL',
         cotacao: '11,20',
         carteira_id: 2
     },
     {
-        id: 05,
+        id: nextId(),
         sigla: 'VVAR3',
         empresa: 'VIAVAREJO ',
         cotacao: '7,25',
         carteira_id: 3
     },
     {
-        id: 04,
+        id: nextId(),
         sigla: 'CIEL3',
         empresa: 'Cielo ',
         cotacao: '7,25',
@@ -46,5 +52,6 @@ const acoes = [
 
 module.exports = {
     carteiras,
-    acoes
+    acoes,
+    nextId
 }
