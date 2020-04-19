@@ -1,4 +1,4 @@
-const {acoes} = require('../../data/db')
+const acoes = []
 
 module.exports = {
     acao(_, args) {

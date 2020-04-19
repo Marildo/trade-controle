@@ -1,13 +1,13 @@
-const db = require('../../config/db')
+const {carteiraModel} = require('../../config/model')
 
 module.exports = {
-    async  newCarteira(_, { nome }) {
+    async newCarteira(_, { nome }) {
         try {
             const carteira = {
                 nome
             }
 
-            const [id] = await db('carteiras')
+            const [id] = await carteiraModel()
                 .insert(carteira)
                 .returning('id')
 

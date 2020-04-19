@@ -1,11 +1,15 @@
-const {carteiras} = require('../../data/db')
+const {carteiraModel} = require('../../config/model')
 
+// TODO Alterar para async/await ?
 module.exports = {
     carteira(_, args) {
-        const selected = carteiras.filter(a => a.id == args.id)
-        return selected ? selected[0] : null
+        return carteiraModel()
+            .where('id', args.id)
+            .first()
+            .catch((e) => console.log(e))
     },
-    carteiras() {
-        return carteiras
+    carteiras() {      
+        return carteiraModel()
+            .catch((e) => console.log(e))
     },
 }

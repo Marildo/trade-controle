@@ -1,9 +1,9 @@
-const {acoes,  nextId} = require('../../data/db')
+const  acoes = []
 
 module.exports = {
     newAcao(_,{sigla}){
         const acao = {
-            id: nextId,
+            id: 1,
             sigla,
             empresa: sigla+' ON',
             cotacao: 3.33,
