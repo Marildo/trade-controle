@@ -1,11 +1,14 @@
-const acoes = []
+const { acaoModel } = require('../../config/model')
 
 module.exports = {
     acao(_, args) {
-        const selected = acoes.filter(a => a.id == args.id)
-        return selected ? selected[0] : null
+        return acaoModel()
+            .where('id', args.id)
+            .first()
+            .catch((e) => console.log(e))
     },
     acoes() {
-        return acoes
+        return acaoModel()
+            .catch((e) => console.log(e))
     }
 }

@@ -1,16 +1,21 @@
-const  acoes = []
+const { acaoModel } = require('../../config/model')
 
 module.exports = {
-    newAcao(_,{sigla}){
-        const acao = {
-            id: 1,
-            sigla,
-            empresa: sigla+' ON',
-            cotacao: 3.33,
-            carteira_id :  Math.floor(Math.random() * (3 - 1) + 1 )            
-        }
+    async  newAcao(_, { sigla }) {
+        try {
+            const acao = {
+                sigla,
+                empresa: sigla + ' ON',
+                cotacao: 3.33,
+            }
 
-        acoes.push(acao)
-        return acao
+            const result = await acaoModel()
+                .insert(acao)
+                .returning('*')
+
+            return result[0]
+        } catch (e) {
+            console.log(e)
+        }
     },
 }

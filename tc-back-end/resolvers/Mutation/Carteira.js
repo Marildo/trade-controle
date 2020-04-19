@@ -7,14 +7,11 @@ module.exports = {
                 nome
             }
 
-            const [id] = await carteiraModel()
+            const result = await carteiraModel()
                 .insert(carteira)
-                .returning('id')
+                .returning('*')
 
-            return result = {
-                ...carteira,
-                id
-            }
+            return result[0]
         } catch (e) {
             console.log(e)
             throw new Error(e.detail)
