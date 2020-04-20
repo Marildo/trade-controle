@@ -3,7 +3,7 @@ const { acaoModel } = require('../../model')
 module.exports = {
     acao(_, args) {
         return acaoModel()
-            .where('id', args.id)
+            .where('codigo', args.codigo)
             .first()
             .catch((e) => console.log(e))
     },

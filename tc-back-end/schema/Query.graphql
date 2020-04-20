@@ -2,6 +2,6 @@ type Query{
     helo:String
     carteira(id:ID):Carteira
     carteiras:[Carteira]!
-    acao(id:ID):Acao
+    acao(codigo:String):Acao
     acoes:[Acao]!
 }

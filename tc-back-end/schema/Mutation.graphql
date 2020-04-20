@@ -1,5 +1,5 @@
 type Mutation {
-    newAcao(sigla:String!):Acao
+    newAcao(codigo:String!):Acao
 
     newCarteira(nome:String!):Carteira
 }

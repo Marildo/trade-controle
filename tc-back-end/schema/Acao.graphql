@@ -1,7 +1,7 @@
 type Acao {
     id:ID!
-    sigla:String!
+    codigo:String!
     empresa:String!
-    cotacao:Float
+    preco:Float
     quantidade:Float
 }
