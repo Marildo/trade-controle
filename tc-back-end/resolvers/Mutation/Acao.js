@@ -1,43 +1,39 @@
 const { acaoModel } = require('../../model/')
-const { locateAcao, findCotacao } = require('../../service/Uol')
+const {findAcao} = require('../../service/acao/Statusinvest')
 
 module.exports = {
     async  newAcao(_, { sigla }) {
         try {
+            sigla = sigla.toUpperCase()
+
             let find = await acaoModel()
-                .where('sigla', sigla.toUpperCase())
+                .where('sigla', sigla)
                 .first()
 
             if (find) {
                 return find
             }
 
-            find = await locateAcao(sigla);
-            if (!find) {
+             const papel = await findAcao(sigla);
+            console.log(papel)
+            if (!papel) {
                 return new Error("Ação não localizada!")
-            }
-
-            let price =null;
-            const cotacao = await findCotacao(find.idt)
-            if(cotacao){
-                price = cotacao.price;
             }
             
             const acao = {
-                id: find.idt,
-                sigla: find.code,
-                empresa: find.name,
-                cotacao: price,
+                sigla: sigla.toUpperCase(),
+                id: papel.id,              
+                empresa: papel.empresa,
+                cotacao: papel.preco,
             }
 
-            const result = await acaoModel()
+           const result = await acaoModel()
                 .insert(acao)
                 .returning('*')
-
-            return result[0]
+                   return result[0]         
         } catch (e) {
             console.log(e)
-            return new Error(e.sqlMessage)
+            return new Error(e)
         }
     },
 }
