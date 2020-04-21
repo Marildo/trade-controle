@@ -1,4 +1,7 @@
 # import Carteira from 'Carteira.graphql'
 # import Acao from 'Acao.graphql'
+# import Setor from 'Setor.graphql'
+# import Subsetor from 'Subsetor.graphql'
+# import Segmento from 'Segmento.graphql'
 # import Query from 'Query.graphql'
 # import Mutation  from 'Mutation.graphql'

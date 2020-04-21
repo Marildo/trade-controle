@@ -1,0 +1,4 @@
+type Segmento{
+    id:ID!
+    nome:String!
+}

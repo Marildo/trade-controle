@@ -29,8 +29,6 @@ const saveSetor = async (setor) => {
     return await insertSimple('setores', setor)
 }
 
-
-
 // Subsetores
 const selectSubsetor = async (id) => {
     return await selectSimple('subsetores', id)

@@ -4,4 +4,7 @@ type Acao {
     empresa:String!
     preco:Float
     quantidade:Float
+    setor:Setor
+    subsetor:Subsetor
+    segmento:Segmento
 }
