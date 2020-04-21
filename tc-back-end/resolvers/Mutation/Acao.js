@@ -1,8 +1,9 @@
 const { acaoModel } = require('../../model/')
-const {findAcao} = require('../../service/acao/Statusinvest')
+const { saveSetor, saveSubsetor, saveSegmento } = require('../../model/simpleModel')
+const { findAcao } = require('../../service/acao/Statusinvest')
 
 module.exports = {
-    async  newAcao(_, { codigo }) {
+    async newAcao(_, { codigo }) {
         try {
             codigo = codigo.toUpperCase()
 
@@ -14,23 +15,29 @@ module.exports = {
                 return find
             }
 
-             const papel = await findAcao(codigo);
-            console.log(papel)
+            const papel = await findAcao(codigo);
             if (!papel) {
                 return new Error("Ação não localizada!")
             }
-            
+
             const acao = {
                 codigo,
-                id: papel.id,              
+                id: papel.id,
                 empresa: papel.empresa,
                 preco: papel.preco,
+                setor_id: papel.setor.id,
+                subsetor_id: papel.subsetor.id,
+                segmento_id: papel.segmento.id
             }
 
-           const result = await acaoModel()
+            await saveSegmento(papel.segmento)
+            await saveSubsetor(papel.subsetor)
+            await saveSetor(papel.setor)
+
+            const result = await acaoModel()
                 .insert(acao)
                 .returning('*')
-                   return result[0]         
+            return result[0]
         } catch (e) {
             console.log(e)
             return new Error(e)
