@@ -16,7 +16,7 @@ import Footer from '@/components/template/Footer'
 import {mapState} from 'vuex'
 
 export default {
-  name:"App",
+  name: "App",
   components: {Header, Menu, Content, Footer},
   computed:mapState(['isMenuVisible'])
 }

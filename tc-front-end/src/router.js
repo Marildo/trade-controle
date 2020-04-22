@@ -1,9 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Acoes from '@/components/pages/Acoes'
-import Home from '@/components/pages/Home'
-import Setores from '@/components/pages/Setores'
-import Carteiras from '@/components/pages/Carteiras'
+import Acoes from '@/views/Acoes'
+import Home from '@/views/Home'
+import Setores from '@/views/Setores'
+import Carteiras from '@/views/Carteiras'
 
 Vue.use(Router)
 

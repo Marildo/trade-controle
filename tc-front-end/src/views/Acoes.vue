@@ -2,10 +2,15 @@
   <div>
     <h1>Acoes</h1>
     <button @click="loadAcoes">Obter acoes</button>
-    <hr>
+    <hr />
     <ul>
-      <li v-for='acao in acoes' :key='acao.codigo'> {{acao.codigo}} - {{acao.empresa}}</li>
+      <li v-for="acao in acoes" :key="acao.codigo">{{acao.codigo}} - {{acao.empresa}}</li>
     </ul>
+
+    <hr />
+            <div class="my-2">
+        <v-btn depressed small color="primary">Primary</v-btn>
+      </div>
   </div>
 </template>
 
@@ -38,7 +43,7 @@ export default {
         .catch(err => console.log(err));
     }
   }
-}
+};
 </script>
 
 <style>
