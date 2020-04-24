@@ -21,7 +21,7 @@ Vue.use({
                 }
             }
         })
-
+        
         Vue.prototype.$api = new ApolloClient({
             link: authLink.concat(httpLink),
             cache: new InMemoryCache()
