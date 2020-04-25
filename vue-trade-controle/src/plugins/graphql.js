@@ -8,7 +8,7 @@ import { InMemoryCache } from 'apollo-cache-inmemory'
 Vue.use({
     install(Vue) {
         const httpLink = createHttpLink({
-            uri: 'http://localhost:4000/'
+            uri: 'http://localhost:4000/',          
         })
 
         const authLink = setContext((_, { headers }) => {
@@ -24,7 +24,8 @@ Vue.use({
         
         Vue.prototype.$api = new ApolloClient({
             link: authLink.concat(httpLink),
-            cache: new InMemoryCache()
+            cache: new InMemoryCache(),
+            onError: (e) => { console.log('Erro: ' ,e) }
         })
     }
 })

@@ -5,7 +5,7 @@ import store from './store'
 import vuetify from './plugins/vuetify';
 
 import './plugins/graphql'
-
+import './plugins/primevue'
 
 Vue.config.productionTip = false
 

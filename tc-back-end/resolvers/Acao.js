@@ -6,9 +6,9 @@ module.exports = {
         )
     },
 
-    setor({setor_id,setor}){
-       return {id:setor_id,
-               nome:setor
+    setor(acao){         
+       return {id:acao.setor_id,
+               nome:acao.setor
               }
     },
 

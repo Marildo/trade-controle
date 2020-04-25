@@ -7,6 +7,7 @@ module.exports = {
         try {
             codigo = codigo.toUpperCase()
 
+
             let find = await acaoModel()
                 .where('codigo', codigo)
                 .first()
@@ -34,6 +35,7 @@ module.exports = {
             await saveSubsetor(papel.subsetor)
             await saveSetor(papel.setor)
 
+            //TODO alterar retorno para trazer consulta completa com nomes de setores
             const result = await acaoModel()
                 .insert(acao)
                 .returning('*')
