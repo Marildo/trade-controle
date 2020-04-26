@@ -14,6 +14,8 @@
           hide-details
           wid
         ></v-text-field>
+
+           <!--TODO esconder quando input estiver vazio -->
         <v-btn color="secondary" fab x-small dark @click="clearSearch">
           <v-icon>mdi-filter-remove</v-icon>
         </v-btn>
@@ -46,6 +48,76 @@
 
 <script>
 import gql from "graphql-tag";
+import vue from 'vue'
+
+function AcaoController(){
+
+  this.findAll =function() {
+      return vue.prototype.$api
+        .query({
+          query: gql`
+            {
+              acoes {
+                codigo
+                empresa
+                preco
+                setor {
+                  id
+                  nome
+                }
+                subsetor {
+                  id
+                  nome
+                }
+              }
+            }
+          `
+        })
+    },
+
+    this.save = function(_codigo){
+         return vue.prototype.$api 
+         .mutate({
+          mutation: gql`
+            mutation($codigo: String!) {
+              newAcao(codigo: $codigo) {
+                id
+                codigo
+              }
+            }
+          `,
+          variables: {
+            codigo: _codigo
+          }
+        })
+    },
+
+    this.findByCodigo = function(codigo){
+      return vue.prototype.$api 
+       .query({
+          query: gql`
+            query($codigo: String!) {
+              acao(codigo: $codigo) {
+                codigo
+                empresa
+                preco
+                setor {
+                  id
+                  nome
+                }
+                subsetor {
+                  id
+                  nome
+                }
+              }
+            }
+          `,
+          variables: {
+             codigo
+          }
+        })
+    }
+}
 
 export default {
   name: "Acoes",
@@ -93,57 +165,32 @@ export default {
     };
   },
 
-  mounted() {
-    this.loadAcoes();
+  mounted() {   
+      this.ctrl = new AcaoController
+       this.loadAcoes();
+  },
+
+  computed: {
+
   },
 
   methods: {
     clearSearch() {
-      this.search = "";
+      this.search = ""
+   
+     // const acController = new AcController
+     // acController.load()
     },
 
-    //TODO passar metodos para um controller
+   
     loadAcoes() {
-      this.$api
-        .query({
-          query: gql`
-            {
-              acoes {
-                codigo
-                empresa
-                preco
-                setor {
-                  id
-                  nome
-                }
-                subsetor {
-                  id
-                  nome
-                }
-              }
-            }
-          `
-        })
+      this.ctrl.findAll()         
         .then(resp => (this.acoes = resp.data.acoes))
         .catch(err => console.log(err));
     },
 
-    salvaAcao() {
-      //TODO alterar metodo para trazer acao completa na mutatio evitando novo requeste
-      this.$api
-        .mutate({
-          mutation: gql`
-            mutation($codigo: String!) {
-              newAcao(codigo: $codigo) {
-                id
-                codigo
-              }
-            }
-          `,
-          variables: {
-            codigo: this.novaAcao
-          }
-        })
+    salvaAcao() {    
+      this.ctrl.save(this.novaAcao)       
         .then(resp => {
           this.loadAcao(resp.data.newAcao.codigo);
           this.$toast.add({
@@ -165,30 +212,8 @@ export default {
         })
     },
 
-    loadAcao(_codigo) {
-      this.$api
-        .query({
-          query: gql`
-            query($codigo: String!) {
-              acao(codigo: $codigo) {
-                codigo
-                empresa
-                preco
-                setor {
-                  id
-                  nome
-                }
-                subsetor {
-                  id
-                  nome
-                }
-              }
-            }
-          `,
-          variables: {
-            codigo: _codigo
-          }
-        })
+    loadAcao(codigo) {
+      this.ctrl.findByCodigo(codigo)       
         .then(resp => {
           const acao = resp.data.acao;
           if (!this.acoes.includes(acao)) {
