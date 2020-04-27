@@ -1,30 +1,12 @@
-const { acaoModel } = require('../../model')
+const AcModel = require('../../model/acaoModel')
+const model = new AcModel      
 
-// TODO renomear metodos e passar consulta para model
-
-const acao = (_, args) => {
-    return acaoModel()
-        .select(['acoes.*',
-            'setores.nome as setor',
-            'subsetores.nome as subsetor',
-            'segmentos.nome as segmento'])
-        .innerJoin('setores', 'setor_id', 'setores.id')
-        .innerJoin('subsetores', 'subsetor_id', 'subsetores.id')
-        .innerJoin('segmentos', 'segmento_id', 'segmentos.id')
-        .where('codigo', args.codigo.toUpperCase())
-        .first()
-        .catch((e) => console.log(e))
+const acao = (_, {codigo}) => {      
+    return model.findByCodigo(codigo)
 }
 
-const acoes = (_) => {
-    return acaoModel()
-        .select(['acoes.*',
-            'setores.nome as setor',
-            'subsetores.nome as subsetor',
-            'segmentos.nome as segmento'])
-        .innerJoin('setores', 'setor_id', 'setores.id')
-        .innerJoin('subsetores', 'subsetor_id', 'subsetores.id')
-        .innerJoin('segmentos', 'segmento_id', 'segmentos.id')
+const acoes = (_) => {     
+    return model.findAll()
 }
 
 module.exports = {

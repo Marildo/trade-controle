@@ -1,9 +1,14 @@
-const db = require('../config/db')
-
-const carteiraModel = () => db('carteiras')
-const acaoModel = () => db('acoes')
+const AcaoModel = require('./acaoModel')
+const CarteiraModel = require('./carteiraModel')
+const SetorModel = require('./setorModel')
+const SubsetorModel = require('./subSetorModel')
+const SegmentoModel = require('./segmentoModel')
 
 module.exports = {
-    acaoModel,
-    carteiraModel
+    AcaoModel,
+    CarteiraModel,
+
+    SetorModel,
+    SubsetorModel,
+    SegmentoModel
 }

@@ -1,5 +1,4 @@
-const { acaoModel } = require('../../model/')
-const { saveSetor, saveSubsetor, saveSegmento } = require('../../model/simpleModel')
+const { SetorModel, SubsetorModel, SegmentoModel, AcaoModel } = require('../../model/')
 const { findAcao } = require('../../service/acao/Statusinvest')
 
 module.exports = {
@@ -7,20 +6,27 @@ module.exports = {
         try {
             codigo = codigo.toUpperCase()
 
+            let model = new AcaoModel
+            const find = await model.findByCodigo(codigo)
 
-            let find = await acaoModel()
-                .where('codigo', codigo)
-                .first()
-
-            if (find) {
+            if (find)
                 return find
-            }
+
 
             const papel = await findAcao(codigo);
             if (!papel) {
                 return new Error("Ação não localizada!")
             }
 
+            model = new SetorModel
+            const setor = await model.save(papel.setor)
+
+            model= new SubsetorModel
+            const subsetor = await model.save(papel.subsetor)
+
+            model = new SegmentoModel
+            const segmento = await model.save(papel.segmento)
+            
             const acao = {
                 codigo,
                 id: papel.id,
@@ -30,16 +36,18 @@ module.exports = {
                 subsetor_id: papel.subsetor.id,
                 segmento_id: papel.segmento.id
             }
+      
+            model = new AcaoModel
+            const result = await model.save(acao)
 
-            await saveSegmento(papel.segmento)
-            await saveSubsetor(papel.subsetor)
-            await saveSetor(papel.setor)
+            const newAcao = {
+                setor: papel.setor.nome,
+                subsetor: papel.subsetor.nome,
+                segmento: papel.segmento.nome,
+                ...result
+            }
 
-            //TODO alterar retorno para trazer consulta completa com nomes de setores
-            const result = await acaoModel()
-                .insert(acao)
-                .returning('*')
-            return result[0]
+            return newAcao
         } catch (e) {
             console.log(e)
             return new Error(e)

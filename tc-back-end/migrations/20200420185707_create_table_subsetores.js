@@ -2,7 +2,7 @@
 exports.up = function(knex) {
     return knex.schema.createTable('subsetores', table => {
       table.increments('id').primary()
-      table.string('nome',100).notNull().unique()
+      table.string('nome',100).notNull()
     })
   };
   
