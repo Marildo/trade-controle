@@ -1,15 +1,16 @@
-const {carteiraModel} = require('../../model')
+const { CarteiraModel } = require('../../model')
 
-// TODO Alterar para async/await ?
+const carteiraModel = new CarteiraModel
+
+const carteiras = () => {
+    return carteiraModel.findAll()
+}
+
+const carteira = (_, args) => {
+    return carteiraModel.findById(args.id)        
+}
+
 module.exports = {
-    carteira(_, args) {
-        return carteiraModel()
-            .where('id', args.id)
-            .first()
-            .catch((e) => console.log(e))
-    },
-    carteiras() {      
-        return carteiraModel()
-            .catch((e) => console.log(e))
-    },
+    carteira,
+    carteiras
 }

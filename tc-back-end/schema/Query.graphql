@@ -6,5 +6,4 @@ type Query{
 
     acao(codigo:String):Acao
     acoes:[Acao]!
-
 }

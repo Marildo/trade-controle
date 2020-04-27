@@ -1,20 +1,13 @@
-const {carteiraModel} = require('../../model')
+const { CarteiraModel } = require('../../model')
+
+const saveCarteira = (_, { nome }) =>{
+        const carteira = {
+            nome
+        }
+        const model = new CarteiraModel
+        return model.save(carteira)
+}
 
 module.exports = {
-    async newCarteira(_, { nome }) {
-        try {
-            const carteira = {
-                nome
-            }
-
-            const result = await carteiraModel()
-                .insert(carteira)
-                .returning('*')
-
-            return result[0]
-        } catch (e) {
-            console.log(e)
-            throw new Error(e.detail)
-        }
-    }
+    saveCarteira
 }

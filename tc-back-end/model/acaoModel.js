@@ -4,9 +4,9 @@ function AcaoModel() {
 
     table = () => db('acoes')
 
-    select = () => {
+    selectAcao = () => {
         return table()
-            .select(['acoes.*',
+            .selectAcao(['acoes.*',
                 'setores.nome as setor',
                 'subsetores.nome as subsetor',
                 'segmentos.nome as segmento'])
@@ -17,7 +17,7 @@ function AcaoModel() {
 
     this.findByCodigo = (codigo) => {
         return new Promise((resolve, reject) => {
-            select()
+            selectAcao()
                 .where('codigo', codigo.toUpperCase())
                 .first()
                 .then(resp => resolve(resp))
