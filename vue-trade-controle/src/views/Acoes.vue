@@ -15,20 +15,20 @@
           wid
         ></v-text-field>
 
-           <!--TODO esconder quando input estiver vazio -->
+        <!--TODO esconder quando input estiver vazio -->
         <v-btn color="secondary" fab x-small dark @click="clearSearch">
           <v-icon>mdi-filter-remove</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
 
         <v-col cols="6" sm="3">
-          <v-text-field 
-          v-model="novaAcao" 
-          prepend-icon="mdi-plus"
-          label="Nova Ação" 
-          single-line 
-          hide-details>
-          </v-text-field>
+          <v-text-field
+            v-model="novaAcao"
+            prepend-icon="mdi-plus"
+            label="Nova Ação"
+            single-line
+            hide-details
+          ></v-text-field>
         </v-col>
 
         <div class="my-2">
@@ -48,75 +48,71 @@
 
 <script>
 import gql from "graphql-tag";
-import vue from 'vue'
+import vue from "vue";
 
-function AcaoController(){
-
-  this.findAll =function() {
-      return vue.prototype.$api
-        .query({
-          query: gql`
-            {
-              acoes {
-                codigo
-                empresa
-                preco
-                setor {
-                  id
-                  nome
-                }
-                subsetor {
-                  id
-                  nome
-                }
-              }
+function AcaoController() {
+this.findAll = function() {
+    return vue.prototype.$api.query({
+      query: gql`
+        {
+          acoes {
+            codigo
+            empresa
+            preco
+            setor {
+              id
+              nome
             }
-          `
-        })
+            subsetor {
+              id
+              nome
+            }
+          }
+        }
+      `
+    });
+  },
+
+    this.save = function(_codigo) {
+      return vue.prototype.$api.mutate({
+        mutation: gql`
+          mutation($codigo: String!) {
+            newAcao(codigo: $codigo) {
+              id
+              codigo
+            }
+          }
+        `,
+        variables: {
+          codigo: _codigo
+        }
+      });
     },
 
-    this.save = function(_codigo){
-         return vue.prototype.$api 
-         .mutate({
-          mutation: gql`
-            mutation($codigo: String!) {
-              newAcao(codigo: $codigo) {
+    this.findByCodigo = function(codigo) {
+      return vue.prototype.$api.query({
+        query: gql`
+          query($codigo: String!) {
+            acao(codigo: $codigo) {
+              codigo
+              empresa
+              preco
+              setor {
                 id
-                codigo
+                nome
+              }
+              subsetor {
+                id
+                nome
               }
             }
-          `,
-          variables: {
-            codigo: _codigo
           }
-        })
-    },
-
-    this.findByCodigo = function(codigo){
-      return vue.prototype.$api 
-       .query({
-          query: gql`
-            query($codigo: String!) {
-              acao(codigo: $codigo) {
-                codigo
-                empresa
-                preco
-                setor {
-                  id
-                  nome
-                }
-                subsetor {
-                  id
-                  nome
-                }
-              }
-            }
-          `,
-          variables: {
-             codigo
-          }
-        })
-    }
+        `,
+        variables: {
+          codigo
+        }
+      });
+    };
 }
 
 export default {
@@ -165,32 +161,31 @@ export default {
     };
   },
 
-  mounted() {   
-      this.ctrl = new AcaoController
-       this.loadAcoes();
+  mounted() {
+    this.ctrl = new AcaoController();
+    this.loadAcoes();
   },
 
-  computed: {
-
-  },
+  computed: {},
 
   methods: {
     clearSearch() {
-      this.search = ""
-   
-     // const acController = new AcController
-     // acController.load()
+      this.search = "";
+
+      // const acController = new AcController
+      // acController.load()
     },
 
-   
     loadAcoes() {
-      this.ctrl.findAll()         
+      this.ctrl
+        .findAll()
         .then(resp => (this.acoes = resp.data.acoes))
         .catch(err => console.log(err));
     },
 
-    salvaAcao() {    
-      this.ctrl.save(this.novaAcao)       
+    salvaAcao() {
+      this.ctrl
+        .save(this.novaAcao)
         .then(resp => {
           this.loadAcao(resp.data.newAcao.codigo);
           this.$toast.add({
@@ -201,30 +196,31 @@ export default {
           });
         })
         .catch(e => {
-           console.log(e);
+          console.log(e);
           // console.log(e.networkError.result.errors)
           this.$toast.add({
             severity: "error",
             summary: "Falha ao inserir " + this.novaAcao,
-            detail: e.message.replace('GraphQL error:',''),
+            detail: e.message.replace("GraphQL error:", ""),
             life: 6000
-          })
-        })
+          });
+        });
     },
 
     loadAcao(codigo) {
-      this.ctrl.findByCodigo(codigo)       
+      this.ctrl
+        .findByCodigo(codigo)
         .then(resp => {
           const acao = resp.data.acao;
           if (!this.acoes.includes(acao)) {
             this.acoes.push(acao);
           }
-          this.newAcao = null
+          this.newAcao = null;
         })
-        .catch(e => console.log(e.networkError.result.errors))
+        .catch(e => console.log(e.networkError.result.errors));
     }
   }
-}
+};
 </script>
 
 <style>

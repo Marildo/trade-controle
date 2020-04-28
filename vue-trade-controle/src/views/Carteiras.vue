@@ -1,12 +1,152 @@
 <template>
-  <div>carteiras</div>
+  <v-app id="inspire">
+    <div class="title">
+      Carteiras
+      <v-btn color="secondary" fab x-small dark @click="loadCarteiras">
+        <v-icon>mdi-reload</v-icon>
+      </v-btn>
+      <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">
+        <v-icon>mdi-plus</v-icon>
+      </v-btn>
+    </div>
+
+    <table>
+      <caption>Patrimônio</caption>
+      <thead>
+        <td>Carteira</td>
+        <td>Total Ações</td>
+        <td>Total em Caixa</td>
+        <td>Último Resultado</td>
+        <td>Patrimônio total</td>
+      </thead>
+      <tbody>
+        <tr v-for="carteira in carteiras" :key="carteira.id">
+          <td>
+            <router-link to>{{carteira.nome}}</router-link>
+          </td>
+          <td>R$ 100,00</td>
+          <td>R$ 100,00</td>
+          <td>R$ 100,00</td>
+          <td>R$ 100,00</td>
+        </tr>
+        <tr></tr>
+      </tbody>
+      <tfoot>
+        <td></td>
+        <td>
+          <h5>R$ 1.000,00</h5>
+        </td>
+        <td>
+          <h5>R$ 1.000,00</h5>
+        </td>
+        <td>
+          <h5>R$ 100,00</h5>
+        </td>
+        <td>
+          <h5>R$ 500,00</h5>
+        </td>
+      </tfoot>
+    </table>
+
+    <v-dialog v-model="dialog" max-width="290">
+      <v-card>
+        <v-card-title class="headline">Nova Carteira</v-card-title>
+        <v-spacer></v-spacer>
+
+        <v-card-text>
+          <v-row>
+            <v-text-field label="Nome" v-model="novaCarteira" required></v-text-field>
+            <br />
+          </v-row>
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="orange darken-1" @click="dialog = false">Cancelar</v-btn>
+          <v-btn color="green darken-1" @click="salvarCarteira">Salvar</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-app>
 </template>
 
 <script>
+import gql from "graphql-tag";
+import vue from "vue";
+
+function Controller() {
+  (this.findAll = function() {
+    return vue.prototype.$api.query({
+      query: gql`
+        {
+          carteiras {
+            id
+            nome
+          }
+        }
+      `
+    });
+  }),
+    (this.save = nome => {
+      return vue.prototype.$api.mutate({
+        mutation: gql`
+          mutation($nome: String!) {
+            saveCarteira(nome: $nome) {
+              id
+              nome
+            }
+          }
+        `,
+        variables: {
+          nome
+        }
+      });
+    });
+}
+
 export default {
-  name: 'carteiras'
+  name: "carteiras",
+
+  data() {
+    return {
+      carteiras: [],
+      dialog: false,
+      novaCarteira: ""
+    };
+  },
+
+  mounted() {
+    this.loadCarteiras()
+  },
+
+  methods: {
+    loadCarteiras() {
+      const ctrl = new Controller();
+      ctrl
+        .findAll()
+        .then(resp => (this.carteiras = resp.data.carteiras))
+        .catch(e => console.log(e.networkError.result.errors));
+    },
+
+    salvarCarteira() {
+      const ctrl = new Controller();
+      ctrl
+        .save(this.novaCarteira)
+        .then(resp => {
+          this.carteiras.push(resp.data.saveCarteira);
+          this.novaCarteira = "";
+          this.dialog = false;
+        })
+        .catch(e => console.log(e.networkError.result.errors));
+    }
+  }
 };
 </script>
 
 <style>
+td {
+  padding: 22px;
+  border: 1px solid white;
+  border-spacing: 5px;
+}
 </style>
