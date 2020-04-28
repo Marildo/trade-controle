@@ -1,5 +1,6 @@
-const AcModel = require('../../model/acaoModel')
-const model = new AcModel      
+const { AcaoModel } = require('../../model/')
+
+const model = new AcaoModel      
 
 const acao = (_, {codigo}) => {      
     return model.findByCodigo(codigo)

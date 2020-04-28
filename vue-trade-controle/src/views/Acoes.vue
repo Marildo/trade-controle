@@ -51,7 +51,7 @@ import gql from "graphql-tag";
 import vue from "vue";
 
 function AcaoController() {
-this.findAll = function() {
+  (this.findAll = function() {
     return vue.prototype.$api.query({
       query: gql`
         {
@@ -71,9 +71,8 @@ this.findAll = function() {
         }
       `
     });
-  },
-
-    this.save = function(_codigo) {
+  }),
+    (this.save = function(_codigo) {
       return vue.prototype.$api.mutate({
         mutation: gql`
           mutation($codigo: String!) {
@@ -87,9 +86,8 @@ this.findAll = function() {
           codigo: _codigo
         }
       });
-    },
-
-    this.findByCodigo = function(codigo) {
+    }),
+    (this.findByCodigo = function(codigo) {
       return vue.prototype.$api.query({
         query: gql`
           query($codigo: String!) {
@@ -112,7 +110,7 @@ this.findAll = function() {
           codigo
         }
       });
-    };
+    });
 }
 
 export default {

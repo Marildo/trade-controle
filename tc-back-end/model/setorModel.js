@@ -1,9 +1,8 @@
 const db = require('../config/db')
 
+const table = () => db('setores')
+
 function SetorModel() {
-
-    table = () => db('setores')
-
     this.findById = (id) => {
         return new Promise((resolve, reject) => {
             table()

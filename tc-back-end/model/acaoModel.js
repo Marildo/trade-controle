@@ -1,19 +1,19 @@
 const db = require('../config/db')
 
+const table = () => db('acoes')
+
+const selectAcao = () => {
+    return table()
+        .select(['acoes.*',
+            'setores.nome as setor',
+            'subsetores.nome as subsetor',
+            'segmentos.nome as segmento'])
+        .innerJoin('setores', 'setor_id', 'setores.id')
+        .innerJoin('subsetores', 'subsetor_id', 'subsetores.id')
+        .innerJoin('segmentos', 'segmento_id', 'segmentos.id')
+}
+
 function AcaoModel() {
-
-    table = () => db('acoes')
-
-    selectAcao = () => {
-        return table()
-            .selectAcao(['acoes.*',
-                'setores.nome as setor',
-                'subsetores.nome as subsetor',
-                'segmentos.nome as segmento'])
-            .innerJoin('setores', 'setor_id', 'setores.id')
-            .innerJoin('subsetores', 'subsetor_id', 'subsetores.id')
-            .innerJoin('segmentos', 'segmento_id', 'segmentos.id')
-    }
 
     this.findByCodigo = (codigo) => {
         return new Promise((resolve, reject) => {
@@ -30,7 +30,7 @@ function AcaoModel() {
 
     this.findAll = () => {
         return new Promise((resolve, reject) => {
-            select()
+            selectAcao()
                 .then(resp => resolve(resp))
                 .catch(error => {
                     console.log(error)

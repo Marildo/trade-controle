@@ -1,8 +1,8 @@
 const db = require('../config/db')
 
-function CarteiraModel() {
+const table = () => db('carteiras')
 
-    table = () => db('carteiras')
+function CarteiraModel() {
 
     this.findAll = () => {
         return new Promise((resolve, reject) => {

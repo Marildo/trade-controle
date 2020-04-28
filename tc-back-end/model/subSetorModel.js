@@ -1,9 +1,8 @@
 const db = require('../config/db')
 
-//TODO é possivel deixar isso mais generico?
-function SubsetorModel() {
+const table = () => db('subsetores')
 
-    table = () => db('subsetores')
+function SubsetorModel() {
 
     this.findById = (id) => {
         return new Promise((resolve, reject) => {
