@@ -1,9 +1,11 @@
 type Query{
     helo:String
 
+    acao(codigo:String):Acao
+    acoes:[Acao]!
+
     carteira(id:ID):Carteira
     carteiras:[Carteira]!
 
-    acao(codigo:String):Acao
-    acoes:[Acao]!
+    movimentacoes:[Movimentacao]
 }

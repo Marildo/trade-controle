@@ -2,4 +2,11 @@ type Mutation {
     newAcao(codigo:String!):Acao
 
     saveCarteira(nome:String!):Carteira
+
+    saveMovimentacao(
+        tipo:Int! 
+        valor:Float
+        descricao:String
+        idCarteira:Int
+        ):Movimentacao
 }
