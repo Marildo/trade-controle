@@ -4,7 +4,10 @@ import VueRouter from 'vue-router'
 import Acoes from '@/views/Acoes'
 import Home from '@/views/Home'
 import Setores from '@/views/Setores'
-import Carteiras from '@/views/Carteiras'
+
+import Carteiras from '@/views/carteiras/Carteiras'
+import CarteiraIndex from '@/views/carteiras/CarteiraIndex'
+import CarteiraView from '@/views/carteiras/CarteiraView'
 
 Vue.use(VueRouter)
 
@@ -27,8 +30,12 @@ const routes = [
   {
     name: 'Carteiras',
     path: '/carteiras',
-    component: Carteiras
-  } ,
+    component: Carteiras,
+    children: [
+      { path: '', component: CarteiraIndex, props: true },
+      { path: ':id', component: CarteiraView, props: true }
+    ]
+  },
   {
     path: '/about',
     name: 'About',

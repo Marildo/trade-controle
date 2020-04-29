@@ -47,71 +47,7 @@
 </template>
 
 <script>
-import gql from "graphql-tag";
-import vue from "vue";
-
-function AcaoController() {
-  (this.findAll = function() {
-    return vue.prototype.$api.query({
-      query: gql`
-        {
-          acoes {
-            codigo
-            empresa
-            preco
-            setor {
-              id
-              nome
-            }
-            subsetor {
-              id
-              nome
-            }
-          }
-        }
-      `
-    });
-  }),
-    (this.save = function(_codigo) {
-      return vue.prototype.$api.mutate({
-        mutation: gql`
-          mutation($codigo: String!) {
-            newAcao(codigo: $codigo) {
-              id
-              codigo
-            }
-          }
-        `,
-        variables: {
-          codigo: _codigo
-        }
-      });
-    }),
-    (this.findByCodigo = function(codigo) {
-      return vue.prototype.$api.query({
-        query: gql`
-          query($codigo: String!) {
-            acao(codigo: $codigo) {
-              codigo
-              empresa
-              preco
-              setor {
-                id
-                nome
-              }
-              subsetor {
-                id
-                nome
-              }
-            }
-          }
-        `,
-        variables: {
-          codigo
-        }
-      });
-    });
-}
+import AcaoController from '../controllers/acaoController'
 
 export default {
   name: "Acoes",
@@ -120,48 +56,16 @@ export default {
     return {
       dialog: false,
       acoes: [],
+      fields: [],
       search: "",
       novaAcao: "",
-
-      //TODO compensa criar uma funcao para retorna isso?
-      fields: [
-        {
-          text: "Código",
-          align: "start",
-          sortable: true,
-          value: "codigo"
-        },
-        {
-          text: "Empresa",
-          align: "start",
-          sortable: false,
-          value: "empresa"
-        },
-        {
-          text: "Preço",
-          align: "start",
-          sortable: true,
-          value: "preco"
-        },
-        {
-          text: "Setor",
-          align: "start",
-          sortable: true,
-          value: "setor.nome"
-        },
-        {
-          text: "Subsetor",
-          align: "start",
-          sortable: true,
-          value: "subsetor.nome"
-        }
-      ]
-    };
+    }
   },
 
   mounted() {
     this.ctrl = new AcaoController();
     this.loadAcoes();
+    this.fields = this.ctrl.fields()
   },
 
   computed: {},
@@ -169,9 +73,6 @@ export default {
   methods: {
     clearSearch() {
       this.search = "";
-
-      // const acController = new AcController
-      // acController.load()
     },
 
     loadAcoes() {

@@ -1,7 +1,6 @@
 <template>
-  <v-app id="inspire">
+  <div>
     <div class="title">
-      Carteiras
       <v-btn color="secondary" fab x-small dark @click="loadCarteiras">
         <v-icon>mdi-reload</v-icon>
       </v-btn>
@@ -22,7 +21,7 @@
       <tbody>
         <tr v-for="carteira in carteiras" :key="carteira.id">
           <td>
-            <router-link to>{{carteira.nome}}</router-link>
+            <router-link to="/carteira/2" >{{carteira.nome}}</router-link>
           </td>
           <td>R$ 100,00</td>
           <td>R$ 100,00</td>
@@ -67,45 +66,14 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </v-app>
+  </div>
 </template>
 
 <script>
-import gql from "graphql-tag";
-import vue from "vue";
-
-function Controller() {
-  (this.findAll = function() {
-    return vue.prototype.$api.query({
-      query: gql`
-        {
-          carteiras {
-            id
-            nome
-          }
-        }
-      `
-    });
-  }),
-    (this.save = nome => {
-      return vue.prototype.$api.mutate({
-        mutation: gql`
-          mutation($nome: String!) {
-            saveCarteira(nome: $nome) {
-              id
-              nome
-            }
-          }
-        `,
-        variables: {
-          nome
-        }
-      });
-    });
-}
+import CarteiraController from '@/controllers/carteiraController'
 
 export default {
-  name: "carteiras",
+  name: "CarteiraIndex",
 
   data() {
     return {
@@ -115,22 +83,21 @@ export default {
     };
   },
 
-  mounted() {
+  mounted() {  
+    this.ctrl = new CarteiraController
     this.loadCarteiras()
   },
 
   methods: {
-    loadCarteiras() {
-      const ctrl = new Controller();
-      ctrl
+    loadCarteiras() {    
+      this.ctrl
         .findAll()
         .then(resp => (this.carteiras = resp.data.carteiras))
         .catch(e => console.log(e.networkError.result.errors));
     },
 
     salvarCarteira() {
-      const ctrl = new Controller();
-      ctrl
+       this.ctrl
         .save(this.novaCarteira)
         .then(resp => {
           this.carteiras.push(resp.data.saveCarteira);
