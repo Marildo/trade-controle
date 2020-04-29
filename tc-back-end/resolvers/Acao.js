@@ -1,4 +1,4 @@
-const db = require('../config/db')
+
 module.exports = {
     quantidade(acao) {
         return Math.floor(

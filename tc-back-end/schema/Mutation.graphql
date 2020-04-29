@@ -3,10 +3,5 @@ type Mutation {
 
     saveCarteira(nome:String!):Carteira
 
-    saveMovimentacao(
-        tipo:Int! 
-        valor:Float
-        descricao:String
-        idCarteira:Int
-        ):Movimentacao
+    saveMovimentacao(dados: MovimentacaoInput!):Movimentacao
 }

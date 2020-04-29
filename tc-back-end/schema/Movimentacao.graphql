@@ -1,7 +1,15 @@
 type Movimentacao {
     id: Int!
-    tipo: Int
+    tipo: Int!
     dataMovimentacao: String!
     valor: Float!
     descricao: String
+}
+
+input MovimentacaoInput {
+    tipo: Int!
+    valor: Float!
+    idCarteira:Int!
+    descricao: String
+    dataMovimentacao: String
 }

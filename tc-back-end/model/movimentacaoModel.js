@@ -12,12 +12,12 @@ function MovimentacaoModel() {
     }
 
     this.save = (movimentacao) => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {            
             table()
                 .insert(movimentacao)
                 .returning('*')
                 .then(resp => resolve(resp[0]))
-                .catch(error => reject(error.detail))
+                .catch(error => reject(error))
         })
     }
 }
