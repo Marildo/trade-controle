@@ -1,10 +1,10 @@
 <template>
-  <v-navigation-drawer v-model="isMenuVisible" app clipped>
+  <v-navigation-drawer v-model="showMenu" app clipped>
     <v-list dense>
-      <ItemMenu title="Dashboard" link="/" icon="mdi-view-dashboard" />
-      <ItemMenu title="Carteiras" link="carteiras" icon="mdi-wallet" />
-      <ItemMenu title="Açoes" link="acoes" icon="mdi-file-multiple" />
-      <ItemMenu title="Setores" link="setores" icon="mdi-chart-arc" />
+      <ItemMenu title="Dashboard" routeName="Home" icon="mdi-view-dashboard" />
+      <ItemMenu title="Carteiras" routeName="CarteirasIndex" icon="mdi-wallet" />
+      <ItemMenu title="Açoes" routeName="Acoes" icon="mdi-file-multiple" />
+      <ItemMenu title="Setores" routeName="Setores" icon="mdi-chart-arc" />
     </v-list>
   </v-navigation-drawer>
 </template>
@@ -21,7 +21,18 @@ export default {
   },
 
   computed: {
-    ...mapState(["isMenuVisible"])
+    ...mapState({
+      isMenuVisible: state => state.isMenuVisible
+    }),
+
+    showMenu: {
+      get() {
+        return this.isMenuVisible;
+      },
+      set(v) {
+        v // nao faz nada, só para remover o erro do console
+      }
+    }
   }
 };
 </script>

@@ -21,7 +21,12 @@
       <tbody>
         <tr v-for="carteira in carteiras" :key="carteira.id">
           <td>
-            <router-link to="/carteira/2" >{{carteira.nome}}</router-link>
+            <router-link
+              :to="{
+                name:'Carteira', 
+                params:{id: carteira.id}
+            }"
+            >{{carteira.nome}}</router-link>
           </td>
           <td>R$ 100,00</td>
           <td>R$ 100,00</td>
@@ -70,7 +75,7 @@
 </template>
 
 <script>
-import CarteiraController from '@/controllers/carteiraController'
+import CarteiraController from "@/controllers/carteiraController";
 
 export default {
   name: "CarteiraIndex",
@@ -83,13 +88,13 @@ export default {
     };
   },
 
-  mounted() {  
-    this.ctrl = new CarteiraController
-    this.loadCarteiras()
+  mounted() {
+    this.ctrl = new CarteiraController();
+    this.loadCarteiras();
   },
 
   methods: {
-    loadCarteiras() {    
+    loadCarteiras() {
       this.ctrl
         .findAll()
         .then(resp => (this.carteiras = resp.data.carteiras))
@@ -97,7 +102,7 @@ export default {
     },
 
     salvarCarteira() {
-       this.ctrl
+      this.ctrl
         .save(this.novaCarteira)
         .then(resp => {
           this.carteiras.push(resp.data.saveCarteira);

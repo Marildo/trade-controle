@@ -3,6 +3,7 @@
     <div class="title">
       <h1>Carteiras</h1>
      <hr>
+     <br>
     </div>
     <router-view></router-view>
   </v-app>
@@ -13,17 +14,6 @@
 export default {
   name: "carteiras",
 
-  data() {
-
-  },
-
-  mounted() {  
-
-  },
-
-  methods: {
- 
-  }
 };
 </script>
 

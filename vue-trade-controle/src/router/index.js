@@ -32,8 +32,8 @@ const routes = [
     path: '/carteiras',
     component: Carteiras,
     children: [
-      { path: '', component: CarteiraIndex, props: true },
-      { path: ':id', component: CarteiraView, props: true }
+      { name: 'CarteirasIndex', path: '', component: CarteiraIndex },
+      { name: 'Carteira', path: ':id', component: CarteiraView, props: true }
     ]
   },
   {

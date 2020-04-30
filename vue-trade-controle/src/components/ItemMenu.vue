@@ -12,14 +12,24 @@
 <script>
 export default {
   name: "ItemMenu",
-  props: ["title", "link","icon"],
+
+  props: ["title", "routeName", "icon"],
 
   methods: {
     navegateTo() {
-      this.$router.push(this.link);
+      const correntRoute = this.$router.currentRoute.name
+      if (correntRoute != this.routeName){
+        this.$router
+          .push({name: this.routeName} )
+          .catch(erro => {
+            console.log( erro);
+          })
+      }else{
+         this.$router.go(0)
+      }
     }
   }
-}
+};
 </script>
 
 <style >
