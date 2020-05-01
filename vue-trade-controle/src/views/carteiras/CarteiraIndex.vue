@@ -1,6 +1,7 @@
 <template>
   <div>
-    <div class="title">
+    <div class="row">
+      <v-spacer></v-spacer>
       <v-btn color="secondary" fab x-small dark @click="loadCarteiras">
         <v-icon>mdi-reload</v-icon>
       </v-btn>
@@ -10,7 +11,7 @@
     </div>
 
     <table>
-      <caption>Patrimônio</caption>
+      <caption>Carteiras</caption>
       <thead>
         <td>Carteira</td>
         <td>Total Ações</td>
@@ -97,7 +98,7 @@ export default {
     loadCarteiras() {
       this.ctrl
         .findAll()
-        .then(resp => (this.carteiras = resp.data.carteiras))
+        .then(resp => (this.carteiras = resp))
         .catch(e => console.log(e.networkError.result.errors));
     },
 

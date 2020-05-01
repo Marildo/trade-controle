@@ -3,31 +3,52 @@ import vue from 'vue'
 
 function CarteiraController() {
 
-    this.findAll = function () {
-        return vue.prototype.$api.query({
-            query: gql`{
-              carteiras {
-                id
-                nome
-              }
-            }`
-        })
-    },
+  var carteiras
 
-   this.save = nome => {
-       return vue.prototype.$api.mutate({
-           mutation: gql`
+  this.findAll = () => {
+    return new Promise((resolve, reject) => {
+      vue.prototype.$api.query({
+        query: gql`{
+            carteiras {
+              id
+              nome
+            }
+          }`
+      }).then(resp => {
+        carteiras = resp.data.carteiras
+        resolve(carteiras)
+      }).catch(error => reject(error))
+    })
+  },
+
+  this.findById = (id) => {
+    return vue.prototype.$api.query({
+      query: gql` query($id: ID!){
+        carteira(id: $id){
+          id nome
+        }
+      }`,
+      variables:{
+        id
+      }
+    })
+  }
+
+  this.save = nome => {
+    return vue.prototype.$api.mutate({
+      mutation: gql`
          mutation($nome: String!) {
            saveCarteira(nome: $nome) {
              id
              nome
            }
          } `,
-           variables: {
-               nome
-           }
-       })
-   }
+      variables: {
+        nome
+      }
+    })
+  }
+
 }
 
 export default CarteiraController

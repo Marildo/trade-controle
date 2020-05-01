@@ -28,7 +28,6 @@ const routes = [
     component: Setores
   },
   {
-    name: 'Carteiras',
     path: '/carteiras',
     component: Carteiras,
     children: [
