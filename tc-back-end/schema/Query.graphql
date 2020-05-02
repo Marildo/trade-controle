@@ -8,4 +8,6 @@ type Query{
     carteiras:[Carteira]!
 
     movimentacoes:[Movimentacao]
+
+    tiposLancamentos:[TipoLancamento]
 }

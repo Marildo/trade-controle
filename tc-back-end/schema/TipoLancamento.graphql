@@ -1,0 +1,5 @@
+type TipoLancamento{
+    key: Int!
+    descricao: String!
+    isSaida: Boolean!
+}
