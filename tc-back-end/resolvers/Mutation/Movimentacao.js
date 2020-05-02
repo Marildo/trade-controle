@@ -6,17 +6,18 @@ const model = new MovimentacaoModel
 module.exports = {
     async saveMovimentacao(_, { dados }) {
         try {
+
             let data_movimentacao =  dados.dataMovimentacao 
             if (dados.dataMovimentacao) {
-                if (!isNaN(dados.dataMovimentacao)) {
-                    dados.dataMovimentacao = new Date(parseInt(dados.dataMovimentacao))
-                } 
+                if (!isNaN(dados.dataMovimentacao)) {                  
+                    data_movimentacao = new Date(parseInt(data_movimentacao))
+                }          
+                if(! Date.parse(data_movimentacao))
+                    return new Error("Data inválida")
             }
 
-            if(! Date.parse(data_movimentacao))
-                return new Error("Data inválida")
-                              
 
+                              
             const movimentacao = {
                 ...dados,
                 carteira_id: dados.idCarteira,
