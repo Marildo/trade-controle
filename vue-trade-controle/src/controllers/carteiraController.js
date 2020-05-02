@@ -8,7 +8,8 @@ function CarteiraController() {
   this.findAll = () => {
     return new Promise((resolve, reject) => {
       vue.prototype.$api.query({
-        query: gql`{
+        query: gql`
+          query{
             carteiras {
               id
               nome

@@ -1,11 +1,13 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
 
+// TODO deixar gql em arquivos separados
+// TODO usar fragmentos
 function AcaoController() {
   this.findAll = function () {
     return vue.prototype.$api.query({
       query: gql`
-            {
+           query{
               acoes {
                 codigo
                 empresa

@@ -3,10 +3,11 @@ const { MovimentacaoModel } = require('../../model/')
 const model = new MovimentacaoModel
 
 // TODO padronizar retorno de erros pelos codigos
+// TODO realizar validacoes
+
 module.exports = {
     async saveMovimentacao(_, { dados }) {
         try {
-
             let data_movimentacao =  dados.dataMovimentacao 
             if (dados.dataMovimentacao) {
                 if (!isNaN(dados.dataMovimentacao)) {                  
@@ -16,8 +17,6 @@ module.exports = {
                     return new Error("Data inválida")
             }
 
-
-                              
             const movimentacao = {
                 ...dados,
                 carteira_id: dados.idCarteira,
