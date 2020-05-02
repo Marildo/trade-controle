@@ -47,21 +47,11 @@
         </v-tab-item>
 
         <v-tab-item>
-          <div class="row">tabela de acoes</div>
+          <AcoesCarteira />
         </v-tab-item>
 
         <v-tab-item>
-          <div class="row">
-            <v-btn color="teal" class="btn">
-              <v-icon>mdi-cart-plus</v-icon>Comprar
-            </v-btn>
-            <v-btn color="deep-orange darken-4" class="btn">
-              <v-icon>mdi-cart-off</v-icon>Vender
-            </v-btn>
-            <v-btn color="blue darken-3" class="btn">
-              <v-icon>mdi-contrast-box</v-icon>Lançamentos
-            </v-btn>
-          </div>
+          <Lancamentos :carteira='carteira' />
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -70,17 +60,21 @@
 
 <script>
 import CarteiraController from "@/controllers/carteiraController";
+import AcoesCarteira from "./AcoesCarteira";
+import Lancamentos from "./lancamentos/Lancamentos";
 
 export default {
   props: ["id"],
 
-  components: {},
+  components: {
+    AcoesCarteira,
+    Lancamentos
+  },
 
   data() {
     return {
       carteira: {},
-      tab: null,
-      items: ["Patrimônio", "Ações", "Lançamentos", "images", "news"]
+      tab: null
     };
   },
 
@@ -94,7 +88,7 @@ export default {
       this.ctrl
         .findById(this.id)
         .then(resp => (this.carteira = resp.data.carteira))
-        .catch(error => console.log(error));
+        .catch(error => console.log(error.networkError.result.errors));
     }
   }
 };
@@ -117,9 +111,5 @@ export default {
 .conteudo {
   width: 100%;
   margin: 15px;
-}
-
-.btn {
-  margin-right: 10px;
 }
 </style>
