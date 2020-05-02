@@ -1,9 +1,9 @@
 type Movimentacao {
-    id: Int!
-    tipo: Int!
+    id: Int!    
     dataMovimentacao: String!
     valor: Float!
     descricao: String
+    tipoLancamento: TipoLancamento!
 }
 
 input MovimentacaoInput {
