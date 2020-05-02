@@ -1,8 +1,15 @@
-const acoes = [];
+const { CarteiraModel } = require('../model/')
+
+function acoes(){
+    return []
+}
+
+function saldoCaixa(carteira){
+    const carteiraModel = new CarteiraModel
+    return carteiraModel.calculateSaldoCaixa(carteira.id)
+}
 
 module.exports = {
-    acoes(carteira) {
-        const selected = acoes.filter(a => a.carteira_id == carteira.id)
-        return selected ? selected : null
-    },
+    acoes,
+    saldoCaixa
 }
