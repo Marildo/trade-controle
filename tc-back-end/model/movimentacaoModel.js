@@ -11,6 +11,16 @@ function MovimentacaoModel() {
         })
     }
 
+    this.findByIdCarteira = (idCarteira) => {
+        return new Promise((resolve, reject) => {
+            table()
+                .where('carteira_id',idCarteira)
+                .then(resp => resolve(resp))
+                .catch(error => reject(error.detail))
+        })
+    }
+
+
     this.save = (movimentacao) => {
         return new Promise((resolve, reject) => {            
             table()
