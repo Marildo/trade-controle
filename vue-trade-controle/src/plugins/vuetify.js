@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify/lib'
-
-Vue.use(Vuetify);
-
 import VCurrencyField from 'v-currency-field'
 import { VTextField } from 'vuetify/lib'  //Globally import VTextField
 
+import '@fortawesome/fontawesome-free/css/all.css' 
+
+Vue.use(Vuetify);
 Vue.component('v-text-field', VTextField)
 Vue.use(VCurrencyField, { 
 	locale: 'pt-BR',
@@ -18,4 +18,7 @@ Vue.use(VCurrencyField, {
 
 
 export default new Vuetify({
+	icons: {
+		iconfont: 'fa',
+	}
 });

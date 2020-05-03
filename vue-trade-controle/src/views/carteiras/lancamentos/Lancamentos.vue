@@ -8,33 +8,10 @@
         <v-icon>mdi-cart-off</v-icon>Vender
       </v-btn>
       <NovoLancamento :carteira="carteira" @inserted="onInserted($event)" class="btn" />
-
-      <div class="btn">
-        <v-alert
-          type="success"
-          v-model="inserted"
-          border="top"
-          close-text="Fechar"
-          dark
-          dismissible
-        >{{lastLancamento}}</v-alert>
-      </div>
     </div>
 
     <div class="row my-5">
-      <v-data-table title="Lançamentos" :headers="fields" :items="lancamentos">
-        <template v-slot:item.dataMovimentacao="{ item }">
-          <span>{{new Date(parseInt(item.dataMovimentacao)).toLocaleString()}}</span>
-        </template>
-        <template v-slot:item.valor="{ item }">
-          <span>
-            {{item.valor.toLocaleString('pt-BR', {
-            style: 'currency',
-            currency: 'BRL',
-            })}}
-          </span>
-        </template>
-      </v-data-table>
+      <v-data-table title="Lançamentos" :headers="fields" :items="lancamentos" />
     </div>
   </div>
 </template>
@@ -43,6 +20,7 @@
 import NovoLancamento from "./NovoLancamento";
 import LancamentoController from "@/controllers/lancamentoController";
 import { findAllTipos } from "@/controllers/tiposLancamentosController";
+import {formateReal} from '@/lib/numberUtils'
 
 export default {
   name: "Lancamentos",
@@ -57,16 +35,12 @@ export default {
     this.loadLancamentos();
   },
 
-  updated() {
-    this.loadLancamentos();
-  },
-
   data() {
     return {
       ctrl: {},
       lancamentos: [],
       lastLancamento: {},
-      inserted: false,
+      modified: false,
       fields: [
         { text: "Data", value: "dataMovimentacao", sorted: true },
         { text: "Valor", value: "valor" },
@@ -76,15 +50,32 @@ export default {
     };
   },
 
+  watch: {
+    modified() {
+      this.loadLancamentos();
+    }
+  },
+
   methods: {
     loadLancamentos() {
       this.ctrl
         .findByCarteiraId(this.carteira.id)
-        .then(resp => {
-          this.lancamentos = resp;
-          console.log("carregando:", this.lancamentos.length);
-        })
+        .then(resp => this.formateLancamentos(resp))
         .catch(error => console.log(error));
+    },
+
+    formateLancamentos(resp) {
+      console.log("carregando:", resp.length);
+
+     const formater = (item) => {
+       return {
+         ...item,
+         valor: formateReal(item.valor),
+         dataMovimentacao: new Date(parseInt(item.dataMovimentacao)).toLocaleString()
+       }
+     }
+
+      this.lancamentos = resp.map(formater);
     },
 
     loadTiposLancamentos() {
@@ -101,17 +92,8 @@ export default {
       }
     },
 
-    // TODO cria uma lib para formatar moedas
-    onInserted(lancamento) {
-      this.inserted = true;
-      this.lastLancamento =
-        lancamento.descricao +
-        " no valor de" +
-        lancamento.valor.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL"
-        }) +
-        " foi inserido";
+    onInserted(inserted) {
+      this.modified = inserted;
     }
   }
 };

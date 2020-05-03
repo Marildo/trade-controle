@@ -1,7 +1,13 @@
 <template>
-  <div>
+  <div >
     <v-toolbar>
       <v-toolbar-title>Carteira: {{carteira.nome}}</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <span>
+        <v-icon>fa-university</v-icon>
+        Saldo: {{carteira.saldoCaixa}}
+      </span>
+
       <template v-slot:extension>
         <v-tabs v-model="tab" align-with-title>
           <v-tabs-slider color="yellow"></v-tabs-slider>
@@ -51,7 +57,7 @@
         </v-tab-item>
 
         <v-tab-item>
-          <Lancamentos :carteira='carteira' />
+          <Lancamentos :carteira="carteira" />
         </v-tab-item>
       </v-tabs-items>
     </div>

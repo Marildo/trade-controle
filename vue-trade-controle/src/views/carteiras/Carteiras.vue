@@ -3,13 +3,8 @@
 </template>
 
 <script>
-
 export default {
-  name: "carteiras",
+  name: "carteiras"
+}
 
-};
 </script>
-
-<style>
-
-</style>

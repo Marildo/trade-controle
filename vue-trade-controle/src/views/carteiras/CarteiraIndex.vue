@@ -31,7 +31,7 @@
           </td>
           <td>R$ 100,00</td>
           <td>R$ 100,00</td>
-          <td>R$ {{cdcarteira.saldoCaixa}}</td>
+          <td>R$ {{carteira.saldoCaixa}}</td>
           <td>R$ 100,00</td>
         </tr>
         <tr></tr>
