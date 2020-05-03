@@ -39,8 +39,8 @@ function CarteiraModel() {
 
             const select =
                 `SELECT COALESCE(
-                 SUM(CASE WHEN tipo IN (${tiposSaida}) THEN valor ELSE 0 END) -
-                 SUM(CASE WHEN tipo IN (${tiposEntrada}) THEN valor ELSE 0 END),
+                 SUM(CASE WHEN tipo IN (${tiposEntrada}) THEN valor ELSE 0 END) -
+                 SUM(CASE WHEN tipo IN (${tiposSaida}) THEN valor ELSE 0 END),
                  0) saldo FROM movimentacoes_carteiras
                  WHERE carteira_id = ?`
 

@@ -9,7 +9,13 @@ function saldoCaixa(carteira){
     return carteiraModel.calculateSaldoCaixa(carteira.id)
 }
 
+function saldoAcoes(carteira){
+    return  0.0
+}
+
+
 module.exports = {
     acoes,
-    saldoCaixa
+    saldoCaixa,
+    saldoAcoes
 }
