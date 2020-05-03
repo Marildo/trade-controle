@@ -1,6 +1,5 @@
 <template>
   <div>
-    Modificado:{{modified}}
     <div class="row">
       <v-btn color="teal" class="btn">
         <v-icon>mdi-cart-plus</v-icon>Comprar
@@ -9,10 +8,21 @@
         <v-icon>mdi-cart-off</v-icon>Vender
       </v-btn>
       <NovoLancamento :carteira="carteira" @inserted="onInserted($event)" class="btn" />
+
+      <div class="btn">
+        <v-alert
+          type="success"
+          v-model="inserted"
+          border="top"
+          close-text="Fechar"
+          dark
+          dismissible
+        >{{lastLancamento}}</v-alert>
+      </div>
     </div>
 
     <div class="row my-5">
-      <v-data-table :headers="fields" :items="lancamentos">
+      <v-data-table title="Lançamentos" :headers="fields" :items="lancamentos">
         <template v-slot:item.dataMovimentacao="{ item }">
           <span>{{new Date(parseInt(item.dataMovimentacao)).toLocaleString()}}</span>
         </template>
@@ -44,32 +54,32 @@ export default {
   mounted() {
     this.ctrl = new LancamentoController();
     this.loadTiposLancamentos();
-    this.loadLancamento();
+    this.loadLancamentos();
   },
 
   updated() {
-    this.loadLancamento();
-    this.modified= false
+    this.loadLancamentos();
   },
 
   data() {
     return {
-      modified: false,
       ctrl: {},
       lancamentos: [],
+      lastLancamento: {},
+      inserted: false,
       fields: [
         { text: "Data", value: "dataMovimentacao", sorted: true },
         { text: "Valor", value: "valor" },
         { text: "Descrição", value: "descricao" },
-        { text: "Tipo", value: "tipo" }
+        { text: "Tipo", value: "tipoLancamento.descricao" }
       ]
     };
   },
 
   methods: {
-    loadLancamento() {
+    loadLancamentos() {
       this.ctrl
-        .findByCarteiraId(null)
+        .findByCarteiraId(this.carteira.id)
         .then(resp => {
           this.lancamentos = resp;
           console.log("carregando:", this.lancamentos.length);
@@ -91,15 +101,24 @@ export default {
       }
     },
 
-    onInserted(inserted) {
-      this.modified = inserted;
+    // TODO cria uma lib para formatar moedas
+    onInserted(lancamento) {
+      this.inserted = true;
+      this.lastLancamento =
+        lancamento.descricao +
+        " no valor de" +
+        lancamento.valor.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL"
+        }) +
+        " foi inserido";
     }
   }
 };
 </script>
 
 <style>
-    .btn {
-      margin-right: 10px;
-    }
+.btn {
+  margin-right: 10px;
+}
 </style>

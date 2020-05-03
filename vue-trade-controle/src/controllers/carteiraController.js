@@ -11,8 +11,7 @@ function CarteiraController() {
         query: gql`
           query{
             carteiras {
-              id
-              nome
+              id nome saldoCaixa
             }
           }`
       }).then(resp => {
@@ -26,7 +25,7 @@ function CarteiraController() {
     return vue.prototype.$api.query({
       query: gql` query($id: ID!){
         carteira(id: $id){
-          id nome
+          id nome saldoCaixa
         }
       }`,
       variables:{

@@ -1,21 +1,27 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
 
-// TODO passar paramentro
 function LancamentoController() {
-
-    this.findByCarteiraId = () => {
+    this.findByCarteiraId = (idCarteira) => {
         return new Promise((resolve, reject) => {
             vue.prototype.$api.query({
                 query: gql`
-                query{
-                    movimentacoes{
-                        id dataMovimentacao valor descricao tipo
+                query($idCarteira: Int!){
+                    movimentacoesByIdCarteira(idCarteira: $idCarteira){
+                        id dataMovimentacao valor descricao 
+                        tipoLancamento {key descricao}
                     }
-                }`
+                }`,
+                variables:{
+                    idCarteira: parseInt(idCarteira)
+                }
             })
-                .catch(error => reject(error))
-                .then(resp => resolve(resp.data.movimentacoes))
+                .catch(error =>{
+                    console.log(error.networkError.result.errors)
+                    reject(error)
+
+                })
+                .then(resp => resolve(resp.data.movimentacoesByIdCarteira))
 
         })
     },
@@ -40,7 +46,7 @@ function LancamentoController() {
                             dataMovimentacao: $dataMovimentacao 
                         }
                     ) {
-                        id dataMovimentacao valor descricao tipo
+                        id dataMovimentacao valor descricao
                     }      
             }`,
                     variables: {

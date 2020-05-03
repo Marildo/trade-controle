@@ -69,7 +69,7 @@
 <script>
 import LancamentoController from "@/controllers/lancamentoController";
 import { localDateToYYYMMdd } from "@/lib/dateUtils";
-import { showToastSuccess, showToastError } from "@/lib/messages";
+import { showToastError } from "@/lib/messages";
 
 export default {
   name: "NovoLancamento",
@@ -115,16 +115,15 @@ export default {
       const ctrl = new LancamentoController();
       ctrl
         .save(dados)
-        .then(() => {
+        .then((resp) => {
           this.dialog = false;
-          this.$emit("inserted", true);
+          this.$emit("inserted",resp.data.saveMovimentacao);
           this.$refs.form.resetValidation()
           this.resetMovimentacoes()
-          showToastSuccess();
         })
         .catch(e => {
           console.log(e);
-             console.log(e.networkError.result);
+          console.log(e.networkError.result);
           showToastError(e.networkError.result.errors[0].message);
         });
     },

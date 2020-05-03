@@ -23,7 +23,7 @@
 
             <div class="card">
               <h4>Total em Caixa</h4>
-              <h5>R$ 190,00</h5>
+              <h5>R$ {{carteira.saldoCaixa}}</h5>
             </div>
 
             <div class="card">
