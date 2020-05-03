@@ -2,7 +2,7 @@
   <div>
     <div class="row">
       <v-spacer></v-spacer>
-      <v-btn color="secondary" fab x-small dark @click="loadCarteiras">
+      <v-btn color="secondary" fab x-small dark >
         <v-icon>mdi-reload</v-icon>
       </v-btn>
       <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">
@@ -20,7 +20,7 @@
         <td>Patrimônio total</td>
       </thead>
       <tbody>
-        <tr v-for="carteira in carteiras" :key="carteira.id">
+        <tr v-for="carteira in getCarteiras" :key="carteira.id">
           <td>
             <router-link
               :to="{
@@ -29,9 +29,9 @@
             }"
             >{{carteira.nome}}</router-link>
           </td>
-          <td>R$ 100,00</td>
-          <td>R$ 100,00</td>
-          <td>R$ {{carteira.saldoCaixa}}</td>
+          <td>R$ {{carteira.saldoAcoes | formateReal}}</td>
+          <td>R$ {{carteira.saldoCaixa | formateReal}}</td>
+          <td>R$ 100,33</td>
           <td>R$ 100,00</td>
         </tr>
         <tr></tr>
@@ -77,6 +77,7 @@
 
 <script>
 import CarteiraController from "@/controllers/carteiraController";
+import { mapGetters } from "vuex";
 
 export default {
   name: "CarteiraIndex",
@@ -89,21 +90,15 @@ export default {
     };
   },
 
-  mounted() {
-    this.ctrl = new CarteiraController();
-    this.loadCarteiras();
+  mounted() {},
+
+  computed: {
+    ...mapGetters(["getCarteiras"])
   },
 
   methods: {
-    loadCarteiras() {
-      this.ctrl
-        .findAll()
-        .then(resp => (this.carteiras = resp))
-        .catch(e => console.log(e.networkError.result.errors));
-    },
-
     salvarCarteira() {
-      this.ctrl
+      new CarteiraController()
         .save(this.novaCarteira)
         .then(resp => {
           this.carteiras.push(resp.data.saveCarteira);

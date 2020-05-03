@@ -13,16 +13,17 @@ function LancamentoController() {
                     }
                 }`,
                 variables:{
-                    idCarteira: parseInt(idCarteira)
+                    idCarteira:  parseInt(idCarteira)
                 }
             })
                 .catch(error =>{
                     console.log(error.networkError.result.errors)
                     reject(error)
-
                 })
-                .then(resp => resolve(resp.data.movimentacoesByIdCarteira))
-
+                .then(resp =>{
+                    resolve(resp.data.movimentacoesByIdCarteira)
+                    vue.prototype.$api.resetStore()
+                })
         })
     },
 
@@ -47,6 +48,7 @@ function LancamentoController() {
                         }
                     ) {
                         id dataMovimentacao valor descricao
+                        tipoLancamento {key descricao}
                     }      
             }`,
                     variables: {
@@ -56,7 +58,7 @@ function LancamentoController() {
                     .catch(error => reject(error))
                     .then(resp => {
                         resolve(resp)
-                        vue.prototype.$api.resetStore()
+                       // vue.prototype.$api.resetStore()
                     })
 
             })

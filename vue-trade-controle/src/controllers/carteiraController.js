@@ -1,38 +1,37 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
+import store from './../store/';
 
 function CarteiraController() {
 
-  var carteiras
-
-  this.findAll = () => {
-    return new Promise((resolve, reject) => {
-      vue.prototype.$api.query({
-        query: gql`
+  this.loadCarteiras = () => {
+    vue.prototype.$api.query({
+      query: gql`
           query{
             carteiras {
-              id nome saldoCaixa
+              id nome saldoCaixa saldoAcoes
             }
           }`
-      }).then(resp => {
-        carteiras = resp.data.carteiras
-        resolve(carteiras)
-      }).catch(error => reject(error))
     })
+      .then(resp => store.commit('setCarteiras', resp.data.carteiras))
+      .catch(error => {
+        console.log(error)
+        console.log(error.networkError.result.errors)
+      })
   },
 
-  this.findById = (id) => {
-    return vue.prototype.$api.query({
-      query: gql` query($id: ID!){
+    this.findById = (id) => {
+      return vue.prototype.$api.query({
+        query: gql` query($id: ID!){
         carteira(id: $id){
-          id nome saldoCaixa
+          id nome saldoCaixa saldoAcoes
         }
       }`,
-      variables:{
-        id
-      }
-    })
-  }
+        variables: {
+          id
+        }
+      })
+    }
 
   this.save = nome => {
     return vue.prototype.$api.mutate({

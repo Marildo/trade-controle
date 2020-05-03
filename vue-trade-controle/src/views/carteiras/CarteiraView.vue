@@ -1,11 +1,11 @@
 <template>
-  <div >
+  <div>
     <v-toolbar>
       <v-toolbar-title>Carteira: {{carteira.nome}}</v-toolbar-title>
       <v-spacer></v-spacer>
-      <span>
-        <v-icon>fa-university</v-icon>
-        Saldo: {{carteira.saldoCaixa}}
+      <span class="saldo">
+        <v-icon large color="amber lighten-2">fa-university</v-icon>
+        Saldo: {{carteira.saldoCaixa | formateReal}}
       </span>
 
       <template v-slot:extension>
@@ -24,12 +24,12 @@
           <div class="row">
             <div class="card">
               <h4>Total Ações</h4>
-              <h5>R$ 190,00</h5>
+              <h5>{{carteira.saldoAcoes| formateReal}}</h5>
             </div>
 
             <div class="card">
               <h4>Total em Caixa</h4>
-              <h5>R$ {{carteira.saldoCaixa}}</h5>
+              <h5>{{carteira.saldoCaixa | formateReal}}</h5>
             </div>
 
             <div class="card">
@@ -57,7 +57,7 @@
         </v-tab-item>
 
         <v-tab-item>
-          <Lancamentos :carteira="carteira" />
+          <Lancamentos :carteira="carteira" @modified="onModified($event)" />
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -65,9 +65,12 @@
 </template>
 
 <script>
-import CarteiraController from "@/controllers/carteiraController";
 import AcoesCarteira from "./AcoesCarteira";
 import Lancamentos from "./lancamentos/Lancamentos";
+
+import CarteiraController  from '@/controllers/carteiraController'
+
+import { mapGetters } from "vuex";
 
 export default {
   props: ["id"],
@@ -77,24 +80,32 @@ export default {
     Lancamentos
   },
 
+  computed: {
+    ...mapGetters({
+      carteira: "getCarteira"
+    })
+  },
+
   data() {
     return {
-      carteira: {},
       tab: null
     };
   },
 
+  watch: {},
+
   mounted() {
-    this.ctrl = new CarteiraController();
-    this.loadCarteira();
+    this.$store.dispatch("setCarteira", this.id);
   },
 
   methods: {
-    loadCarteira() {
-      this.ctrl
-        .findById(this.id)
-        .then(resp => (this.carteira = resp.data.carteira))
-        .catch(error => console.log(error.networkError.result.errors));
+    onModified() {
+      new CarteiraController().findById(this.id)
+      .then(resp =>{ 
+        this.$store.dispatch("updateCarteira", resp.data.carteira)
+        console.log('recaregando a carteira:', resp.data.carteira)
+      })
+      .catch(error => console.log(error))
     }
   }
 };
@@ -112,6 +123,11 @@ export default {
 
 .card h5 {
   color: yellowgreen;
+}
+
+.saldo {
+  color: rgb(255, 254, 196);
+  display: inline;
 }
 
 .conteudo {

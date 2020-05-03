@@ -19,8 +19,9 @@
 <script>
 import NovoLancamento from "./NovoLancamento";
 import LancamentoController from "@/controllers/lancamentoController";
+
 import { findAllTipos } from "@/controllers/tiposLancamentosController";
-import {formateReal} from '@/lib/numberUtils'
+import { formateReal } from "@/lib/numberUtils";
 
 export default {
   name: "Lancamentos",
@@ -40,7 +41,6 @@ export default {
       ctrl: {},
       lancamentos: [],
       lastLancamento: {},
-      modified: false,
       fields: [
         { text: "Data", value: "dataMovimentacao", sorted: true },
         { text: "Valor", value: "valor" },
@@ -48,12 +48,6 @@ export default {
         { text: "Tipo", value: "tipoLancamento.descricao" }
       ]
     };
-  },
-
-  watch: {
-    modified() {
-      this.loadLancamentos();
-    }
   },
 
   methods: {
@@ -65,16 +59,15 @@ export default {
     },
 
     formateLancamentos(resp) {
-      console.log("carregando:", resp.length);
-
-     const formater = (item) => {
-       return {
-         ...item,
-         valor: formateReal(item.valor),
-         dataMovimentacao: new Date(parseInt(item.dataMovimentacao)).toLocaleString()
-       }
-     }
-
+      const formater = item => {
+        return {
+          ...item,
+          valor: formateReal(item.valor),
+          dataMovimentacao: new Date(
+            parseInt(item.dataMovimentacao)
+          ).toLocaleString()
+        };
+      };
       this.lancamentos = resp.map(formater);
     },
 
@@ -93,7 +86,9 @@ export default {
     },
 
     onInserted(inserted) {
-      this.modified = inserted;
+      this.$emit("modified", true);
+      this.lancamentos.push(inserted);
+      this.formateLancamentos(this.lancamentos);
     }
   }
 };

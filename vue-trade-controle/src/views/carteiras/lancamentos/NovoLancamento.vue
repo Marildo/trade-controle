@@ -116,9 +116,9 @@ export default {
       const ctrl = new LancamentoController();
       ctrl
         .save(dados)
-        .then(() => {
+        .then((resp) => {
           this.dialog = false;
-          this.$emit("inserted",true);
+          this.$emit("inserted",resp.data.saveMovimentacao);
           this.$refs.form.resetValidation()
           this.resetMovimentacoes()
           showToastSuccess(dados.descricao+ ' no valor de '+formateReal(dados.valor) + ' foi inserido');

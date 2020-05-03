@@ -15,6 +15,7 @@ import Menu from "@/components/template/Menu.vue";
 import Content from "@/components/template/Content.vue";
 import Footer from "@/components/template/Footer.vue";
 
+import CarteiraController from "@/controllers/carteiraController";
 
 export default {
   name: "App",
@@ -23,15 +24,23 @@ export default {
     Header,
     Menu,
     Content,
-    Footer,
+    Footer
   },
 
   data: () => ({
-    drawer: null
+
   }),
 
   created() {
-   this.$vuetify.theme.dark = true;
+    this.$vuetify.theme.dark = true;
+  },
+
+  mounted() {
+    new CarteiraController().loadCarteiras()
+  },
+
+  methods: {
+
   }
 };
 </script>
