@@ -8,7 +8,8 @@ export default new Vuex.Store({
     isMenuVisible: true,
     tiposLancamentos: [],
     carteiras: [],
-    carteira:{}
+    carteira: {},
+    patrimonio: 0
   },
 
   getters: {
@@ -16,6 +17,7 @@ export default new Vuex.Store({
     tiposLancamentos: (state) => state.tiposLancamentos,
     getCarteiras: (state) => state.carteiras,
     getCarteira: (state) => state.carteira,
+    patrimonio: (state) => state.patrimonio
   },
 
   mutations: {
@@ -28,22 +30,29 @@ export default new Vuex.Store({
     },
 
     setCarteiras: (state, payload) => state.carteiras = payload,
-    setCarteira: (state, payload) => state.carteira = payload
+    setCarteira: (state, payload) => state.carteira = payload,
+    setPatrimonio: (state, payload) => state.patrimonio = payload
   },
 
   actions: {
-      setCarteira(context, payload) {
-         const carteira = context.state.carteiras.filter( i => i.id == payload)[0] 
-         context.commit('setCarteira',carteira)       
-      },
+    setCarteira(context, payload) {
+      const carteira = context.state.carteiras.filter(i => i.id == payload)[0]
+      context.commit('setCarteira', carteira)
+    },
 
-      updateCarteira(context ,payload){
-        context.commit('setCarteira',payload) 
-        const carteiras =  context.state.carteiras
-        const index = carteiras.findIndex( i => i.id == payload.id)
-        carteiras.splice(index,1,payload)
-        context.commit('setCarteiras',carteiras) 
-      }
+    setCarteiras(context, payload) {
+      context.commit('setCarteiras', payload)
+      const total = payload.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
+      context.commit('setPatrimonio', total)
+    },
+
+    updateCarteira(context, payload) {
+      context.commit('setCarteira', payload)
+      const carteiras = context.state.carteiras
+      const index = carteiras.findIndex(i => i.id == payload.id)
+      carteiras.splice(index, 1, payload)
+      context.dispatch('setCarteiras', carteiras)
+    }
   },
 
   modules: {

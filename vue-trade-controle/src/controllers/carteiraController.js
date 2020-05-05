@@ -13,7 +13,7 @@ function CarteiraController() {
             }
           }`
     })
-      .then(resp => store.commit('setCarteiras', resp.data.carteiras))
+      .then(resp => store.dispatch('setCarteiras', resp.data.carteiras))
       .catch(error => {
         console.log(error)
         console.log(error.networkError.result.errors)

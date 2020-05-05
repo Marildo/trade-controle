@@ -1,13 +1,20 @@
 <template>
-  <v-app-bar app clipped-left >
+  <v-app-bar app clipped-left>
     <v-app-bar-nav-icon @click="toggleMenu" />
     <v-toolbar-title>Trade Controle</v-toolbar-title>
-     <Toast />
+    <v-spacer></v-spacer>
+
+    <span class="saldo">
+      <v-icon large color="amber lighten-2">fa-university</v-icon>
+      Patrimônio: {{patrimonio | formateReal}}
+    </span>
+
+    <Toast />
   </v-app-bar>
 </template>
 
 <script>
-import Toast from 'primevue/toast';
+import Toast from "primevue/toast";
 
 export default {
   name: "Header",
@@ -16,12 +23,18 @@ export default {
     Toast
   },
 
+  computed: {
+    patrimonio(){
+        return this.$store.getters.patrimonio
+    }
+  },
+
   methods: {
-    toggleMenu() {      
-      this.$store.commit("toggleMenu")
+    toggleMenu() {
+      this.$store.commit("toggleMenu");
     }
   }
-}
+};
 </script>
 
 <style>

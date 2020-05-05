@@ -1,17 +1,21 @@
 <template>
   <div>
-    <div class="row">
-      <v-spacer></v-spacer>
-      <v-btn color="secondary" fab x-small dark >
-        <v-icon>mdi-reload</v-icon>
-      </v-btn>
-      <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">
-        <v-icon>mdi-plus</v-icon>
-      </v-btn>
-    </div>
+    <v-card flat>
+      <v-toolbar dense>
+        <v-icon>mdi-wallet</v-icon>
+
+        <v-toolbar-title class="mx-2">Carteiras</v-toolbar-title>
+
+        <v-spacer></v-spacer>
+
+        <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">          
+           <v-icon>mdi-plus</v-icon>
+        </v-btn>
+      </v-toolbar>
+    </v-card>
 
     <table>
-      <caption>Carteiras</caption>
+      <caption></caption>
       <thead>
         <td>Carteira</td>
         <td>Total Ações</td>
