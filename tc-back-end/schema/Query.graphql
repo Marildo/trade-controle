@@ -11,4 +11,6 @@ type Query{
     movimentacoesByIdCarteira(idCarteira:Int!):[Movimentacao]
 
     tiposLancamentos:[TipoLancamento]
+
+    tradeAcoes:[TradeAcoes]!
 }

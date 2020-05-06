@@ -1,0 +1,8 @@
+# import Acao from 'Acao.graphql'
+# import Carteira from 'Carteira.graphql'
+# import Movimentacao from 'Movimentacao.graphql'
+# import Setor from 'Setor.graphql'
+# import Subsetor from 'Subsetor.graphql'
+# import Segmento from 'Segmento.graphql'
+# import TipoLancamento from 'TipoLancamento.graphql'
+# import TradeAcoes from 'TradeAcoes.graphql'

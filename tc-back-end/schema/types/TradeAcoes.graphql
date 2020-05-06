@@ -1,0 +1,9 @@
+type TradeAcoes {
+      id:ID!
+      dataTrade: String!
+      compra: Boolean!
+      quantidade: Int!
+      valor: Float!
+      corretagem: Float
+      impostos: Float
+}
