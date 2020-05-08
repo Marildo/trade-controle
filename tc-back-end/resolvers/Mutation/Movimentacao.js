@@ -6,7 +6,7 @@ const model = new MovimentacaoModel
 // TODO realizar validacoes
 
 module.exports = {
-    async saveMovimentacao(_, { dados }) {
+     saveMovimentacao(_, { dados }) {
         try {
             let data_movimentacao =  dados.dataMovimentacao 
             if (dados.dataMovimentacao) {
@@ -26,7 +26,7 @@ module.exports = {
             delete movimentacao.idCarteira
             delete movimentacao.dataMovimentacao
 
-            return await model.save(movimentacao)
+            return  model.save(movimentacao)
         } catch (error) {
             console.log(error)
             return new Error("Error: " + error.code)

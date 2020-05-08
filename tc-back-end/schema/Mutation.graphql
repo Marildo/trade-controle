@@ -4,4 +4,6 @@ type Mutation {
     saveCarteira(nome:String!):Carteira
 
     saveMovimentacao(dados: MovimentacaoInput!):Movimentacao
+
+    saveTradeAcao(dados: TradeAcoesInput!):TradeAcoes
 }

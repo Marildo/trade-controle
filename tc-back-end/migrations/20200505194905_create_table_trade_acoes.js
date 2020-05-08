@@ -10,6 +10,7 @@ exports.up = function(knex) {
      table.decimal('valor', 10, 2).defaultTo(0).notNullable()
      table.decimal('corretagem', 10, 2).defaultTo(0).notNullable()
      table.decimal('impostos', 10, 2).defaultTo(0).notNullable()
+     table.integer('movimentacao_id').unsigned().notNullable()
      table.integer('carteira_id').unsigned().notNullable()
      table.foreign('carteira_id').references('id').inTable('carteiras')
      table.integer('acao_id').unsigned().notNullable()

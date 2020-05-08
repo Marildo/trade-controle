@@ -6,4 +6,21 @@ type TradeAcoes {
       valor: Float!
       corretagem: Float
       impostos: Float
+      acao:Acao
+}
+
+input AcaoInput {
+      id: ID!
+      codigo: String!      
+}
+
+input TradeAcoesInput {
+      dataTrade: String!
+      compra: Boolean!
+      quantidade: Int!
+      valor: Float!
+      corretagem: Float
+      impostos: Float
+      idCarteira:ID!
+      acao:AcaoInput!
 }

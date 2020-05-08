@@ -1,9 +1,10 @@
+const {TradeAcaoModel} = require('../../model/')
+
+const model = new TradeAcaoModel
+
 
 function tradeAcoes(_) {
-    return [{
-        id: 12,
-        dataTrade: 'ddffdd'
-    }]
+  return model.findAll()
 }
 
 module.exports = {

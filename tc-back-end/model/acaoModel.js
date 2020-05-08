@@ -1,4 +1,5 @@
 const db = require('../config/db')
+const {findById} = require('./baseModel')
 
 const table = () => db('acoes')
 
@@ -14,6 +15,8 @@ const selectAcao = () => {
 }
 
 function AcaoModel() {
+
+    this.findById = (id) => findById(table,id)
 
     this.findByCodigo = (codigo) => {
         return new Promise((resolve, reject) => {
