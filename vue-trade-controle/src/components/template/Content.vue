@@ -3,7 +3,9 @@
     <v-container fluid fill-height>
       <v-layout >
         <v-flex shrink>
-          <router-view/>
+          <v-col class="col-12">
+            <router-view/>
+          </v-col>          
         </v-flex>
       </v-layout>
     </v-container>

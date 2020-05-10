@@ -1,12 +1,10 @@
 <template>
   <div>
     <div class="row">
-      <v-btn color="teal" class="btn">
-        <v-icon>mdi-cart-plus</v-icon>Comprar
-      </v-btn>
-      <v-btn color="deep-orange darken-4" class="btn">
-        <v-icon>mdi-cart-off</v-icon>Vender
-      </v-btn>
+      <Trade :isComprar="true" @inserted="onInserted($event)" class="btn" />
+
+      <Trade :isComprar="false" @inserted="onInserted($event)" class="btn" />
+
       <NovoLancamento :carteira="carteira" @inserted="onInserted($event)" class="btn" />
     </div>
 
@@ -18,6 +16,7 @@
 
 <script>
 import NovoLancamento from "./NovoLancamento";
+import Trade from "./Trade";
 import LancamentoController from "@/controllers/lancamentoController";
 
 import { findAllTipos } from "@/controllers/tiposLancamentosController";
@@ -27,7 +26,8 @@ export default {
   name: "Lancamentos",
   props: ["carteira"],
   components: {
-    NovoLancamento
+    NovoLancamento,
+    Trade
   },
 
   mounted() {
@@ -95,7 +95,5 @@ export default {
 </script>
 
 <style>
-.btn {
-  margin-right: 10px;
-}
+
 </style>

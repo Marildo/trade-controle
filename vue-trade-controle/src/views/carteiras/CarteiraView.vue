@@ -72,6 +72,8 @@ import CarteiraController  from '@/controllers/carteiraController'
 
 import { mapGetters } from "vuex";
 
+// TODO Quando fz um refresh na pagina carteira fica undefined
+
 export default {
   props: ["id"],
 

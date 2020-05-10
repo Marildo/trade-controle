@@ -48,6 +48,7 @@
 
 <script>
 import AcaoController from '../controllers/acaoController'
+import { mapGetters } from "vuex";
 
 export default {
   name: "Acoes",
@@ -55,7 +56,6 @@ export default {
   data() {
     return {
       dialog: false,
-      acoes: [],
       fields: [],
       search: "",
       novaAcao: "",
@@ -64,22 +64,18 @@ export default {
 
   mounted() {
     this.ctrl = new AcaoController();
-    this.loadAcoes();
     this.fields = this.ctrl.fields()
   },
 
-  computed: {},
+  computed: {
+    ...mapGetters({
+      acoes: "acoes"
+    })
+  },
 
   methods: {
     clearSearch() {
       this.search = "";
-    },
-
-    loadAcoes() {
-      this.ctrl
-        .findAll()
-        .then(resp => (this.acoes = resp.data.acoes))
-        .catch(err => console.log(err));
     },
 
     salvaAcao() {

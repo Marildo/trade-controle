@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-col class="col-12">
     <v-card flat>
       <v-toolbar dense>
         <v-icon>mdi-wallet</v-icon>
@@ -8,8 +8,12 @@
 
         <v-spacer></v-spacer>
 
-        <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">          
-           <v-icon>mdi-plus</v-icon>
+        <Trade :isComprar=true  @inserted="onInserted($event)" class="btn"  />
+
+        <Trade :isComprar=false  @inserted="onInserted($event)" class="btn"  />
+        
+        <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">
+          <v-icon>mdi-plus</v-icon>
         </v-btn>
       </v-toolbar>
     </v-card>
@@ -24,7 +28,7 @@
         <td>Patrimônio total</td>
       </thead>
       <tbody>
-        <tr v-for="carteira in getCarteiras" :key="carteira.id">
+        <tr v-for="carteira in carteiras" :key="carteira.id">
           <td>
             <router-link
               :to="{
@@ -76,19 +80,24 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-  </div>
+  </v-col>
 </template>
 
 <script>
+import Trade from "./lancamentos/Trade";
+
 import CarteiraController from "@/controllers/carteiraController";
 import { mapGetters } from "vuex";
 
 export default {
   name: "CarteiraIndex",
 
+  components: {
+    Trade
+  },
+
   data() {
     return {
-      carteiras: [],
       dialog: false,
       novaCarteira: ""
     };
@@ -97,10 +106,14 @@ export default {
   mounted() {},
 
   computed: {
-    ...mapGetters(["getCarteiras"])
+    ...mapGetters(["carteiras"])
   },
 
   methods: {
+    carteiraSelected() {
+      return  this.carteiras[0]
+    },
+
     salvarCarteira() {
       new CarteiraController()
         .save(this.novaCarteira)

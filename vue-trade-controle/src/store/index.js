@@ -7,6 +7,7 @@ export default new Vuex.Store({
   state: {
     isMenuVisible: true,
     tiposLancamentos: [],
+    acoes:[],
     carteiras: [],
     carteira: {},
     patrimonio: 0
@@ -15,9 +16,10 @@ export default new Vuex.Store({
   getters: {
     isMenuVisible: (state) => state.isMenuVisible,
     tiposLancamentos: (state) => state.tiposLancamentos,
-    getCarteiras: (state) => state.carteiras,
+    carteiras: (state) => state.carteiras,
     getCarteira: (state) => state.carteira,
-    patrimonio: (state) => state.patrimonio
+    patrimonio: (state) => state.patrimonio,
+    acoes:(state) => state.acoes
   },
 
   mutations: {
@@ -31,7 +33,8 @@ export default new Vuex.Store({
 
     setCarteiras: (state, payload) => state.carteiras = payload,
     setCarteira: (state, payload) => state.carteira = payload,
-    setPatrimonio: (state, payload) => state.patrimonio = payload
+    setPatrimonio: (state, payload) => state.patrimonio = payload,
+    setAcoes:(state,payload) => state.acoes =payload
   },
 
   actions: {
