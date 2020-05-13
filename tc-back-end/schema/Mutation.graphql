@@ -5,5 +5,5 @@ type Mutation {
 
     saveMovimentacao(dados: MovimentacaoInput!):Movimentacao
 
-    saveTradeAcao(dados: TradeAcoesInput!):TradeAcoes
+    saveTradeAcao(dados: TradeAcoesInput!):Movimentacao
 }

@@ -41,7 +41,8 @@ async function saveTradeAcao(_, { dados }) {
     delete trade.acao
     delete trade.idCarteira
 
-    return new TradeAcaoModel().save(trade)
+    new TradeAcaoModel().save(trade)
+    return mov 
 }
 
 module.exports = {

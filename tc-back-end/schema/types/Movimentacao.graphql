@@ -4,6 +4,7 @@ type Movimentacao {
     valor: Float!
     descricao: String
     tipoLancamento: TipoLancamento!
+    idCarteira:Int!
 }
 
 input MovimentacaoInput {
