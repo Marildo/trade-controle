@@ -1,9 +1,9 @@
 <template>
   <div>
     <div class="row">
-      <Trade :isComprar="true" @inserted="onInserted($event)" class="btn" />
+      <Trade :carteira="carteira" :isComprar="true" @inserted="onInserted($event)" class="btn" />
 
-      <Trade :isComprar="false" @inserted="onInserted($event)" class="btn" />
+      <Trade :carteira="carteira" :isComprar="false" @inserted="onInserted($event)" class="btn" />
 
       <NovoLancamento :carteira="carteira" @inserted="onInserted($event)" class="btn" />
     </div>
@@ -20,7 +20,9 @@ import Trade from "./Trade";
 import LancamentoController from "@/controllers/lancamentoController";
 
 import { findAllTipos } from "@/controllers/tiposLancamentosController";
-import { formateReal } from "@/lib/numberUtils";
+
+
+import { mapGetters } from "vuex";
 
 export default {
   name: "Lancamentos",
@@ -39,7 +41,6 @@ export default {
   data() {
     return {
       ctrl: {},
-      lancamentos: [],
       lastLancamento: {},
       fields: [
         { text: "Data", value: "dataMovimentacao", sorted: true },
@@ -50,25 +51,17 @@ export default {
     };
   },
 
-  methods: {
+
+  computed:{
+    ...mapGetters({
+      lancamentos: "lancamentos"
+    })
+  },
+
+  methods: {    
     loadLancamentos() {
       this.ctrl
-        .findByCarteiraId(this.carteira.id)
-        .then(resp => this.formateLancamentos(resp))
-        .catch(error => console.log(error));
-    },
-
-    formateLancamentos(resp) {
-      const formater = item => {
-        return {
-          ...item,
-          valor: formateReal(item.valor),
-          dataMovimentacao: new Date(
-            parseInt(item.dataMovimentacao)
-          ).toLocaleString()
-        };
-      };
-      this.lancamentos = resp.map(formater);
+        .loadLancamentos(this.carteira.id)
     },
 
     loadTiposLancamentos() {
@@ -87,8 +80,7 @@ export default {
 
     onInserted(inserted) {
       this.$emit("modified", true);
-      this.lancamentos.push(inserted);
-      this.formateLancamentos(this.lancamentos);
+      this.$store.dispatch("addLancamento",inserted)
     }
   }
 };

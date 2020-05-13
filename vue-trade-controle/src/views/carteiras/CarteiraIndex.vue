@@ -8,10 +8,10 @@
 
         <v-spacer></v-spacer>
 
-        <Trade :isComprar=true  @inserted="onInserted($event)" class="btn"  />
+        <Trade :isComprar="true" @inserted="onInserted($event)" class="btn" />
 
-        <Trade :isComprar=false  @inserted="onInserted($event)" class="btn"  />
-        
+        <Trade :isComprar="false" @inserted="onInserted($event)" class="btn" />
+
         <v-btn color="secondary" fab x-small dark @click.stop="dialog = true">
           <v-icon>mdi-plus</v-icon>
         </v-btn>
@@ -111,7 +111,7 @@ export default {
 
   methods: {
     carteiraSelected() {
-      return  this.carteiras[0]
+      return this.carteiras[0];
     },
 
     salvarCarteira() {
@@ -123,6 +123,11 @@ export default {
           this.dialog = false;
         })
         .catch(e => console.log(e.networkError.result.errors));
+    },
+
+    onInserted(inserted) {           
+      this.$store.dispatch("addLancamento", inserted);
+      new CarteiraController().loadCarteira(inserted.idCarteira)
     }
   }
 };

@@ -1,20 +1,16 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
 
-const saveTrade = (dadosForm) => {
-
-    console.log(dadosForm)
-
+function saveTrade(dadosForm) {
+    
     const trade = {
-        ...dadosForm,       
+        ...dadosForm,
         dataTrade:
-      "" +
-      new Date(
-        dadosForm.data + " " + dadosForm.hora
-      ).getTime()
-  }
-   
-  console.log('Trade',trade)
+            "" +
+            new Date(
+                dadosForm.data + " " + dadosForm.hora
+            ).getTime()
+    }
 
     return vue.prototype.$api.mutate({
         mutation: gql`
@@ -39,7 +35,8 @@ const saveTrade = (dadosForm) => {
                     acao: $acao
                 }
             ){
-                id
+                id dataMovimentacao valor descricao idCarteira
+                        tipoLancamento {key descricao}
              }
               } `,
         variables: {
@@ -47,6 +44,7 @@ const saveTrade = (dadosForm) => {
         }
     })
 }
+
 
 export {
     saveTrade

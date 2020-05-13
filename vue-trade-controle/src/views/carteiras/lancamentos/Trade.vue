@@ -1,17 +1,20 @@
 <template>
   <div>
-    <v-btn class="btn" @click.stop="dialog = true" width="120"
+    <v-btn
+      class="btn"
+      @click.stop="showForm"
+      width="120"
       :color="isComprar ? 'teal' : 'deep-orange darken-4'"
-       >
-       <v-icon>{{icon()}}</v-icon>
+    >
+      <v-icon>{{icon()}}</v-icon>
       {{isComprar ? "Comprar" : "Vender"}}
     </v-btn>
 
     <v-dialog v-model="dialog" persistent max-width="550px">
       <v-card style="border: 1px solid snow;">
-        <v-card-title class="headline col-12" >
+        <v-card-title class="headline col-12">
           <div :class="styleTitle">
-              <v-icon :class="styleTitle">{{icon()}}</v-icon>
+            <v-icon :class="styleTitle">{{icon()}}</v-icon>
             {{isComprar ? "Compra" : "Venda"}} de Ações
             <hr />
           </div>
@@ -123,7 +126,7 @@ export default {
       dialog: false,
       form: {},
 
-      icon: () => this.isComprar ? 'mdi-cart-plus' : 'mdi-cart-off',
+      icon: () => (this.isComprar ? "mdi-cart-plus" : "mdi-cart-off"),
 
       // TODO colocar validacoes em um MIXIN
       valorRule: v =>
@@ -139,7 +142,7 @@ export default {
   },
 
   mounted() {
-    this.resetFields();
+   
   },
 
   computed: {
@@ -159,13 +162,12 @@ export default {
       return this.$store.getters.carteiras;
     },
 
-    styleTitle(){
-      return { 
+    styleTitle() {
+      return {
         titleCompra: this.isComprar,
         titleVenda: !this.isComprar
-      }
-    },
-
+      };
+    }
   },
 
   methods: {
@@ -173,10 +175,11 @@ export default {
       if (!this.$refs.form.validate()) return;
 
       saveTrade(this.form)
-        .then(() => {
+        .then(resp => {
           this.dialog = false;
           this.$refs.form.resetValidation();
           this.resetFields();
+          this.$emit("inserted", resp.data.saveTradeAcao);
           showToastSuccess();
         })
         .catch(e => {
@@ -196,6 +199,14 @@ export default {
       };
 
       if (this.carteira) this.form.idCarteira = this.carteira.id;
+
+ console.log('carteira',this.idCarteira)
+      console.log("Form:,", this.form);
+    },
+
+    showForm() {
+      this.dialog = true;
+      this.resetFields();
     }
   }
 };
@@ -205,11 +216,11 @@ export default {
 .btn {
   margin-right: 5px;
 }
-  .titleCompra{
-    color: teal;
-  }
+.titleCompra {
+  color: teal;
+}
 
-  .titleVenda{
-    color: #BF3600;
-  }
+.titleVenda {
+  color: #bf3600;
+}
 </style>

@@ -102,12 +102,7 @@ export default {
 
   methods: {
     onModified() {
-      new CarteiraController().findById(this.id)
-      .then(resp =>{ 
-        this.$store.dispatch("updateCarteira", resp.data.carteira)
-        console.log('recaregando a carteira:', resp.data.carteira)
-      })
-      .catch(error => console.log(error))
+      new CarteiraController().loadCarteira(this.id)
     }
   }
 };
