@@ -17,8 +17,7 @@ function LancamentoController() {
             }
         })
         .then(resp => {          
-            store.dispatch('setLancamentos', resp.data.movimentacoesByIdCarteira)
-            vue.prototype.$api.resetStore()
+            store.dispatch('setLancamentos', resp.data.movimentacoesByIdCarteira)           
         })
         .catch(error => {
             console.log(error)

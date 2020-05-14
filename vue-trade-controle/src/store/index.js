@@ -4,7 +4,6 @@ import { formateReal } from "@/lib/numberUtils"
 
 Vue.use(Vuex)
 
-
 const formaterLancamento = (item) => {
   return {
     ...item,
@@ -46,24 +45,33 @@ export default new Vuex.Store({
       state.tiposLancamentos = payload
     },
 
-    setCarteiras: (state, payload) => state.carteiras = payload,
+    carteiras: (state, payload) =>  state.carteiras = payload ,
+
     setCarteira: (state, payload) => state.carteira = payload,
-    setPatrimonio: (state, payload) => state.patrimonio = payload,
+    patrimonio: (state, payload) => state.patrimonio = payload,
     setAcoes: (state, payload) => state.acoes = payload,
-    setLancamentos: (state, payload) => state.lancamentos = payload
+    setLancamentos: (state, payload) => state.lancamentos = payload,
+    dashboard:(state, payload) => state.dashboard = payload 
   },
 
   actions: {
+    dashboard(context, payload) {
+        context.commit('dashboard', payload)
+    },
+
+
     setCarteira(context, payload) {
       const carteira = context.state.carteiras.filter(i => i.id == payload)[0]
       context.commit('setCarteira', carteira)
     },
 
+    /*
     setCarteiras(context, payload) {
       context.commit('setCarteiras', payload)
       const total = payload.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
       context.commit('setPatrimonio', total)
     },
+*/
 
     addLancamento(context, payload) {
       context.state.lancamentos.push(payload)

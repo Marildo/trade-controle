@@ -1,13 +1,12 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
-import store from './../store/';
-
+ 
 // TODO deixar gql em arquivos separados
 // TODO usar fragmentos
 function AcaoController() {
 
-  this.loadAcoes =  () => {
-    vue.prototype.$api.query({
+  this.loadAcoes = () => {
+    return vue.prototype.$api.query({
       query: gql`
            query{
               acoes {
@@ -27,11 +26,6 @@ function AcaoController() {
             }
           `
     })
-    .then(resp => store.commit('setAcoes', resp.data.acoes))
-      .catch(error => {
-        console.log(error)
-        console.log(error.networkError.result.errors)
-      })
   },
 
     this.save = function (_codigo) {

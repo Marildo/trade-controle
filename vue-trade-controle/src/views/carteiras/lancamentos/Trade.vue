@@ -199,9 +199,6 @@ export default {
       };
 
       if (this.carteira) this.form.idCarteira = this.carteira.id;
-
- console.log('carteira',this.idCarteira)
-      console.log("Form:,", this.form);
     },
 
     showForm() {

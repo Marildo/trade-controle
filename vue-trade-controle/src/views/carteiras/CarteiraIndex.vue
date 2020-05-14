@@ -127,7 +127,8 @@ export default {
 
     onInserted(inserted) {           
       this.$store.dispatch("addLancamento", inserted);
-      new CarteiraController().loadCarteira(inserted.idCarteira)
+       new CarteiraController().loadCarteira(inserted.idCarteira)
+     
     }
   }
 };
