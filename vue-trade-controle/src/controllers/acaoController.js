@@ -1,11 +1,16 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
 
+import store from '@/store';
+import { showToastSuccess, catchError } from '@/lib/messages'
+
+
+
 // TODO deixar gql em arquivos separados
 // TODO usar fragmentos
 
-const ctrlLoadAcoes = () => {
-  return vue.prototype.$api.query({
+const loadAcoes = () => {
+  vue.prototype.$api.query({
     query: gql`
            query{
               acoes {
@@ -25,9 +30,12 @@ const ctrlLoadAcoes = () => {
             }
           `
   })
+    .then(resp => resp.data.acoes)
+    .then(acoes => store.commit('setAcoes', acoes))
+    .catch(error => catchError(error))
 }
 
-const ctrlSaveAcao = (codigo) => {
+const saveAcao = (codigo) => {
   return new Promise((resolve, reject) => {
     vue.prototype.$api.mutate({
       mutation: gql`
@@ -52,13 +60,22 @@ const ctrlSaveAcao = (codigo) => {
       }
     })
       .then(resp => resolve(resp.data.newAcao))
-      .catch(error => reject(error))
+      .then(acao => {
+        showToastSuccess(acao.codigo + ' adicionada com sucesso!');
+        store.dispatch('addAcao', acao)
+        resolve(acao)
+      })
+      .catch(error => {
+        catchError(error)
+        reject(false)
+      })
   })
 }
 
-const ctrlFindAcaoByCodigo = (codigo) => {
-  return vue.prototype.$api.query({
-    query: gql`
+const findAcaoByCodigo = (codigo) => {
+  return new Promise((resolve, reject) => {
+    vue.prototype.$api.query({
+      query: gql`
           query($codigo: String!) {
             acao(codigo: $codigo) {
               codigo
@@ -75,14 +92,16 @@ const ctrlFindAcaoByCodigo = (codigo) => {
             }
           }
         `,
-    variables: {
-      codigo
-    }
-  });
+      variables: {
+        codigo
+      }
+    }).then(resp => resolve(resp.data.acao))
+      .catchr(error => reject(error))
+  })
 }
 
 export {
-  ctrlLoadAcoes,
-  ctrlFindAcaoByCodigo,
-  ctrlSaveAcao
+  loadAcoes,
+  findAcaoByCodigo,
+  saveAcao
 }

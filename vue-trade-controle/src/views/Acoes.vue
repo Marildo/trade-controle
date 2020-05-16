@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { saveAcao } from "../controllers/mainController";
+import { saveAcao } from "@/controllers/acaoController";
 import { mapGetters } from "vuex";
 
 export default {

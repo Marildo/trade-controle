@@ -28,9 +28,16 @@ function showToastError(detail,summary,life){
       });
 }
 
+// TODO destrinchar a menssagem function externa
+function catchError(error) {
+    showToastError(error); // replace em Error: "GraphQL error:
+    console.log(error)
+    console.log(error.networkError.result.errors[0].message)
+}
 
 export {
     showToast,
     showToastSuccess,
-    showToastError
+    showToastError,
+    catchError
 }

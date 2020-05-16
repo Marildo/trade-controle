@@ -68,7 +68,7 @@
 import AcoesCarteira from "./AcoesCarteira";
 import Lancamentos from "./lancamentos/Lancamentos";
 
-import CarteiraController  from '@/controllers/carteiraController'
+//import CarteiraController  from '@/controllers/carteiraController'
 
 import { mapGetters } from "vuex";
 
@@ -102,7 +102,7 @@ export default {
 
   methods: {
     onModified() {
-      new CarteiraController().loadCarteira(this.id)
+     // new CarteiraController().loadCarteira(this.id)
     }
   }
 };

@@ -86,7 +86,7 @@
 <script>
 import Trade from "./lancamentos/Trade";
 
-import CarteiraController from "@/controllers/carteiraController";
+import {saveCarteira} from "@/controllers/carteiraController";
 import { mapGetters } from "vuex";
 
 export default {
@@ -115,20 +115,16 @@ export default {
     },
 
     salvarCarteira() {
-      new CarteiraController()
-        .save(this.novaCarteira)
-        .then(resp => {
-          this.carteiras.push(resp.data.saveCarteira);
+        saveCarteira(this.novaCarteira)
+        .then(() => {
           this.novaCarteira = "";
           this.dialog = false;
-        })
-        .catch(e => console.log(e.networkError.result.errors));
+        })       
     },
 
     onInserted(inserted) {           
       this.$store.dispatch("addLancamento", inserted);
-       new CarteiraController().loadCarteira(inserted.idCarteira)
-     
+     //  new CarteiraController().loadCarteira(inserted.idCarteira)    
     }
   }
 };

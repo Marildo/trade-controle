@@ -1,7 +1,7 @@
 const dotenv = require('dotenv')
 dotenv.config()
 
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer } = require('apollo-server')
 const { importSchema} = require('graphql-import')
 
 const typeDefs = importSchema('./schema/index.graphql')
