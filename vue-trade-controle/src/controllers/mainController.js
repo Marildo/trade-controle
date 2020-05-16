@@ -1,7 +1,17 @@
-import store from './../store/';
+import store from '../store';
 
 import CarteiraController from "./carteiraController";
-import AcaoController from "./acaoController"
+import { ctrlLoadAcoes, ctrlSaveAcao } from "./acaoController"
+import { showToastSuccess, showToastError } from "@/lib/messages"
+
+const loadAcoes = () => {
+    ctrlLoadAcoes()
+        .then(resp => store.commit('setAcoes', resp.data.acoes))
+        .catch(error => {
+            console.log(error)
+            console.log(error.networkError.result.errors)
+        })
+}
 
 const loadCarteiras = () => {
     new CarteiraController()
@@ -24,34 +34,52 @@ const setPatrimonio = (carteiras) => {
     store.commit('patrimonio', totalGeral)
 }
 
-const loadAcoes = () => {
-    new AcaoController().loadAcoes()
-        .then(resp => store.commit('setAcoes', resp.data.acoes))
-        .catch(error => {
-            console.log(error)
-            console.log(error.networkError.result.errors)
-        })
-}
 
-
-function init() {
+const init = () => {
     loadCarteiras()
     loadAcoes()
 }
 
-function setCarteira(carteira) {
+const setCarteira = (carteira) => {
     const dashboard = store.getters.dashboard
     const index = dashboard.carteiras.findIndex(i => i.id == carteira.id)
     const carteiras = dashboard.carteiras.splice(index, 1, carteira)
     dashboard.carteiras = carteiras
 }
 
+
+const saveAcao = (acao) => {
+    return new Promise((resolve, reject) => {
+        ctrlSaveAcao(acao)
+            .then(resp => {
+                showToastSuccess(resp.codigo + ' adicionada com sucesso!');
+                store.dispatch('addAcao', resp)
+                resolve(resp.codigo)
+            })
+            .catch(error => {
+                catchErro(error)
+                reject(false)
+            })
+    })
+}
+
+// TODO destrinchar a menssagem function externa
+const catchErro = (error) => {
+    showToastError(error); // replace em Error: "GraphQL error:
+    console.log(error)
+    console.log(error.networkError.result.errors[0].message)
+}
+
 export {
     init,
-    setCarteira
+    setCarteira,
+    saveAcao,
 }
 
 /*
+
+   // vue.prototype.$api.resetStore()
+
     let carteiras = {}
     Object.defineProperty(this, "carteiras", {
         set: function (value) {
@@ -62,4 +90,16 @@ export {
             return carteiras;
         }
     });
-    */
+
+
+
+              this.$toast.add({
+            severity: "error",
+            summary: "Falha ao inserir " + this.novaAcao,
+            detail: e.message.replace("GraphQL error:", ""),
+            life: 6000
+          });
+
+
+
+    }    */

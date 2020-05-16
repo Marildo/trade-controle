@@ -23,7 +23,7 @@ export default new Vuex.Store({
     carteiras: [],
     carteira: {},
     patrimonio: 0,
-    lancamentos: []
+    lancamentos: [],
   },
 
   getters: {
@@ -45,20 +45,24 @@ export default new Vuex.Store({
       state.tiposLancamentos = payload
     },
 
-    carteiras: (state, payload) =>  state.carteiras = payload ,
+    carteiras: (state, payload) => state.carteiras = payload,
 
     setCarteira: (state, payload) => state.carteira = payload,
     patrimonio: (state, payload) => state.patrimonio = payload,
     setAcoes: (state, payload) => state.acoes = payload,
     setLancamentos: (state, payload) => state.lancamentos = payload,
-    dashboard:(state, payload) => state.dashboard = payload 
+    dashboard: (state, payload) => state.dashboard = payload
   },
 
   actions: {
-    dashboard(context, payload) {
-        context.commit('dashboard', payload)
+    addAcao(context, payload) {
+      const acoes = context.state.acoes
+      const find = acoes.filter(a => a.codigo == payload.codigo)
+      if (find.length === 0) {
+        acoes.push(payload);
+        context.commit('setAcoes', acoes)
+      }
     },
-
 
     setCarteira(context, payload) {
       const carteira = context.state.carteiras.filter(i => i.id == payload)[0]

@@ -15,8 +15,14 @@
           wid
         ></v-text-field>
 
-        <!--TODO esconder quando input estiver vazio -->
-        <v-btn color="secondary" fab x-small dark @click="clearSearch">
+        <v-btn
+          :disabled="search.length < 1"
+          color="secondary"
+          fab
+          x-small
+          dark
+          @click="clearSearch"
+        >
           <v-icon>mdi-filter-remove</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -32,7 +38,14 @@
         </v-col>
 
         <div class="my-2">
-          <v-btn color="secondary" fab x-small dark @click="salvaAcao">
+          <v-btn
+            :disabled="enableSave()"
+            color="secondary"
+            fab
+            x-small
+            dark
+            @click="salvaAcao"
+          >
             <v-icon>mdi-content-save</v-icon>
           </v-btn>
         </div>
@@ -47,7 +60,7 @@
 </template>
 
 <script>
-import AcaoController from '../controllers/acaoController'
+import { saveAcao } from "../controllers/mainController";
 import { mapGetters } from "vuex";
 
 export default {
@@ -56,16 +69,45 @@ export default {
   data() {
     return {
       dialog: false,
-      fields: [],
       search: "",
       novaAcao: "",
-    }
+
+      fields: [
+        {
+          text: "Código",
+          align: "start",
+          sortable: true,
+          value: "codigo"
+        },
+        {
+          text: "Empresa",
+          align: "start",
+          sortable: false,
+          value: "empresa"
+        },
+        {
+          text: "Preço",
+          align: "start",
+          sortable: true,
+          value: "preco"
+        },
+        {
+          text: "Setor",
+          align: "start",
+          sortable: true,
+          value: "setor.nome"
+        },
+        {
+          text: "Subsetor",
+          align: "start",
+          sortable: true,
+          value: "subsetor.nome"
+        }
+      ]
+    };
   },
 
-  mounted() {
-    this.ctrl = new AcaoController();
-    this.fields = this.ctrl.fields()
-  },
+  mounted() {},
 
   computed: {
     ...mapGetters({
@@ -78,42 +120,18 @@ export default {
       this.search = "";
     },
 
-    salvaAcao() {
-      this.ctrl
-        .save(this.novaAcao)
-        .then(resp => {
-          this.loadAcao(resp.data.newAcao.codigo);
-          this.$toast.add({
-            severity: "success",
-            summary: "Informação",
-            detail: this.novaAcao + " Adicionado com sucesso",
-            life: 3000
-          });
-        })
-        .catch(e => {
-          console.log(e);
-          // console.log(e.networkError.result.errors)
-          this.$toast.add({
-            severity: "error",
-            summary: "Falha ao inserir " + this.novaAcao,
-            detail: e.message.replace("GraphQL error:", ""),
-            life: 6000
-          });
-        });
+    enableSave(){
+      // TODO fazer validacao co regex
+      return !(this.novaAcao.length >= 5) && (this.novaAcao.length <= 6)
     },
 
-    loadAcao(codigo) {
-      this.ctrl
-        .findByCodigo(codigo)
-        .then(resp => {
-          const acao = resp.data.acao;
-          if (!this.acoes.includes(acao)) {
-            this.acoes.push(acao);
-          }
-          this.newAcao = null;
-        })
-        .catch(e => console.log(e.networkError.result.errors));
-    }
+    salvaAcao() {
+        saveAcao(this.novaAcao) 
+        .then((resp) =>{
+               this.search = resp
+               this.novaAcao = ""         
+             })                 
+    },
   }
 };
 </script>

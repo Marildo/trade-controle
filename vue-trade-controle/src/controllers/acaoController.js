@@ -1,13 +1,12 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
- 
+
 // TODO deixar gql em arquivos separados
 // TODO usar fragmentos
-function AcaoController() {
 
-  this.loadAcoes = () => {
-    return vue.prototype.$api.query({
-      query: gql`
+const ctrlLoadAcoes = () => {
+  return vue.prototype.$api.query({
+    query: gql`
            query{
               acoes {
                 id
@@ -25,28 +24,41 @@ function AcaoController() {
               }
             }
           `
-    })
-  },
+  })
+}
 
-    this.save = function (_codigo) {
-      return vue.prototype.$api.mutate({
-        mutation: gql`
+const ctrlSaveAcao = (codigo) => {
+  return new Promise((resolve, reject) => {
+    vue.prototype.$api.mutate({
+      mutation: gql`
           mutation($codigo: String!) {
             newAcao(codigo: $codigo) {
-              id
               codigo
+              empresa
+              preco
+              setor {
+                id
+                nome
+              }
+              subsetor {
+                id
+                nome
+              }
             }
           }
         `,
-        variables: {
-          codigo: _codigo
-        }
-      });
-    },
+      variables: {
+        codigo
+      }
+    })
+      .then(resp => resolve(resp.data.newAcao))
+      .catch(error => reject(error))
+  })
+}
 
-    this.findByCodigo = function (codigo) {
-      return vue.prototype.$api.query({
-        query: gql`
+const ctrlFindAcaoByCodigo = (codigo) => {
+  return vue.prototype.$api.query({
+    query: gql`
           query($codigo: String!) {
             acao(codigo: $codigo) {
               codigo
@@ -63,46 +75,14 @@ function AcaoController() {
             }
           }
         `,
-        variables: {
-          codigo
-        }
-      });
-    },
-
-    this.fields = () => {
-      return [
-        {
-          text: "Código",
-          align: "start",
-          sortable: true,
-          value: "codigo"
-        },
-        {
-          text: "Empresa",
-          align: "start",
-          sortable: false,
-          value: "empresa"
-        },
-        {
-          text: "Preço",
-          align: "start",
-          sortable: true,
-          value: "preco"
-        },
-        {
-          text: "Setor",
-          align: "start",
-          sortable: true,
-          value: "setor.nome"
-        },
-        {
-          text: "Subsetor",
-          align: "start",
-          sortable: true,
-          value: "subsetor.nome"
-        }
-      ]
+    variables: {
+      codigo
     }
+  });
 }
 
-export default AcaoController
+export {
+  ctrlLoadAcoes,
+  ctrlFindAcaoByCodigo,
+  ctrlSaveAcao
+}
