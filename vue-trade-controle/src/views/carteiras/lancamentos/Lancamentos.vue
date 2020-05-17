@@ -62,7 +62,7 @@ export default {
 
   methods: {
     deleteItem(item) {
-      deleteLancamento(item.id)
+      deleteLancamento(item)
     }
   }
 };

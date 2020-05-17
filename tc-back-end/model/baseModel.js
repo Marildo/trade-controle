@@ -1,4 +1,4 @@
-function save(table, dados) {
+const save = (table, dados) => {
     return new Promise((resolve, reject) => {
         table()
             .insert(dados)
@@ -14,7 +14,7 @@ function save(table, dados) {
     })
 }
 
-function findAll(table) {
+const findAll = (table) => {
     console.log(table)
     return new Promise((resolve, reject) => {
         table()
@@ -27,8 +27,7 @@ function findAll(table) {
     })
 }
 
-
-function findById(table, id) {
+const findById = (table, id) => {
     return new Promise((resolve, reject) => {
         table()
             .select()
@@ -42,9 +41,22 @@ function findById(table, id) {
     })
 }
 
+const deleteById = (table, id) => {
+    return new Promise((resolve, reject) => {
+        table()
+            .delete()
+            .where('id',id)
+            .then(resp => resolve(resp))
+            .catch(error => {
+                console.log(error)
+                reject(error.detail)
+            })        
+        })
+    }
 
 module.exports = {
-    save,
-    findAll,
-    findById
-}
+            save,
+            findAll,
+            findById,
+            deleteById
+        }

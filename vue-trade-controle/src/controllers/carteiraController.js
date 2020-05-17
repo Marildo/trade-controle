@@ -45,6 +45,7 @@ const loadCarteira = (id) => {
     .catch(error => catchError(error))
 }
 
+// TODO missing param for named route "Carteira": Expected "id" to be defined quando adicona uma nova carteira
 const saveCarteira = nome => {
   return new Promise((resolve, reject) => {
     vue.prototype.$api.mutate({

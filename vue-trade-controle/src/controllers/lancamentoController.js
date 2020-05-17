@@ -9,7 +9,7 @@ const loadLancamentos = (idCarteira) => {
     vue.prototype.$api.query({
         query: gql` query($idCarteira: Int!){
                     movimentacoesByIdCarteira(idCarteira: $idCarteira){
-                        id dataMovimentacao valor descricao 
+                        id dataMovimentacao valor descricao idCarteira
                         tipoLancamento {key descricao}
                     }
                 }`,
@@ -61,20 +61,18 @@ const saveLancamento = (lancamento) => {
     })
 }
 
-const deleteLancamento = (id) => {
+const deleteLancamento = (lancamento) => {
     vue.prototype.$api.mutate({
-        mutation: gql` mutation($id: Int!){
-            deleteMovimentacao(id :$id){
-                id valor idCarteira
-            }
+        mutation: gql` mutation($id: ID!){
+            deleteMovimentacao(id :$id)
         }`,
         variables: {
-            id
+            id: lancamento.id
         }
-    })
-        .then(resp => resp.data.deleteMovimentacao.idCarteira)
-        .then(id => loadCarteira(id))
+    })       
         .then(() => showToastSuccess())
+        .then(() => store.dispatch('deleteLancamento', lancamento))    
+        .then(() => loadCarteira(lancamento.idCarteira))
         .catch(error => catchError(error))
 }
 

@@ -4,6 +4,6 @@ type Mutation {
     saveCarteira(nome:String!):Carteira
 
     saveMovimentacao(dados: MovimentacaoInput!):Movimentacao
-
     saveTradeAcao(dados: TradeAcoesInput!):Movimentacao
+    deleteMovimentacao(id: ID!):Int!
 }

@@ -57,24 +57,31 @@ export default new Vuex.Store({
 
     addCarteira(context, payload) {
       const carteiras = context.state.carteiras.push(payload)
-      context.commit('carteiras',carteiras)
+      context.commit('carteiras', carteiras)
     },
 
     setIdCarteira(context, payload) {
       const carteira = context.state.carteiras.filter(i => i.id == payload)[0]
       context.commit('carteira', carteira)
     },
-    
+
     carteiras(context, payload) {
       context.commit('carteiras', payload)
       const total = payload.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
       context.commit('patrimonio', total)
     },
 
-    addLancamento(context, payload){
+    addLancamento(context, payload) {
       const lancamentos = context.state.lancamentos
       lancamentos.push(payload)
-      context.commit('lancamentos',lancamentos)
+      context.commit('lancamentos', lancamentos)
+    },
+
+    deleteLancamento(context, payload) {
+      const lancamentos = context.state.lancamentos
+      const index = lancamentos.findIndex(i => i.id == payload.id)
+      lancamentos.splice(index,1)
+      context.commit('lancamentos', lancamentos)
     },
 
     updateCarteira(context, payload) {

@@ -15,7 +15,7 @@ const tiposLancamentos = () => [
     tipoLancamentoFactory(5, 'Outros Débitos', true),
 ]
 
-const selectCompraOrVenda = (isCompra) => tiposLancamentos().filter(t => t.key === Number(isCompra))[0]
+const selectCompraOrVenda = (isCompra) => tiposLancamentos()[Number(!isCompra)]
 
 module.exports = {
     tiposLancamentos,

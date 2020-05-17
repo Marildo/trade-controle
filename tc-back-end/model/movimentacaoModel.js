@@ -1,16 +1,18 @@
 const db = require('../config/db')
+const {save,findAll,findById, deleteById} = require('./baseModel')
 
 const table = () => db('movimentacoes_carteiras')
 
 function MovimentacaoModel() {
-    this.findAll = () => {
-        return new Promise((resolve, reject) => {
-            table()
-                .then(resp => resolve(resp))
-                .catch(error => reject(error.detail))
-        })
-    }
+    this.findAll = () => findAll(table)
 
+    this.findById = (id) => findById(table,id)
+
+    this.save = (movimentacao) =>  save(table,movimentacao)
+    
+    this.deleteById = (id) => deleteById(table,id)
+
+    //TODO criar metodo no base model que receba o where
     this.findByIdCarteira = (idCarteira) => {
         return new Promise((resolve, reject) => {
             table()
@@ -20,16 +22,6 @@ function MovimentacaoModel() {
         })
     }
 
-
-    this.save = (movimentacao) => {
-        return new Promise((resolve, reject) => {            
-            table()
-                .insert(movimentacao)
-                .returning('*')
-                .then(resp => resolve(resp[0]))
-                .catch(error => reject(error))
-        })
-    }
 }
 
 module.exports = MovimentacaoModel

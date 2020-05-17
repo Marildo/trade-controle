@@ -183,8 +183,7 @@ export default {
         data: localDateToYYYMMdd(new Date()),
         hora: new Date().toLocaleTimeString(),
         quantidade: 0,
-        compraf: this.isComprar,
-        compra: true
+        compra: this.isComprar
       };
 
       if (this.carteira) this.form.idCarteira = this.carteira.id;

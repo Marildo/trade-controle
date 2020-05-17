@@ -4,7 +4,7 @@ type Query{
     acao(codigo:String):Acao
     acoes:[Acao]!
 
-    carteira(id:ID):Carteira
+    carteira(id:ID!):Carteira
     carteiras:[Carteira]!
 
     movimentacoes:[Movimentacao]
