@@ -128,12 +128,12 @@ export default {
     salvaAcao() {
         saveAcao(this.novaAcao) 
         .then((resp) =>{
-               this.search = resp
+               this.search = resp.codigo
                this.novaAcao = ""         
              })                 
     },
   }
-};
+}
 </script>
 
 <style>

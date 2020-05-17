@@ -1,15 +1,19 @@
 <template>
   <div>
     <div class="row">
-      <Trade :carteira="carteira" :isComprar="true" @inserted="onInserted($event)" class="btn" />
-
-      <Trade :carteira="carteira" :isComprar="false" @inserted="onInserted($event)" class="btn" />
-
-      <NovoLancamento :carteira="carteira" @inserted="onInserted($event)" class="btn" />
+      <Trade :carteira="carteira" :isComprar="true" class="btn" />
+      <Trade :carteira="carteira" :isComprar="false" class="btn" />
+      <NovoLancamento :carteira="carteira" class="btn" />
     </div>
 
     <div class="row my-5">
-      <v-data-table title="Lançamentos" :headers="fields" :items="lancamentos" />
+      <v-data-table title="Lançamentos" :headers="fields" :items="lancamentos">
+        <template v-slot:item.id="{ item }">
+          <v-btn small fab color="red darken-2" @click="deleteItem(item)">
+            <v-icon>mdi-delete</v-icon>
+          </v-btn>
+        </template>
+      </v-data-table>
     </div>
   </div>
 </template>
@@ -17,10 +21,10 @@
 <script>
 import NovoLancamento from "./NovoLancamento";
 import Trade from "./Trade";
-import LancamentoController from "@/controllers/lancamentoController";
-
-import { findAllTipos } from "@/controllers/tiposLancamentosController";
-
+import {
+  loadLancamentos,
+  deleteLancamento
+} from "@/controllers/lancamentoController";
 
 import { mapGetters } from "vuex";
 
@@ -33,9 +37,7 @@ export default {
   },
 
   mounted() {
-    this.ctrl = new LancamentoController();
-    this.loadTiposLancamentos();
-    this.loadLancamentos();
+    loadLancamentos(this.carteira.id);
   },
 
   data() {
@@ -43,49 +45,28 @@ export default {
       ctrl: {},
       lastLancamento: {},
       fields: [
-        { text: "Data", value: "dataMovimentacao", sorted: true },
+        { text: "Data", value: "dataMovimentacao" },
         { text: "Valor", value: "valor" },
         { text: "Descrição", value: "descricao" },
-        { text: "Tipo", value: "tipoLancamento.descricao" }
+        { text: "Tipo", value: "tipoLancamento.descricao" },
+        { text: "Excluir", value: "id", sorted: false }
       ]
     };
   },
 
-
-  computed:{
+  computed: {
     ...mapGetters({
       lancamentos: "lancamentos"
     })
   },
 
-  methods: {    
-    loadLancamentos() {
-      this.ctrl
-        .loadLancamentos(this.carteira.id)
-    },
-
-    loadTiposLancamentos() {
-      const tipos = this.$store.getters.tiposLancamentos;
-      if (tipos.length == 0) {
-        findAllTipos()
-          .then(resp =>
-            this.$store.commit(
-              "setTiposLancamentos",
-              resp.data.tiposLancamentos
-            )
-          )
-          .catch(error => console.log(error));
-      }
-    },
-
-    onInserted(inserted) {
-      this.$emit("modified", true);
-      this.$store.dispatch("addLancamento",inserted)
+  methods: {
+    deleteItem(item) {
+      deleteLancamento(item.id)
     }
   }
 };
 </script>
 
 <style>
-
 </style>

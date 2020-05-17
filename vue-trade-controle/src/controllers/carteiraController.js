@@ -21,27 +21,28 @@ const loadCarteiras = () => {
           }`
   })
     .then(resp => resp.data.carteiras)
-    .then(carteiras => setCarteiras(carteiras))
-    .catch(error => {
-      catchError(error)
-    })
+    .then(carteiras => store.dispatch('carteiras', carteiras))
+    .catch(error => catchError(error))
 }
 
 const loadCarteira = (id) => {
-  return new Promise((resolve, reject) => {
-    vue.prototype.$api.query({
-      query: gql` query($id: ID!){
+  vue.prototype.$api.resetStore()
+    .then(() => {
+      vue.prototype.$api.query({
+        query: gql` query($id: ID!){
         carteira(id: $id){
           id nome saldoCaixa saldoAcoes
         }
       }`,
-      variables: {
-        id
-      }
+        variables: {
+          id
+        }
+      })
+        .then(resp => resp.data.carteira)
+        .then(carteira => store.dispatch('updateCarteira', carteira))
+        .catch(error => catchError(error))
     })
-      .then(resp => resolve(resp.data.newAcao))
-      .catch(error => reject(error))
-  })
+    .catch(error => catchError(error))
 }
 
 const saveCarteira = nome => {
@@ -58,12 +59,12 @@ const saveCarteira = nome => {
         nome
       }
     })
-      .then(resp => resp.data.newAcao)
-      .then(acao => store.commit('addCarteira', acao))
-      .then(resp => {
-        showToastSuccess(resp.nome + ' adicionada com sucesso!');
-        resolve(resp)
+      .then(resp => resp.data.saveCarteira)
+      .then(carteira => {
+        showToastSuccess(carteira.nome + ' adicionada com sucesso!')
+        store.dispatch('addCarteira', carteira)
       })
+      .then(resolve(true))
       .catch(error => {
         reject(false)
         catchError(error)
@@ -76,15 +77,4 @@ const setCarteira = (carteira) => {
   const index = dashboard.carteiras.findIndex(i => i.id == carteira.id)
   const carteiras = dashboard.carteiras.splice(index, 1, carteira)
   dashboard.carteiras = carteiras
-}
-
-const setCarteiras = (carteiras) => {
-  store.commit('carteiras', carteiras)
-  setPatrimonio(carteiras)
-}
-
-const setPatrimonio = (carteiras) => {
-  const calcTotalGeral = (carteiras) => carteiras.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
-  let totalGeral = calcTotalGeral(carteiras)
-  store.commit('patrimonio', totalGeral)
 }

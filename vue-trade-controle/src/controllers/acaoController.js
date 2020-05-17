@@ -31,7 +31,7 @@ const loadAcoes = () => {
           `
   })
     .then(resp => resp.data.acoes)
-    .then(acoes => store.commit('setAcoes', acoes))
+    .then(acoes => store.commit('acoes', acoes))
     .catch(error => catchError(error))
 }
 
@@ -59,7 +59,7 @@ const saveAcao = (codigo) => {
         codigo
       }
     })
-      .then(resp => resolve(resp.data.newAcao))
+      .then(resp => resp.data.newAcao)
       .then(acao => {
         showToastSuccess(acao.codigo + ' adicionada com sucesso!');
         store.dispatch('addAcao', acao)

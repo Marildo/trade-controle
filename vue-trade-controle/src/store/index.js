@@ -14,7 +14,6 @@ const formaterLancamento = (item) => {
   };
 };
 
-
 export default new Vuex.Store({
   state: {
     isMenuVisible: true,
@@ -30,28 +29,20 @@ export default new Vuex.Store({
     isMenuVisible: (state) => state.isMenuVisible,
     tiposLancamentos: (state) => state.tiposLancamentos,
     carteiras: (state) => state.carteiras,
-    getCarteira: (state) => state.carteira,
+    carteira: (state) => state.carteira,
     patrimonio: (state) => state.patrimonio,
     acoes: (state) => state.acoes,
     lancamentos: (state) => state.lancamentos.map(formaterLancamento)
   },
 
   mutations: {
-    toggleMenu(state, isVisible) {
-      state.isMenuVisible = isVisible === undefined ? !state.isMenuVisible : isVisible
-    },
-
-    setTiposLancamentos(state, payload) {
-      state.tiposLancamentos = payload
-    },
-
+    toggleMenu: (state, isVisible) => state.isMenuVisible = isVisible === undefined ? !state.isMenuVisible : isVisible,
+    tiposLancamentos: (state, payload) => state.tiposLancamentos = payload,
     carteiras: (state, payload) => state.carteiras = payload,
-
-    setCarteira: (state, payload) => state.carteira = payload,
+    carteira: (state, payload) => state.carteira = payload,
     patrimonio: (state, payload) => state.patrimonio = payload,
-    setAcoes: (state, payload) => state.acoes = payload,
-    setLancamentos: (state, payload) => state.lancamentos = payload,
-    dashboard: (state, payload) => state.dashboard = payload
+    acoes: (state, payload) => state.acoes = payload,
+    lancamentos: (state, payload) => state.lancamentos = payload,
   },
 
   actions: {
@@ -60,40 +51,42 @@ export default new Vuex.Store({
       const find = acoes.filter(a => a.codigo == payload.codigo)
       if (find.length === 0) {
         acoes.push(payload);
-        context.commit('setAcoes', acoes)
+        context.commit('acoes', acoes)
       }
     },
 
-    setCarteira(context, payload) {
+    addCarteira(context, payload) {
+      const carteiras = context.state.carteiras.push(payload)
+      context.commit('carteiras',carteiras)
+    },
+
+    setIdCarteira(context, payload) {
       const carteira = context.state.carteiras.filter(i => i.id == payload)[0]
-      context.commit('setCarteira', carteira)
+      context.commit('carteira', carteira)
     },
-
-    /*
-    setCarteiras(context, payload) {
-      context.commit('setCarteiras', payload)
+    
+    carteiras(context, payload) {
+      context.commit('carteiras', payload)
       const total = payload.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
-      context.commit('setPatrimonio', total)
-    },
-*/
-
-    addLancamento(context, payload) {
-      context.state.lancamentos.push(payload)
+      context.commit('patrimonio', total)
     },
 
-    setLancamentos(context, payload) {
-      context.commit('setLancamentos', payload)
+    addLancamento(context, payload){
+      const lancamentos = context.state.lancamentos
+      lancamentos.push(payload)
+      context.commit('lancamentos',lancamentos)
     },
 
     updateCarteira(context, payload) {
-      context.commit('setCarteira', payload)
+      context.commit('carteira', payload)
       const carteiras = context.state.carteiras
       const index = carteiras.findIndex(i => i.id == payload.id)
       carteiras.splice(index, 1, payload)
-      context.dispatch('setCarteiras', carteiras)
+      context.dispatch('carteiras', carteiras)
     }
   },
 
   modules: {
   }
+
 })

@@ -57,7 +57,7 @@
         </v-tab-item>
 
         <v-tab-item>
-          <Lancamentos :carteira="carteira" @modified="onModified($event)" />
+          <Lancamentos :carteira="carteira" />
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -67,9 +67,6 @@
 <script>
 import AcoesCarteira from "./AcoesCarteira";
 import Lancamentos from "./lancamentos/Lancamentos";
-
-//import CarteiraController  from '@/controllers/carteiraController'
-
 import { mapGetters } from "vuex";
 
 // TODO Quando fz um refresh na pagina carteira fica undefined
@@ -84,7 +81,7 @@ export default {
 
   computed: {
     ...mapGetters({
-      carteira: "getCarteira"
+      carteira: "carteira"
     })
   },
 
@@ -97,13 +94,11 @@ export default {
   watch: {},
 
   mounted() {
-    this.$store.dispatch("setCarteira", this.id);
+    this.$store.dispatch("setIdCarteira", this.id);
   },
 
   methods: {
-    onModified() {
-     // new CarteiraController().loadCarteira(this.id)
-    }
+
   }
 };
 </script>

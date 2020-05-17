@@ -114,7 +114,6 @@
 
 <script>
 import { localDateToYYYMMdd } from "@/lib/dateUtils";
-import { showToastSuccess, showToastError } from "@/lib/messages";
 import { saveTrade } from "@/controllers/tradeController";
 
 export default {
@@ -141,9 +140,7 @@ export default {
     };
   },
 
-  mounted() {
-   
-  },
+  mounted() {},
 
   computed: {
     acoes() {
@@ -174,19 +171,11 @@ export default {
     salvar() {
       if (!this.$refs.form.validate()) return;
 
-      saveTrade(this.form)
-        .then(resp => {
-          this.dialog = false;
-          this.$refs.form.resetValidation();
-          this.resetFields();
-          this.$emit("inserted", resp.data.saveTradeAcao);
-          showToastSuccess();
-        })
-        .catch(e => {
-          console.log(e);
-          console.log(e.networkError.result);
-          showToastError(e.networkError.result.errors[0].message);
-        });
+      saveTrade(this.form).then(() => {
+        this.dialog = false;
+        this.$refs.form.resetValidation();
+        this.resetFields();
+      });
     },
 
     resetFields() {

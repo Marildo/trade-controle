@@ -15,8 +15,8 @@ import Menu from "@/components/template/Menu.vue";
 import Content from "@/components/template/Content.vue";
 import Footer from "@/components/template/Footer.vue";
 
-import {loadAcoes} from "@/controllers/acaoController"
-import {loadCarteiras} from "@/controllers/carteiraController"
+import {init} from "@/controllers/initController"
+
 
 export default {
   name: "App",
@@ -37,8 +37,7 @@ export default {
   },
 
   mounted() {
-     loadAcoes()
-     loadCarteiras()
+    init()
   },
 
   methods: {

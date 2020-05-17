@@ -1,19 +1,24 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
 
-function saveTrade(dadosForm) {
-    
-    const trade = {
-        ...dadosForm,
-        dataTrade:
-            "" +
-            new Date(
-                dadosForm.data + " " + dadosForm.hora
-            ).getTime()
-    }
+import store from '@/store';
+import { loadCarteira } from './carteiraController'
+import { showToastSuccess, catchError } from '@/lib/messages'
 
-    return vue.prototype.$api.mutate({
-        mutation: gql`
+
+function saveTrade(dadosForm) {
+    return new Promise((resolve) => {
+        const trade = {
+            ...dadosForm,
+            dataTrade:
+                "" +
+                new Date(
+                    dadosForm.data + " " + dadosForm.hora
+                ).getTime()
+        }
+
+        return vue.prototype.$api.mutate({
+            mutation: gql`
             mutation(
                 $dataTrade: String!
                 $compra: Boolean!
@@ -23,7 +28,8 @@ function saveTrade(dadosForm) {
                 $impostos: Float
                 $idCarteira:ID!
                 $acao:AcaoInput!
-            ){ saveTradeAcao(
+            ){ 
+            saveTradeAcao(
                 dados:{
                     dataTrade: $dataTrade
                     compra: $compra
@@ -39,10 +45,21 @@ function saveTrade(dadosForm) {
                         tipoLancamento {key descricao}
              }
               } `,
-        variables: {
-            ...trade
-        }
+            variables: {
+                ...trade
+            }
+        })
+            .then(resp => resp.data.saveTradeAcao)
+            .then(lancamento => {
+                store.dispatch('addLancamento', lancamento)
+                showToastSuccess()
+                resolve(lancamento)
+                return lancamento.idCarteira
+            })
+            .then(id => loadCarteira(id))
+            .catch(error => catchError(error))
     })
+
 }
 
 

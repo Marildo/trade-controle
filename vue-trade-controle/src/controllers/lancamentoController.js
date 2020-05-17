@@ -1,35 +1,31 @@
 import gql from 'graphql-tag'
 import vue from 'vue'
-import store from './../store/';
+import store from './../store/'
+import { showToastSuccess, catchError } from '@/lib/messages'
+import { loadCarteira } from './carteiraController'
 
-function LancamentoController() {
-    this.loadLancamentos = (idCarteira) => {
-        vue.prototype.$api.query({
-            query: gql`
-                query($idCarteira: Int!){
+
+const loadLancamentos = (idCarteira) => {
+    vue.prototype.$api.query({
+        query: gql` query($idCarteira: Int!){
                     movimentacoesByIdCarteira(idCarteira: $idCarteira){
                         id dataMovimentacao valor descricao 
                         tipoLancamento {key descricao}
                     }
                 }`,
-            variables: {
-                idCarteira: parseInt(idCarteira)
-            }
-        })
-        .then(resp => {          
-            store.dispatch('setLancamentos', resp.data.movimentacoesByIdCarteira)           
-        })
-        .catch(error => {
-            console.log(error)
-            console.log(error.networkError.result.errors)
-        })
-    }
+        variables: {
+            idCarteira: parseInt(idCarteira)
+        }
+    })
+        .then(resp => resp.data.movimentacoesByIdCarteira)
+        .then(lancamentos => store.commit('lancamentos', lancamentos))
+        .catch(error => catchError(error))
+}
 
-    this.save = (lancamento) => {
-        return new Promise((resolve, reject) => {
-            vue.prototype.$api.mutate({
-                mutation: gql`
-            mutation(
+const saveLancamento = (lancamento) => {
+    return new Promise((resolve) => {
+        vue.prototype.$api.mutate({
+            mutation: gql` mutation(
                 $tipo: Int!
                 $valor: Float!
                 $idCarteira: Int!
@@ -49,18 +45,43 @@ function LancamentoController() {
                         tipoLancamento {key descricao}
                     }      
             }`,
-                variables: {
-                    ...lancamento
-                }
-            })
-                .catch(error => reject(error))
-                .then(resp => {
-                    resolve(resp)
-                    // vue.prototype.$api.resetStore()
-                })
-
+            variables: {
+                ...lancamento
+            }
         })
-    }
+            .then(resp => resp.data.saveMovimentacao)
+            .then(lancamento => {
+                store.dispatch('addLancamento', lancamento)
+                showToastSuccess()
+                resolve(lancamento)
+                return lancamento.idCarteira
+            })
+            .then(id => loadCarteira(id))
+            .catch(error => catchError(error))
+    })
 }
 
-export default LancamentoController
+const deleteLancamento = (id) => {
+    vue.prototype.$api.mutate({
+        mutation: gql` mutation($id: Int!){
+            deleteMovimentacao(id :$id){
+                id valor idCarteira
+            }
+        }`,
+        variables: {
+            id
+        }
+    })
+        .then(resp => resp.data.deleteMovimentacao.idCarteira)
+        .then(id => loadCarteira(id))
+        .then(() => showToastSuccess())
+        .catch(error => catchError(error))
+}
+
+
+export {
+    loadLancamentos,
+    saveLancamento,
+    deleteLancamento
+}
+

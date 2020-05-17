@@ -67,10 +67,10 @@
 </template>
 
 <script>
-import LancamentoController from "@/controllers/lancamentoController";
+import { saveLancamento } from "@/controllers/lancamentoController";
 import { localDateToYYYMMdd } from "@/lib/dateUtils";
-import { showToastSuccess, showToastError } from "@/lib/messages"
-import {formateReal} from '@/lib/numberUtils'
+import { mapGetters } from "vuex";
+
 
 export default {
   name: "NovoLancamento",
@@ -87,10 +87,7 @@ export default {
   },
 
   computed: {
-    tiposLancamentos() {
-      const tipos = this.$store.getters.tiposLancamentos;
-      return tipos.filter(t => parseInt(t.key) >= 2);
-    }
+          ...mapGetters(["tiposLancamentos"])
   },
 
   mounted() {
@@ -113,21 +110,11 @@ export default {
           ).getTime()
       };
 
-      const ctrl = new LancamentoController();
-      ctrl
-        .save(dados)
-        .then((resp) => {
-          this.dialog = false;
-          this.$emit("inserted",resp.data.saveMovimentacao);
-          this.$refs.form.resetValidation()
-          this.resetMovimentacoes()
-          showToastSuccess(dados.descricao+ ' no valor de '+formateReal(dados.valor) + ' foi inserido');
-        })
-        .catch(e => {
-          console.log(e);
-          console.log(e.networkError.result);
-          showToastError(e.networkError.result.errors[0].message);
-        });
+      saveLancamento(dados).then(() => {
+        this.dialog = false;
+        this.$refs.form.resetValidation();
+        this.resetMovimentacoes();
+      });
     },
 
     resetMovimentacoes() {
