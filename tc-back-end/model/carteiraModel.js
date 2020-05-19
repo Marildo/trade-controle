@@ -1,35 +1,13 @@
 const db = require('../config/db')
 const { tiposLancamentos } = require('../model/enunsModel')
+const {save,findById,findAll} = require('./baseModel')
 
 const table = () => db('carteiras')
 
 function CarteiraModel() {
 
-    this.findAll = () => {
-        return new Promise((resolve, reject) => {
-            table()
-                .select()
-                .then(resp => resolve(resp))
-                .catch(error => {
-                    console.log(error)
-                    reject(error.detail)
-                })
-        })
-    }
-
-    this.findById = (id) => {
-        return new Promise((resolve, reject) => {
-            table()
-                .select()
-                .where('id', id)
-                .first()
-                .then(resp => resolve(resp))
-                .catch(error => {
-                    console.log(error)
-                    reject(error.detail)
-                })
-        })
-    }
+   this.findAll = () => findAll(table)
+   this.findById = (id) => findById(table,id)
 
     this.calculateSaldoCaixa = (id) => {
         return new Promise((resolve, reject) => {
@@ -53,20 +31,31 @@ function CarteiraModel() {
         })
     }
 
-    this.save = ({ nome }) => {
+    this.calculateSaldoAcoes = (id) => {
         return new Promise((resolve, reject) => {
-            const carteira = {
-                nome
-            }
-            table()
-                .insert(carteira)
-                .returning('*')
-                .then(resp => resolve(resp[0]))
+            const select =
+                `SELECT SUM(
+                    CASE
+                       WHEN compra 
+                      THEN  -1 * (valor * quantidade) - corretagem - impostos
+                       ELSE +1 * (valor * quantidade) - corretagem - impostos
+                    END) AS total
+                    FROM trade_acoes WHERE carteira_id = ?
+                `
+            db.raw(select, [id])
+                .then(resp => resolve(resp.rows[0].total))
                 .catch(error => {
                     console.log(error)
                     reject(error.detail)
                 })
         })
+    }
+
+    this.save = ({ nome }) => {
+            const carteira = {
+                nome
+            }
+       return save(table,carteira)   
     }
 }
 

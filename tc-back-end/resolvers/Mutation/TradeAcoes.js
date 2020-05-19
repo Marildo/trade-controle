@@ -46,7 +46,7 @@ async function saveTradeAcao(_, { dados }) {
         delete trade.idCarteira
 
         await new TradeAcaoModel().save(trade)
-       .catch( error => new MovimentacaoModel().deleteById(mov.id))
+       .catch(() => new MovimentacaoModel().deleteById(mov.id))
 
         return mov
     } catch (error) {

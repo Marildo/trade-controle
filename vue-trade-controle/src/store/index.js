@@ -21,7 +21,7 @@ export default new Vuex.Store({
     acoes: [],
     carteiras: [],
     carteira: {},
-    patrimonio: 0,
+    patrimonio: {},
     lancamentos: [],
   },
 
@@ -66,9 +66,8 @@ export default new Vuex.Store({
     },
 
     carteiras(context, payload) {
-      context.commit('carteiras', payload)
-      const total = payload.map(c => c.saldoCaixa + c.saldoAcoes).reduce((c, n) => c + n)
-      context.commit('patrimonio', total)
+      context.commit('carteiras', payload)   
+      context.dispatch('updatePatrimonio', payload)
     },
 
     addLancamento(context, payload) {
@@ -90,6 +89,18 @@ export default new Vuex.Store({
       const index = carteiras.findIndex(i => i.id == payload.id)
       carteiras.splice(index, 1, payload)
       context.dispatch('carteiras', carteiras)
+    },
+
+    updatePatrimonio(context, payload){
+      const totalAcoes = payload.map(c => c.saldoAcoes).reduce((c, n) => c + n)
+      const totalCaixa = payload.map(c => c.saldoCaixa).reduce((c, n) => c + n)
+      const total = totalAcoes + totalCaixa
+      const patrimonio  ={
+          total,
+          totalAcoes,
+          totalCaixa
+      }
+      context.commit('patrimonio',patrimonio)
     }
   },
 

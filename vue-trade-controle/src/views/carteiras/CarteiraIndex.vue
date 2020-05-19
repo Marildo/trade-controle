@@ -24,7 +24,7 @@
         <td>Total Ações</td>
         <td>Total em Caixa</td>
         <td>Último Resultado</td>
-        <td>Patrimônio total</td>
+        <td>Total Carteira</td>
       </thead>
       <tbody>
         <tr v-for="carteira in carteiras" :key="carteira.id">
@@ -36,26 +36,26 @@
             }"
             >{{carteira.nome}}</router-link>
           </td>
-          <td>R$ {{carteira.saldoAcoes | formateReal}}</td>
+          <td>R$ {{carteira.saldoAcoes | formateReal}} </td>
           <td>R$ {{carteira.saldoCaixa | formateReal}}</td>
           <td>R$ 100,33</td>
-          <td>R$ 100,00</td>
+          <td>R$ {{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}</td>
         </tr>
         <tr></tr>
       </tbody>
       <tfoot>
         <td></td>
         <td>
-          <h5>R$ 1.000,00</h5>
+          <h5  class="saldo"> {{patrimonio.totalAcoes | formateReal}}</h5>
         </td>
         <td>
-          <h5>R$ 1.000,00</h5>
+          <h5  class="saldo"> {{patrimonio.totalCaixa | formateReal}}</h5>
         </td>
         <td>
-          <h5>R$ 100,00</h5>
+          <h5 class="saldo">R$ 100,00</h5>
         </td>
         <td>
-          <h5>R$ 500,00</h5>
+          <h5 class="saldo"> {{patrimonio.total | formateReal}}</h5>
         </td>
       </tfoot>
     </table>
@@ -105,7 +105,7 @@ export default {
   mounted() {},
 
   computed: {
-    ...mapGetters(["carteiras"])
+    ...mapGetters(["carteiras","patrimonio"]),
   },
 
   methods: {

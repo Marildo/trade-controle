@@ -5,7 +5,7 @@
       <v-spacer></v-spacer>
       <span class="saldo">
         <v-icon large color="amber lighten-2">fa-university</v-icon>
-        Saldo: {{carteira.saldoCaixa | formateReal}}
+        Total: {{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}
       </span>
 
       <template v-slot:extension>
@@ -24,7 +24,7 @@
           <div class="row">
             <div class="card">
               <h4>Total Ações</h4>
-              <h5>{{carteira.saldoAcoes| formateReal}}</h5>
+              <h5>{{carteira.saldoAcoes | formateReal}}</h5>
             </div>
 
             <div class="card">
@@ -33,8 +33,8 @@
             </div>
 
             <div class="card">
-              <h4>Patrimônio Total</h4>
-              <h5>R$ 190,00</h5>
+              <h4>Total Carteira</h4>
+              <h5>{{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}</h5>
             </div>
 
             <div class="card">
@@ -82,7 +82,7 @@ export default {
   computed: {
     ...mapGetters({
       carteira: "carteira"
-    })
+    }),
   },
 
   data() {

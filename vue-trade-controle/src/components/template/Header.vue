@@ -6,7 +6,7 @@
 
     <span class="saldo">
       <v-icon large color="amber lighten-2">fa-university</v-icon>
-      Patrimônio: {{patrimonio | formateReal}}
+      Patrimônio Total: {{patrimonio.total | formateReal}}
     </span>
 
     <Toast />

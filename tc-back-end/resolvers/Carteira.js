@@ -10,9 +10,9 @@ function saldoCaixa(carteira){
 }
 
 function saldoAcoes(carteira){
-    return  0.0
+    const carteiraModel = new CarteiraModel
+    return carteiraModel.calculateSaldoAcoes(carteira.id)
 }
-
 
 module.exports = {
     acoes,
