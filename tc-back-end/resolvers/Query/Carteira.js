@@ -6,7 +6,7 @@ const carteiras = () => {
     return carteiraModel.findAll()
 }
 
-const carteira = (_, args) => {
+const carteira = (parent, args, context) => {
     return carteiraModel.findById(args.id)        
 }
 

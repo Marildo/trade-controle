@@ -6,7 +6,7 @@ const acao = (_, {codigo}) => {
     return model.findByCodigo(codigo)
 }
 
-const acoes = (_) => {     
+const acoes = async (_) => {  
     return model.findAll()
 }
 

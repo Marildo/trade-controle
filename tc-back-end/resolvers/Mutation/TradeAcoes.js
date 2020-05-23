@@ -1,6 +1,6 @@
-const { TradeAcaoModel, MovimentacaoModel } = require('../../model/')
+const { TradeAcaoModel, MovimentacaoModel, SummaryAcoesModel } = require('../../model/')
 const { selectCompraOrVenda } = require('../../model/enunsModel')
-const {formateReal} = require('../../lib/numberUtils')
+const { formateReal } = require('../../lib/numberUtils')
 
 
 // TODO validar se acao e carteiras existem
@@ -16,7 +16,7 @@ async function saveTradeAcao(_, { dados }) {
             if (!Date.parse(data_trade))
                 return new Error("Data inválida")
         }
-        
+
 
         const tipo = selectCompraOrVenda(dados.compra)
         const descricao = `${tipo.descricao} de ${dados.acao.codigo} (${dados.quantidade} X ${formateReal(dados.valor)})`
@@ -31,8 +31,6 @@ async function saveTradeAcao(_, { dados }) {
 
         const mov = await new MovimentacaoModel().save(movimentacao)
 
-        console.log(mov)
-
         const trade = {
             ...dados,
             data_trade,
@@ -45,12 +43,16 @@ async function saveTradeAcao(_, { dados }) {
         delete trade.acao
         delete trade.idCarteira
 
-        await new TradeAcaoModel().save(trade)
-       .catch(() => new MovimentacaoModel().deleteById(mov.id))
+        await new TradeAcaoModel()
+            .save(trade)
+            .catch(() => new MovimentacaoModel().deleteById(mov.id))
+
+        new SummaryAcoesModel().updateSummary(dados)       
 
         return mov
     } catch (error) {
-        throw new Error(error.sqlMessage)
+        console.log(error)
+        throw new Error(error)
     }
 }
 

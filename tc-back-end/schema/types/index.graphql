@@ -6,3 +6,4 @@
 # import Segmento from 'Segmento.graphql'
 # import TipoLancamento from 'TipoLancamento.graphql'
 # import TradeAcoes from 'TradeAcoes.graphql'
+# import SummaryAcoes from 'SummaryAcoes.graphql'

@@ -41,6 +41,7 @@ const saveAcao = (codigo) => {
       mutation: gql`
           mutation($codigo: String!) {
             newAcao(codigo: $codigo) {
+              id
               codigo
               empresa
               preco

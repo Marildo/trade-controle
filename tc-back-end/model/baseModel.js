@@ -14,6 +14,20 @@ const save = (table, dados) => {
     })
 }
 
+const update = (table, dados) => {
+    return new Promise((resolve, reject) => {
+        table()
+            .where('id',dados.id)
+            .update(dados)    
+            .returning('*')
+            .then(resp => resolve(resp[0]))
+            .catch(error => {
+                console.log(error)
+                reject(error.detail)
+            })
+    })
+}
+
 const findAll = (table) => {
     console.log(table)
     return new Promise((resolve, reject) => {
@@ -56,6 +70,7 @@ const deleteById = (table, id) => {
 
 module.exports = {
             save,
+            update,
             findAll,
             findById,
             deleteById

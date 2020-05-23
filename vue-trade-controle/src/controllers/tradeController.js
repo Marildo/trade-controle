@@ -42,9 +42,9 @@ function saveTrade(dadosForm) {
                 }
             ){
                 id dataMovimentacao valor descricao idCarteira
-                        tipoLancamento {key descricao}
+                tipoLancamento {key descricao}
              }
-              } `,
+            }`,
             variables: {
                 ...trade
             }

@@ -92,6 +92,7 @@ export default new Vuex.Store({
     },
 
     updatePatrimonio(context, payload){
+      // TODO TypeError: reduce of empty array with no initial value
       const totalAcoes = payload.map(c => c.saldoAcoes).reduce((c, n) => c + n)
       const totalCaixa = payload.map(c => c.saldoCaixa).reduce((c, n) => c + n)
       const total = totalAcoes + totalCaixa

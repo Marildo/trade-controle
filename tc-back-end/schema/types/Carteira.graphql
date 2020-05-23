@@ -3,5 +3,5 @@ type Carteira{
     nome: String!
     saldoCaixa:Float!
     saldoAcoes:Float!
-    acoes:[Acao]  
+    portifolio:[SummaryAcoes]!  
 }

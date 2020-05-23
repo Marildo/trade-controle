@@ -1,5 +1,6 @@
 
 module.exports = {
+    //TODO calcular total de acoes
     quantidade(acao) {
         return Math.floor(
             Math.random() * (1000 - 1) + 1

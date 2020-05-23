@@ -1,0 +1,12 @@
+type SummaryAcoes {    
+    quantidade:Float!
+    precoMedio:Float!
+    resultado:Float!
+    percentual:Float
+    idAcao:Int!
+    codigoAcao:String!
+    currentPrice:Float!
+    idSetor:Int!
+    idSubsetor:Int!
+    idSegmento:Int!
+}
