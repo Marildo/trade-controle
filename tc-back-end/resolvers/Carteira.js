@@ -1,17 +1,24 @@
 const { CarteiraModel, SummaryAcoesModel } = require('../model')
 
 const makePortifolio = (summary) => {
-    const { quantidade, preco_medio,preco_atual, resultado, percentual,
-        acao_id, codigo, preco, setor_id, subsetor_id, segmento_id } = summary
+    const { quantidade, preco_medio, acao_id, codigo, preco,
+        setor_id, subsetor_id, segmento_id } = summary
+
+    const totalAtual = (quantidade * preco).toFixed(2)
+    const custoTotal = (quantidade * preco_medio).toFixed(2)
+    const resultado = (totalAtual - custoTotal).toFixed(2)
+    const percentual = ((totalAtual * 100 / custoTotal) - 100).toFixed(2)
+
     return {
         quantidade,
+        precoMedio: preco_medio,
+        totalAtual,
+        custoTotal,
         resultado,
         percentual,
-        precoAtual: preco_atual,
-        precoMedio: preco_medio,
         idAcao: acao_id,
         codigoAcao: codigo,
-        currentPrice: preco,
+        cotacao: preco,
         idSetor: setor_id,
         idSubsetor: subsetor_id,
         idSegmento: segmento_id

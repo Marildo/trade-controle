@@ -1,5 +1,5 @@
 const db = require('../config/db')
-const {findById} = require('./baseModel')
+const { findById, findAll, save } = require('./baseModel')
 
 const table = () => db('acoes')
 
@@ -15,8 +15,11 @@ const selectAcao = () => {
 }
 
 function AcaoModel() {
+    this.findById = (id) => findById(table, id)
 
-    this.findById = (id) => findById(table,id)
+    this.findAll = () => findAll(table)
+
+    this.save = (acao) => save(table, acao)
 
     this.findByCodigo = (codigo) => {
         return new Promise((resolve, reject) => {
@@ -31,27 +34,13 @@ function AcaoModel() {
         })
     }
 
-    this.findAll = () => {
+    this.updatePrice = (id, price) => {
         return new Promise((resolve, reject) => {
-            selectAcao()
-                .then(resp => resolve(resp))
-                .catch(error => {
-                    console.log(error)
-                    reject(error.detail)
-                })
-        })
-    }
-
-    this.save = (acao) => {
-        return new Promise((resolve, reject) => {          
             table()
-                .insert(acao)
-                .returning('*')
-                .then(resp => resolve(resp[0]))
-                .catch(error => {
-                    console.log(error)
-                    reject(error.detail)
-                })
+                .where('id', '=', id)
+                .update({ preco: price })
+                .then(resp => resolve(resp))
+                .catch(error => reject(error))
         })
     }
 }

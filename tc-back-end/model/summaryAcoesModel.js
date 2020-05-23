@@ -68,12 +68,12 @@ function SummaryAcoesModel() {
         return new Promise((resolve, reject) => {
             table()
                 .select(['summary_acoes.*',
-                         'acoes.codigo',
-                         'acoes.empresa',
-                         'acoes.preco',
-                         'acoes.setor_id',
-                         'acoes.subsetor_id',
-                         'acoes.segmento_id'])
+                    'acoes.codigo',
+                    'acoes.empresa',
+                    'acoes.preco',
+                    'acoes.setor_id',
+                    'acoes.subsetor_id',
+                    'acoes.segmento_id'])
                 .innerJoin('acoes', 'acao_id', 'acoes.id')
                 .where('carteira_id', idCarteira)
                 .andWhere('quantidade', '<>', 0)

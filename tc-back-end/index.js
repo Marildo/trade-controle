@@ -15,3 +15,6 @@ const server = new ApolloServer({
 server.listen().then(({ url }) => {
     console.log(`Executando em ${url}`)
 })
+
+const {updatePrices} = require('./service/acao/updatePrices')
+updatePrices()

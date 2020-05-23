@@ -1,12 +1,13 @@
 type SummaryAcoes {    
     quantidade:Float!
     precoMedio:Float!
-    precoAtual:Float!
+    totalAtual:Float!
+    custoTotal:Float!
     resultado:Float!
-    percentual:Float
+    percentual:Float!
     idAcao:Int!
     codigoAcao:String!
-    currentPrice:Float!
+    cotacao:Float!
     idSetor:Int!
     idSubsetor:Int!
     idSegmento:Int!

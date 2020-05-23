@@ -29,7 +29,6 @@ const update = (table, dados) => {
 }
 
 const findAll = (table) => {
-    console.log(table)
     return new Promise((resolve, reject) => {
         table()
             .select()
