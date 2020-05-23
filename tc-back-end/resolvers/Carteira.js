@@ -1,12 +1,13 @@
 const { CarteiraModel, SummaryAcoesModel } = require('../model')
 
 const makePortifolio = (summary) => {
-    const { quantidade, preco_medio, resultado, percentual,
+    const { quantidade, preco_medio,preco_atual, resultado, percentual,
         acao_id, codigo, preco, setor_id, subsetor_id, segmento_id } = summary
     return {
         quantidade,
         resultado,
         percentual,
+        precoAtual: preco_atual,
         precoMedio: preco_medio,
         idAcao: acao_id,
         codigoAcao: codigo,

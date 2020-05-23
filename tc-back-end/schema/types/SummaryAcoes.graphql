@@ -1,6 +1,7 @@
 type SummaryAcoes {    
     quantidade:Float!
     precoMedio:Float!
+    precoAtual:Float!
     resultado:Float!
     percentual:Float
     idAcao:Int!

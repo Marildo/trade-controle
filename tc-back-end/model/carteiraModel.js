@@ -39,16 +39,14 @@ function CarteiraModel() {
         })
     }
 
+
     this.calculateSaldoAcoes = (id) => {
         return new Promise((resolve, reject) => {
             const select =
-                `SELECT COALESCE(SUM(
-                    CASE
-                       WHEN compra 
-                      THEN  -1 * (valor * quantidade) - corretagem - impostos
-                       ELSE +1 * (valor * quantidade) - corretagem - impostos
-                    END),0) AS total
-                FROM trade_acoes WHERE carteira_id = ?`
+                `SELECT 
+                COALESCE(SUM(quantidade * preco_atual),0) AS total
+                FROM summary_acoes 
+                WHERE carteira_id = ?`
             db.raw(select, [id])
                 .then(resp => resolve(resp.rows[0].total))
                 .catch(error => {
