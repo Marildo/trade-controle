@@ -17,9 +17,18 @@ const selectAcao = () => {
 function AcaoModel() {
     this.findById = (id) => findById(table, id)
 
-    this.findAll = () => findAll(table)
-
     this.save = (acao) => save(table, acao)
+
+    this.findAll = () => {
+        return new Promise((resolve, reject) => {
+            selectAcao()
+                .then(resp => resolve(resp))
+                .catch(error => {
+                    console.log(error)
+                    reject(error.detail)
+                })
+        })
+    }
 
     this.findByCodigo = (codigo) => {
         return new Promise((resolve, reject) => {

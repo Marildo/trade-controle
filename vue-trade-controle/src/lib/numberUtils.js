@@ -1,4 +1,4 @@
-function formateReal(value) {
+function formaterReal(value) {
     if (isNaN(value))
         value = 0
 
@@ -8,6 +8,13 @@ function formateReal(value) {
     })
 }
 
+function formaterPercent(value) {
+    if (isNaN(value))
+        value = 0
+    return value.toLocaleString('pt-BR', { style: 'decimal' }) + ' %'
+}
+
 export {
-    formateReal
+    formaterReal,
+    formaterPercent
 }

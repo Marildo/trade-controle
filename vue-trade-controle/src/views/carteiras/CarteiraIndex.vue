@@ -36,26 +36,26 @@
             }"
             >{{carteira.nome}}</router-link>
           </td>
-          <td>R$ {{carteira.saldoAcoes | formateReal}} </td>
-          <td>R$ {{carteira.saldoCaixa | formateReal}}</td>
+          <td>R$ {{carteira.saldoAcoes | formaterReal}} </td>
+          <td>R$ {{carteira.saldoCaixa | formaterReal}}</td>
           <td>R$ 100,33</td>
-          <td>R$ {{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}</td>
+          <td>R$ {{carteira.saldoCaixa + carteira.saldoAcoes | formaterReal}}</td>
         </tr>
         <tr></tr>
       </tbody>
       <tfoot>
         <td></td>
         <td>
-          <h5  class="saldo"> {{patrimonio.totalAcoes | formateReal}}</h5>
+          <h5  class="saldo"> {{patrimonio.totalAcoes | formaterReal}}</h5>
         </td>
         <td>
-          <h5  class="saldo"> {{patrimonio.totalCaixa | formateReal}}</h5>
+          <h5  class="saldo"> {{patrimonio.totalCaixa | formaterReal}}</h5>
         </td>
         <td>
           <h5 class="saldo">R$ 100,00</h5>
         </td>
         <td>
-          <h5 class="saldo"> {{patrimonio.total | formateReal}}</h5>
+          <h5 class="saldo"> {{patrimonio.total | formaterReal}}</h5>
         </td>
       </tfoot>
     </table>

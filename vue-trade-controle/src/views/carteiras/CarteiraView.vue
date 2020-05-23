@@ -5,14 +5,14 @@
       <v-spacer></v-spacer>
       <span class="saldo">
         <v-icon large color="amber lighten-2">fa-university</v-icon>
-        Total: {{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}
+        Total: {{carteira.saldoCaixa + carteira.saldoAcoes | formaterReal}}
       </span>
 
       <template v-slot:extension>
         <v-tabs v-model="tab" align-with-title>
           <v-tabs-slider color="yellow"></v-tabs-slider>
           <v-tab>Patrimônio</v-tab>
-          <v-tab>Ações</v-tab>
+          <v-tab>Portifólio</v-tab>
           <v-tab>Lançamentos</v-tab>
         </v-tabs>
       </template>
@@ -24,17 +24,17 @@
           <div class="row">
             <div class="card">
               <h4>Total Ações</h4>
-              <h5>{{carteira.saldoAcoes | formateReal}}</h5>
+              <h5>{{carteira.saldoAcoes | formaterReal}}</h5>
             </div>
 
             <div class="card">
               <h4>Total em Caixa</h4>
-              <h5>{{carteira.saldoCaixa | formateReal}}</h5>
+              <h5>{{carteira.saldoCaixa | formaterReal}}</h5>
             </div>
 
             <div class="card">
               <h4>Total Carteira</h4>
-              <h5>{{carteira.saldoCaixa + carteira.saldoAcoes | formateReal}}</h5>
+              <h5>{{carteira.saldoCaixa + carteira.saldoAcoes | formaterReal}}</h5>
             </div>
 
             <div class="card">
@@ -53,7 +53,7 @@
         </v-tab-item>
 
         <v-tab-item>
-          <AcoesCarteira />
+          <Portifolio />
         </v-tab-item>
 
         <v-tab-item>
@@ -65,24 +65,22 @@
 </template>
 
 <script>
-import AcoesCarteira from "./AcoesCarteira";
+import Portifolio from "./Portifolio";
 import Lancamentos from "./lancamentos/Lancamentos";
 import { mapGetters } from "vuex";
 
 // TODO Quando fz um refresh na pagina carteira fica undefined
 
 export default {
-  props: ["id"],
-
   components: {
-    AcoesCarteira,
+    Portifolio,
     Lancamentos
   },
 
   computed: {
     ...mapGetters({
       carteira: "carteira"
-    }),
+    })
   },
 
   data() {
@@ -94,12 +92,10 @@ export default {
   watch: {},
 
   mounted() {
-    this.$store.dispatch("setIdCarteira", this.id);
+    this.$store.dispatch("setIdCarteira", this.$route.params.id);
   },
 
-  methods: {
-
-  }
+  methods: {}
 };
 </script>
 

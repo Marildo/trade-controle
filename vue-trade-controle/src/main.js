@@ -9,9 +9,9 @@ import './plugins/primevue'
 
 Vue.config.productionTip = false
 
-import { formateReal } from "@/lib/numberUtils";
+import { formaterReal } from "@/lib/numberUtils";
 
-Vue.filter('formateReal', (value) => formateReal(value))
+Vue.filter('formaterReal', (value) => formaterReal(value))
 
 
 new Vue({

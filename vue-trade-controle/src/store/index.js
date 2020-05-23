@@ -1,18 +1,31 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { formateReal } from "@/lib/numberUtils"
+import { formaterReal, formaterPercent } from "@/lib/numberUtils"
+
+import { loadCarteira } from "@/controllers/carteiraController";
 
 Vue.use(Vuex)
 
 const formaterLancamento = (item) => {
   return {
     ...item,
-    valor: formateReal(item.valor),
+    valor: formaterReal(item.valor),
     dataMovimentacao: new Date(
       parseInt(item.dataMovimentacao)
     ).toLocaleString()
+  }
+}
+
+const formaterPortifolio = (item) => {
+  return {
+    ...item,
+    cotacao: formaterReal(item.cotacao),
+    totalAtual: formaterReal(item.totalAtual),
+    custoTotal: formaterReal(item.custoTotal),
+    resultado: formaterReal(item.resultado),
+    percentual: formaterPercent(item.percentual),
   };
-};
+}
 
 export default new Vuex.Store({
   state: {
@@ -23,6 +36,7 @@ export default new Vuex.Store({
     carteira: {},
     patrimonio: {},
     lancamentos: [],
+    portifolio:[]
   },
 
   getters: {
@@ -32,7 +46,8 @@ export default new Vuex.Store({
     carteira: (state) => state.carteira,
     patrimonio: (state) => state.patrimonio,
     acoes: (state) => state.acoes,
-    lancamentos: (state) => state.lancamentos.map(formaterLancamento)
+    lancamentos: (state) => state.lancamentos.map(formaterLancamento),
+    portifolio: (state) => state.carteira.portifolio.map(formaterPortifolio)
   },
 
   mutations: {
@@ -62,7 +77,11 @@ export default new Vuex.Store({
 
     setIdCarteira(context, payload) {
       const carteira = context.state.carteiras.filter(i => i.id == payload)[0]
-      context.commit('carteira', carteira)
+      if (carteira === undefined) {
+        setTimeout(() =>  loadCarteira(payload), 1000);
+      }else{
+        context.commit('carteira', carteira)
+      }
     },
 
     carteiras(context, payload) {

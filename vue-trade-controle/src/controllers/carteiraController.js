@@ -4,13 +4,6 @@ import vue from 'vue'
 import store from '@/store';
 import { showToastSuccess, catchError } from '@/lib/messages'
 
-export {
-  loadCarteiras,
-  loadCarteira,
-  saveCarteira,
-  setCarteira
-}
-
 const loadCarteiras = () => {
   return vue.prototype.$api.query({
     query: gql`
@@ -32,6 +25,11 @@ const loadCarteira = (id) => {
         query: gql` query($id: ID!){
         carteira(id: $id){
           id nome saldoCaixa saldoAcoes
+          portifolio{     
+            quantidade  precoMedio totalAtual custoTotal 
+            resultado percentual  idAcao codigoAcao cotacao
+            idSetor idSubsetor idSegmento
+          }
         }
       }`,
         variables: {
@@ -78,4 +76,12 @@ const setCarteira = (carteira) => {
   const index = dashboard.carteiras.findIndex(i => i.id == carteira.id)
   const carteiras = dashboard.carteiras.splice(index, 1, carteira)
   dashboard.carteiras = carteiras
+}
+
+
+export {
+  loadCarteiras,
+  loadCarteira,
+  saveCarteira,
+  setCarteira
 }
