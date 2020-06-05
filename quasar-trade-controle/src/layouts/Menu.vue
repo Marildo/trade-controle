@@ -23,9 +23,9 @@ export default {
   data () {
     return {
       items: [
-        { title: 'Home', icon: 'home', route: { name: 'Home' } },
-        { title: 'Carteiras', icon: 'account_balance_wallet', route: { name: 'Carteira' } },
-        { title: 'Ações', icon: 'insights', route: { name: 'Acao' } }
+        { title: 'Dashboard', icon: 'dashboard', route: { name: 'Dashboard' } },
+        { title: 'Carteiras', icon: 'account_balance_wallet', route: { name: 'Carteiras' } },
+        { title: 'Ações', icon: 'insights', route: { name: 'Acoes' } }
       ]
     }
   }
