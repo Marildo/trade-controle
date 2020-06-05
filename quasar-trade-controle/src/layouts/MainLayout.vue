@@ -1,21 +1,9 @@
 <template>
   <q-layout view="hHh lpR lFf">
+    <Header @changeDrawer="drawer = !drawer" />
 
-    <q-header elevated class="bg-primary text-white">
-      <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="left = !left" />
-
-        <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-          </q-avatar>
-          Title
-        </q-toolbar-title>
-      </q-toolbar>
-    </q-header>
-
-    <q-drawer show-if-above v-model="left" side="left" bordered>
-      <!-- drawer content -->
+    <q-drawer show-if-above v-model="drawer" side="left" bordered>
+     <Menu/>
     </q-drawer>
 
     <q-page-container>
@@ -37,11 +25,22 @@
 </template>
 
 <script>
+import Menu from './Menu.vue'
+import Header from './Header'
 export default {
+  components: {
+    Menu,
+    Header
+  },
+
   data () {
     return {
-      left: false
+      drawer: false
     }
+  },
+
+  methods: {
+
   }
 }
 </script>
