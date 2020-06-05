@@ -4,10 +4,8 @@
         <q-btn dense flat round icon="menu" @click="changeDrawer" />
 
         <q-toolbar-title>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/logo/svg/quasar-logo.svg">
-          </q-avatar>
-          Title
+          <q-icon name="monetization_on" flat size="2rem" />
+          Trade Controler
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
