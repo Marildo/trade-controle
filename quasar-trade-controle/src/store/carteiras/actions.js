@@ -1,5 +1,18 @@
+import gql from 'graphql-tag'
+import vue from 'vue'
+
 const loadCarteiras = (context) => {
-  context.commit('SET_CARTEIRAS', ['ASA', 'DFFD'])
+  vue.prototype.$api.query({
+    query: gql`
+             query{
+               carteiras {
+                id nome saldoCaixa saldoAcoes
+               }
+            }`
+  })
+    .then(resp => resp.data.carteiras)
+    .then(carteiras => context.commit('SET_CARTEIRAS', carteiras))
+    .catch(error => console.log(error))
 }
 
 export {

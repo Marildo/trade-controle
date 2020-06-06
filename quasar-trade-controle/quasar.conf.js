@@ -7,6 +7,7 @@
 // https://quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 
+
 module.exports = function (/* ctx */) {
   return {
     // https://quasar.dev/quasar-cli/cli-documentation/supporting-ie
@@ -118,7 +119,7 @@ cfg.module.rules.push({
       ],
 
       // Quasar plugins
-      plugins: []
+      plugins: [ ]
     },
 
     // animations: 'all', // --- includes all animations

@@ -16,6 +16,7 @@
 
 <script>
 
+import '../plugins/graphql'
 import tcMenu from './layouts/Menu'
 import tcHeader from './layouts/Header'
 import tcFooter from './layouts/Footer'
