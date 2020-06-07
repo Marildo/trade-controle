@@ -4,6 +4,8 @@
     Patri:  {{patrimonio}}
     <hr/>
     Cart: {{carteiras}}
+    <hr/>
+    Acoes: {{acoes}}
   </q-page>
 </template>
 
@@ -18,6 +20,10 @@ export default {
 
     carteiras () {
       return this.$store.state.carteiras.all
+    },
+
+    acoes () {
+      return this.$store.state.acoes.all
     }
 
   },
@@ -27,6 +33,8 @@ export default {
       this.$store.dispatch('patrimonio/setPatrimonio', { totalAcoes: 300 })
 
       this.$store.dispatch('carteiras/loadCarteiras')
+
+      this.$store.dispatch('acoes/loadAcoes')
     }
   }
 }

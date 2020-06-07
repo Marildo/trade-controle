@@ -20,10 +20,21 @@ Vue.use({
       }
     })
 
-    Vue.prototype.$api = new ApolloClient({
+    Vue.prototype.$apollo = new ApolloClient({
       link: authLink.concat(httpLink),
       cache: new InMemoryCache(),
-      onError: (e) => { console.log('Erro: ', e) }
+      onError: ({ graphQLErrors, networkError }) => {
+        if (graphQLErrors) {
+          graphQLErrors.map(({ message, locations, path }) =>
+            console.log(
+              `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`
+            )
+          )
+        }
+        if (networkError) {
+          console.log(`[Network error]: ${networkError}`)
+        }
+      }
     })
   }
 })

@@ -2,8 +2,8 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import carteiras from './carteiras'
-
 import patrimonio from './patrimonio'
+import acoes from './acoes'
 
 Vue.use(Vuex)
 
@@ -20,7 +20,8 @@ export default function (/* { ssrContext } */) {
   const Store = new Vuex.Store({
     modules: {
       patrimonio,
-      carteiras
+      carteiras,
+      acoes
     },
 
     // enable strict mode (adds overhead!)

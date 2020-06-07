@@ -2,7 +2,7 @@ import gql from 'graphql-tag'
 import vue from 'vue'
 
 const loadCarteiras = (context) => {
-  vue.prototype.$api.query({
+  vue.prototype.$apollo.query({
     query: gql`
              query{
                carteiras {
