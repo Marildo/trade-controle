@@ -32,6 +32,9 @@ Vue.use({
           )
         }
         if (networkError) {
+          if (networkError.statusCode === 401) {
+            window.location.href = '/api/security/logout'
+          }
           console.log(`[Network error]: ${networkError}`)
         }
       }

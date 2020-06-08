@@ -1,6 +1,13 @@
+import vue from 'vue'
+import { acoes } from '../../graphql/acoes.js'
+
 const loadAcoes = ({ commit }) => {
-  console.log('loading acoes')
-  commit('SET_ACOES', [1, 5, 6])
+  vue.prototype.$apollo.query({
+    query: acoes
+  })
+    .then(resp => resp.data.acoes)
+    .then(acoes => commit('SET_ACOES', acoes))
+    .catch(error => console.log(error))
 }
 
 export {
