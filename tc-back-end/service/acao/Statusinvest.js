@@ -3,6 +3,9 @@ const cheerio = require('cheerio')
 
 // TODO refatorar em clase e metodo
 
+// copy selector
+const selectorPrice = () => '#main-2 > div:nth-child(4) > div > div.pb-3.pb-md-5 > div > div.info.special.w-100.w-md-33.w-lg-20 > div > div:nth-child(1) > strong'
+
 
 function findAcao(codigo) {
     return new Promise((resolve, reject) => {
@@ -19,7 +22,7 @@ function findAcao(codigo) {
                 const segmentoNome = ch(selectorSegmento + ' a > strong').text().trim()               
                 const link = ch(selectorSegmento + ' a ').attr('href')      
                 const arrayLink = link.split('/').filter(i => parseInt(i))
-                const preco = ch('#main-2 > div:nth-child(3) > div > div.pb-3.pb-md-5 > div > div.info.special.w-100.w-md-33.w-lg-20 > div > div:nth-child(1) > strong').text().trim().replace(',','.')        
+                const preco = ch(selectorPrice()).text().trim().replace(',','.')        
 
                 const setor = {
                     'id':arrayLink[0],
@@ -60,7 +63,7 @@ function findCotacao(codigo) {
         request('https://statusinvest.com.br/acoes/' + codigo, (err, resp, body) => {
             try {
                 const ch = cheerio.load(body)
-                const preco = ch('#main-2 > div:nth-child(3) > div > div.pb-3.pb-md-5 > div > div.info.special.w-100.w-md-33.w-lg-20 > div > div:nth-child(1) > strong').text().trim().replace(',','.')                    
+                const preco = ch(selectorPrice()).text().trim().replace(',','.')                    
                 resolve(preco)
             }
             catch (error) {

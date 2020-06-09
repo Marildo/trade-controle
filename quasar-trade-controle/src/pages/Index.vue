@@ -6,6 +6,9 @@
     Cart: {{carteiras}}
     <hr/>
     Acoes: {{acoes}}
+
+    <hr/>
+    Tipos: {{tiposLancamentos}}
   </q-page>
 </template>
 
@@ -24,17 +27,23 @@ export default {
 
     acoes () {
       return this.$store.state.acoes.all
+    },
+
+    tiposLancamentos () {
+      return this.$store.state.commons.tiposLancamentos
     }
 
   },
 
   methods: {
     Dispach () {
-      this.$store.dispatch('patrimonio/setPatrimonio', { totalAcoes: 300 })
+      // this.$store.dispatch('patrimonio/setPatrimonio', { totalAcoes: 300 })
 
-      this.$store.dispatch('carteiras/loadCarteiras')
+      // this.$store.dispatch('carteiras/loadCarteiras')
 
-      this.$store.dispatch('acoes/loadAcoes')
+      // this.$store.dispatch('acoes/loadAcoes')
+
+      this.$store.dispatch('commons/loadTiposLancamentos')
     }
   }
 }

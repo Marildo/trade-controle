@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import carteiras from './carteiras'
 import patrimonio from './patrimonio'
 import acoes from './acoes'
+import commons from './commons'
 
 Vue.use(Vuex)
 
@@ -21,7 +22,8 @@ export default function (/* { ssrContext } */) {
     modules: {
       patrimonio,
       carteiras,
-      acoes
+      acoes,
+      commons
     },
 
     // enable strict mode (adds overhead!)
