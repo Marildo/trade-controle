@@ -11,7 +11,7 @@ const routes = [
   {
     name: 'Carteiras',
     path: '/carteiras',
-    component: () => import('pages/Carteiras.vue')
+    component: () => import('pages/carteira/Carteiras.vue')
   },
   {
     name: 'Acoes',
