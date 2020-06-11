@@ -9,9 +9,12 @@ const routes = [
     component: () => import('pages/Index.vue')
   },
   {
-    name: 'Carteiras',
     path: '/carteiras',
-    component: () => import('pages/carteira/Carteiras.vue')
+    component: () => import('pages/carteira/Carteiras.vue'),
+    children: [
+      { name: 'Carteiras', path: '', component: () => import('pages/carteira/Index.vue') },
+      { name: 'Carteira', path: ':id', component: () => import('pages/carteira/Carteira.vue'), props: true }
+    ]
   },
   {
     name: 'Acoes',

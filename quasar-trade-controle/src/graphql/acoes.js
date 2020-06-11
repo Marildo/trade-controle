@@ -1,7 +1,6 @@
 import gql from 'graphql-tag'
 
-const acoes = gql`
- query{
+const acoes = gql` query{
   acoes {
     id
     codigo
