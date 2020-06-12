@@ -47,7 +47,7 @@ const saveTrade = (context, trade) => {
         valor: parseFloat(trade.valor),
         corretagem: parseFloat(trade.corretagem),
         impostos: parseFloat(trade.impostos),
-        // idCarteira: trade.carteira.id,
+        idCarteira: trade.carteira.id,
         acao: {
           id: trade.acao.id,
           codigo: trade.acao.codigo

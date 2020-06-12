@@ -72,7 +72,7 @@
                 >
               </template>
               <q-tooltip >
-                {{ trade.acao.preco }}
+                Cotação: {{ trade.acao.preco }}
               </q-tooltip>
              </q-field>
 
@@ -146,8 +146,8 @@
              />
             </q-card-actions>
             <q-card-actions align="right" class="row bg-blue-grey-14 shadow-box shadow-3">
-              <q-btn label="Cancelar" type="reset" color="negative" class="q-ma-3 col-md-2 col-12" />
-              <q-btn label="Salvar"  type="submit" color="positive" class="q-ma-3 col-md-2 col-12" />
+              <q-btn label="Cancelar" type="reset" color="negative" class="mBtn col-md-2 col-12" />
+              <q-btn label="Salvar"  type="submit" color="positive" class="mBtn col-md-2 col-12" />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -158,6 +158,7 @@
 
 <script>
 import { VMoney } from 'v-money'
+import { sucessMessage, errorMessage } from '../../utils/message'
 
 export default {
   name: 'Trade',
@@ -205,24 +206,10 @@ export default {
     onSubmit () {
       this.$store.dispatch('carteiras/saveTrade', this.trade)
         .then(resp => {
-          this.$q.notify({
-            color: 'green-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Operação registrada com sucesso!',
-            position: 'top'
-          })
+          sucessMessage('Operação registrada com sucesso!')
+          this.onReset()
         })
-        .catch(error => {
-          this.$q.notify({
-            color: 'red-4',
-            textColor: 'white',
-            icon: 'cloud_done',
-            message: 'Falha ao realizar operação!',
-            position: 'top',
-            caption: error
-          })
-        })
+        .catch(error => errorMessage('Falha ao realizar operação!', error))
     },
 
     filterCodigo (val, update) {
@@ -236,3 +223,9 @@ export default {
   directives: { money: VMoney }
 }
 </script>
+
+<style scoped>
+  .mBtn{
+    margin: 0.3em 0 0 0;
+  }
+</style>
