@@ -1,5 +1,6 @@
 import vue from 'vue'
 import { carteira, carteiras } from '../../graphql/carteiras'
+import { saveTradeAcao } from '../../graphql/trade'
 
 const loadCarteiras = (context) => {
   vue.prototype.$apollo.query({
@@ -36,8 +37,36 @@ const sumCarteiras = (context, carteiras) => {
   context.commit('SET_SUM', sum)
 }
 
+const saveTrade = (context, trade) => {
+  return new Promise((resolve, reject) => {
+    vue.prototype.$apollo.mutate({
+      mutation: saveTradeAcao,
+      variables: {
+        ...trade,
+        quantidade: parseFloat(trade.quantidade),
+        valor: parseFloat(trade.valor),
+        corretagem: parseFloat(trade.corretagem),
+        impostos: parseFloat(trade.impostos),
+        // idCarteira: trade.carteira.id,
+        acao: {
+          id: trade.acao.id,
+          codigo: trade.acao.codigo
+        }
+      }
+    })
+      .then(resp => resp.data.saveTradeAcao)
+      .then(resp => resolve(resp))
+      .catch(erro => {
+        console.log('erro', erro.networkError.result.errors[0])
+        reject(erro.networkError.result.errors[0].message)
+      })
+  })
+}
+
 export {
   loadCarteiras,
   loadCarteira,
-  sumCarteiras
+  sumCarteiras,
+
+  saveTrade
 }

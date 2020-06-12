@@ -2,7 +2,7 @@
   <div >
     <q-btn flat :color = "isBuy ? 'green' : 'red'"
        icon="fas fa-shopping-cart"
-       @click="onShowForm"
+       @click="showForm = true"
     />
 
     <q-dialog v-model="showForm" persistent>
@@ -120,21 +120,21 @@
 
              <q-input class="q-ma-sm col-md-6 col-10"
                filled
-               v-model="trade.data"
+               v-model="trade.dataTrade"
                label="Data"
                mask="##/##/#### ##:##:##"
              >
                <template v-slot:prepend>
                  <q-icon name="event" class="cursor-pointer">
                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                     <q-date v-model="trade.data" mask="DD/MM/YYYY HH:mm:ss" />
+                     <q-date v-model="trade.dataTrade" mask="DD/MM/YYYY HH:mm:ss" />
                    </q-popup-proxy>
                  </q-icon>
                </template>
                <template v-slot:append>
                  <q-icon name="access_time" class="cursor-pointer">
                    <q-popup-proxy transition-show="scale" transition-hide="scale">
-                     <q-time v-model="trade.data" mask="DD/MM/YYYY HH:mm:ss" format24h />
+                     <q-time v-model="trade.dataTrade" mask="DD/MM/YYYY HH:mm:ss" format24h />
                    </q-popup-proxy>
                  </q-icon>
                </template>
@@ -183,29 +183,46 @@ export default {
     }
   },
 
-  mounted () {
+  created () {
     this.acoes = this.$store.state.acoes.all
     this.onReset()
   },
 
   methods: {
-    onShowForm () {
-      this.showForm = true
-    },
-
     onReset () {
       this.showForm = false
       this.trade = {
+        valor: '10,00',
         carteira: this.carteira,
-        acao: { codigo: '', preco: '' },
+        acao: { codigo: '', preco: '0,00' },
         quantidade: '100',
         continue: false,
-        data: new Date().toLocaleString()
+        compra: this.isBuy,
+        dataTrade: new Date().toLocaleString()
       }
     },
 
     onSubmit () {
-      console.log(this.trade)
+      this.$store.dispatch('carteiras/saveTrade', this.trade)
+        .then(resp => {
+          this.$q.notify({
+            color: 'green-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Operação registrada com sucesso!',
+            position: 'top'
+          })
+        })
+        .catch(error => {
+          this.$q.notify({
+            color: 'red-4',
+            textColor: 'white',
+            icon: 'cloud_done',
+            message: 'Falha ao realizar operação!',
+            position: 'top',
+            caption: error
+          })
+        })
     },
 
     filterCodigo (val, update) {
