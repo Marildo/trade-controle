@@ -65,7 +65,7 @@ module.exports = function (/* ctx */) {
 
       // https://quasar.dev/quasar-cli/cli-documentation/handling-webpack
       extendWebpack (cfg) {
-cfg.module.rules.push({
+        cfg.module.rules.push({
           enforce: 'pre',
           test: /\.(js|vue)$/,
           loader: 'eslint-loader',
@@ -114,7 +114,13 @@ cfg.module.rules.push({
         'QItemLabel',
         'QSeparator',
         'QAvatar',
-        'QFooter'
+        'QFooter',
+        'QDialog',
+        'QForm',
+        'QInput',
+        'QSelect',
+        'QField',
+        'QTooltip'
       ],
 
       directives: [

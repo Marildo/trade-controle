@@ -3,7 +3,9 @@
     <div class="col-12 text-h4 text-blue-grey-6">
       {{ carteira.nome }}
     </div>
-    <theader-carteira :header="sum" />
+    <div class="row 12" >
+      <theaderCarteira :header="carteira" />
+    </div>
   </div>
 </template>
 
@@ -23,8 +25,8 @@ export default {
   },
 
   computed: {
-    sum () {
-      return this.$store.state.carteiras.sum
+    carteira () {
+      return this.$store.state.carteiras.current
     }
   }
 }

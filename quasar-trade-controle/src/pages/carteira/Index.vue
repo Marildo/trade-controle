@@ -15,8 +15,8 @@
                    params: { id: carteira.id }
                   }"
                 />
-                <q-btn flat color="green" icon="fas fa-shopping-cart" />
-                <q-btn flat color="red" icon="fas fa-shopping-cart" />
+                <trade :isBuy=true  :carteira="carteira" />
+                <trade :isBuy=false :carteira="carteira" />
                 <q-btn flat color="orange" icon="fas fa-retweet" />
               </div>
           </div>
@@ -26,11 +26,17 @@
 </template>
 
 <script>
+import trade from '../../components/lancamentos/Trade.vue'
 export default {
-  name: 'Cateiras',
+  name: 'CateirasIndex',
+
+  components: {
+    trade
+  },
 
   mounted () {
     this.$store.dispatch('carteiras/loadCarteiras')
+    this.$store.dispatch('acoes/loadAcoes')
   },
 
   computed: {

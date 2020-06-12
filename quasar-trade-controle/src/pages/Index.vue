@@ -9,6 +9,9 @@
 
     <hr/>
     Tipos: {{tiposLancamentos}}
+
+    <hr/>
+    Total carteiras : {{ sumCarteiras }}
   </q-page>
 </template>
 
@@ -31,19 +34,22 @@ export default {
 
     tiposLancamentos () {
       return this.$store.state.commons.tiposLancamentos
-    }
+    },
 
+    sumCarteiras () {
+      return this.$store.state.carteiras.sum
+    }
   },
 
   methods: {
     Dispach () {
       // this.$store.dispatch('patrimonio/setPatrimonio', { totalAcoes: 300 })
 
-      // this.$store.dispatch('carteiras/loadCarteiras')
+      this.$store.dispatch('carteiras/loadCarteiras')
 
       // this.$store.dispatch('acoes/loadAcoes')
 
-      this.$store.dispatch('commons/loadTiposLancamentos')
+    //  this.$store.dispatch('commons/loadTiposLancamentos')
     }
   }
 }

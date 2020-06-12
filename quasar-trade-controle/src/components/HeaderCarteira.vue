@@ -1,17 +1,13 @@
 <template>
   <div>
-    <div class="row flex-center">
-      <tCard title="Saldo em caixa" :content="header.saldoAcoes" />
+    <div class="row flex flex-center">
+      <tCard title="Saldo em caixa" :content="header.saldoCaixa" />
       <tCard title="Total ações" :content="header.saldoAcoes" />
-      <tCard title="Total" :content="header.saldoAcoes + header.saldoAcoes" />
-      <tCard title="Último mensal" content=1000 />
-      <tCard title="Último semanal" content=1000 />
-      <tCard title="Último resultado" content=1000 />
-      <tCard title="Último resultado" content=1000 />
-      <tCard title="Último resultado" content=1000 />
-      <tCard title="Último resultado" content=rrr />
+      <tCard title="Total" :content="header.saldoCaixa + header.saldoAcoes" />
+      <tCard title="Último mensal" :content="header.resultadoMensal" />
+      <tCard title="Último semanal" :content="header.resultadoSemanal" />
+      <tCard title="Último resultado" :content="header.ultimoResultado" />
     </div>
-    <hr>
   </div>
 </template>
 
@@ -21,9 +17,6 @@ import tCard from './TCard.vue'
 export default {
   name: 'HeaderCarteira',
   components: { tCard },
-  props: ['header'],
-  mounted () {
-    console.log(this.header)
-  }
+  props: ['header']
 }
 </script>
