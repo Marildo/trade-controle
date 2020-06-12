@@ -120,7 +120,11 @@ module.exports = function (/* ctx */) {
         'QInput',
         'QSelect',
         'QField',
-        'QTooltip'
+        'QCheckbox',
+        'QTooltip',
+        'QDate',
+        'QTime',
+        'QPopupProxy'
       ],
 
       directives: [

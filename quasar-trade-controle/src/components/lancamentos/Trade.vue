@@ -2,7 +2,7 @@
   <div >
     <q-btn flat :color = "isBuy ? 'green' : 'red'"
        icon="fas fa-shopping-cart"
-       @click="showForm = true"
+       @click="onShowForm"
     />
 
     <q-dialog v-model="showForm" persistent>
@@ -10,16 +10,17 @@
         <q-card-section>
           <q-avatar icon="fas fa-shopping-cart" :color = "isBuy ? 'green' : 'red'" text-color="white" />
           <span class="q-ml-sm text-subtitle1 text-blue-grey-9">{{ isBuy ? "Compra" : "Venda"}} de ações</span>
+          <hr>
         </q-card-section>
 
         <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md" >
-          <q-card-actions class="row q-pa-md" align="center">
+          <q-card-actions class="row q-pa-md flex justify-start">
               <q-input class="q-ma-sm col-md-3 col-5"
                 filled
                 v-model="trade.carteira.nome"
                 label="Carteira"
                 :readonly=true
-                 :rules="['']"
+                :rules="['']"
               />
 
               <q-select class="q-ma-sm col-md-3 col-5"
@@ -30,13 +31,11 @@
                 hide-selected
                 fill-input
                 input-debounce="0"
-                :options="acoes"
                 option-label="codigo"
+                :options="acoes"
                 @filter="filterCodigo"
                 lazy-rules
-                :rules="[
-                 val => val !== null && val !== '' || 'Selecione uma ação'
-                ]"
+                :rules="acaoRule"
                >
                <template v-slot:no-option>
                  <q-item>
@@ -62,10 +61,7 @@
               label="Valor *"
               prefix= 'R$ '
               lazy-rules
-              :rules="[
-                 val => val !== null && val !== '' || 'Please type your age',
-                 val => val > 0  || 'Please type a real age'
-               ]"
+              :rules="valorRule"
               >
               <template v-slot:control="{ id, floatingLabel, value, emitValue }">
                 <input :id="id" class="q-field__input text-right"
@@ -86,10 +82,7 @@
               label="Corretagem "
               prefix= 'R$ '
               lazy-rules
-              :rules="[
-                 val => val !== null && val !== '' || 'Please type your age',
-                 val => val > 0  || 'Please type a real age'
-               ]"
+              :rules="['']"
               >
               <template v-slot:control="{ id, floatingLabel, value, emitValue }">
                 <input :id="id" class="q-field__input text-right"
@@ -110,10 +103,7 @@
               label="Impostos "
               prefix= 'R$ '
               lazy-rules
-              :rules="[
-                 val => val !== null && val !== '' || 'Please type your age',
-                 val => val > 0  || 'Please type a real age'
-               ]"
+              :rules="['']"
               >
               <template v-slot:control="{ id, floatingLabel, value, emitValue }">
                 <input :id="id" class="q-field__input text-right"
@@ -128,6 +118,32 @@
               </q-tooltip>
              </q-field>
 
+             <q-input class="q-ma-sm col-md-6 col-10"
+               filled
+               v-model="trade.data"
+               label="Data"
+               mask="##/##/#### ##:##:##"
+             >
+               <template v-slot:prepend>
+                 <q-icon name="event" class="cursor-pointer">
+                   <q-popup-proxy transition-show="scale" transition-hide="scale">
+                     <q-date v-model="trade.data" mask="DD/MM/YYYY HH:mm:ss" />
+                   </q-popup-proxy>
+                 </q-icon>
+               </template>
+               <template v-slot:append>
+                 <q-icon name="access_time" class="cursor-pointer">
+                   <q-popup-proxy transition-show="scale" transition-hide="scale">
+                     <q-time v-model="trade.data" mask="DD/MM/YYYY HH:mm:ss" format24h />
+                   </q-popup-proxy>
+                 </q-icon>
+               </template>
+             </q-input>
+
+             <q-checkbox class="q-ma-sm col-md-4 col-10"
+              v-model="trade.continue"
+              label="Salvar e continuar"
+             />
             </q-card-actions>
             <q-card-actions align="right" class="row bg-blue-grey-14 shadow-box shadow-3">
               <q-btn label="Cancelar" type="reset" color="negative" class="q-ma-3 col-md-2 col-12" />
@@ -151,14 +167,8 @@ export default {
   data () {
     return {
       showForm: false,
-
       acoes: [],
-
-      trade: {
-        carteira: this.carteira,
-        acao: { codigo: '', preco: '' },
-        quantidade: ''
-      },
+      trade: {},
 
       moneyFormatForDirective: {
         decimal: ',',
@@ -167,17 +177,31 @@ export default {
         masked: false /* doesn't work with directive */
       },
 
-      quantidadeRule: [v => (!!v && parseInt(v) > 0) || 'Informe a quantidade']
+      quantidadeRule: [v => (!!v && parseInt(v) > 0) || 'Informe a quantidade'],
+      valorRule: [v => (!!v && parseFloat(v.replace(',', '.')) >= 0.05) || 'Valor deve ser maior 0,05'],
+      acaoRule: [val => (val && val.codigo.length > 3) || 'Selecione uma ação']
     }
   },
 
   mounted () {
     this.acoes = this.$store.state.acoes.all
+    this.onReset()
   },
 
   methods: {
+    onShowForm () {
+      this.showForm = true
+    },
+
     onReset () {
       this.showForm = false
+      this.trade = {
+        carteira: this.carteira,
+        acao: { codigo: '', preco: '' },
+        quantidade: '100',
+        continue: false,
+        data: new Date().toLocaleString()
+      }
     },
 
     onSubmit () {
@@ -195,9 +219,3 @@ export default {
   directives: { money: VMoney }
 }
 </script>
-
-<style scoped>
-  .mg {
-    margin: 0.1em;
-  }
-</style>
