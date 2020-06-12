@@ -1,6 +1,6 @@
 import vue from 'vue'
 import { carteira, carteiras } from '../../graphql/carteiras'
-import { saveTradeAcao } from '../../graphql/trade'
+import { saveTradeAcao, movimentacoesByIdCarteira } from '../../graphql/lancamentos'
 
 const loadCarteiras = (context) => {
   vue.prototype.$apollo.query({
@@ -59,8 +59,21 @@ const saveTrade = (context, trade) => {
       .catch(erro => {
         console.log('erro', erro.networkError.result.errors[0])
         reject(erro.networkError.result.errors[0].message)
+        // TODO inserir em lancamentos e carregar carteira
       })
   })
+}
+
+const loadLancamentos = (context, idCarteira) => {
+  vue.prototype.$apollo.query({
+    query: movimentacoesByIdCarteira,
+    variables: { idCarteira: parseInt(idCarteira) }
+  })
+    .then(resp => resp.data.movimentacoesByIdCarteira)
+    .then(lancamentos => {
+      context.commit('SET_LANCAMENTOS', lancamentos)
+    })
+    .catch(error => console.log(error))
 }
 
 export {
@@ -68,5 +81,6 @@ export {
   loadCarteira,
   sumCarteiras,
 
-  saveTrade
+  saveTrade,
+  loadLancamentos
 }

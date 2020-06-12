@@ -124,7 +124,15 @@ module.exports = function (/* ctx */) {
         'QTooltip',
         'QDate',
         'QTime',
-        'QPopupProxy'
+        'QPopupProxy',
+        'QTabs',
+        'QTab',
+        'QTabPanels',
+        'QTabPanel',
+        'QTable',
+        'QTh',
+        'QTr',
+        'QTd'
       ],
 
       directives: [

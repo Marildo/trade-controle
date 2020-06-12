@@ -10,8 +10,13 @@ const SET_SUM = (state, payload) => {
   state.sum = payload
 }
 
+const SET_LANCAMENTOS = (state, payload) => {
+  state.lancamentos = payload
+}
+
 export {
   SET_CARTEIRAS,
   SET_CARTEIRA,
-  SET_SUM
+  SET_SUM,
+  SET_LANCAMENTOS
 }

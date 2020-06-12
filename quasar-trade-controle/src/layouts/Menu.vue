@@ -1,7 +1,6 @@
 <template>
       <q-list>
         <q-item-label header class="text-grey-8">Menu</q-item-label>
-
         <section v-for="item in items" :key="item.title" class="text-indigo-8">
             <q-item clickable :to="item.route">
                 <q-item-section  v-if="item.icon" avatar>
@@ -29,7 +28,6 @@ export default {
       ]
     }
   }
-
 }
 </script>
 

@@ -28,6 +28,15 @@ const saveTradeAcao = gql`
      }
 }`
 
+const movimentacoesByIdCarteira = gql`
+  query($idCarteira: Int!){
+    movimentacoesByIdCarteira(idCarteira: $idCarteira){
+      id dataMovimentacao valor descricao idCarteira
+      tipoLancamento {key descricao}
+  }
+}`
+
 export {
-  saveTradeAcao
+  saveTradeAcao,
+  movimentacoesByIdCarteira
 }

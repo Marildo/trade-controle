@@ -4,7 +4,7 @@ const sucessMessage = (message, caption) => {
   vue.prototype.$q.notify({
     color: 'green-4',
     textColor: 'white',
-    icon: 'cloud_done',
+    icon: 'check',
     position: 'top',
     message,
     caption
@@ -15,7 +15,7 @@ const errorMessage = (message, caption) => {
   vue.prototype.$q.notify({
     color: 'red-4',
     textColor: 'white',
-    icon: 'cloud_done',
+    icon: 'error',
     position: 'top',
     message,
     caption

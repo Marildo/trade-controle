@@ -2,7 +2,7 @@
   <q-layout view="hHh lpR lFf">
     <tcHeader @changeDrawer="drawer = !drawer" />
 
-    <q-drawer show-if-above v-model="drawer" side="left" bordered width="200">
+    <q-drawer show-if-above v-model="drawer" side="left" bordered width="100">
      <tcMenu/>
     </q-drawer>
 
