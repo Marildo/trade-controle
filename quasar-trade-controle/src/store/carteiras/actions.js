@@ -55,11 +55,21 @@ const saveTrade = (context, trade) => {
       }
     })
       .then(resp => resp.data.saveTradeAcao)
-      .then(resp => resolve(resp))
+      .then(resp => {
+        // TODO não recarregar tudo
+        vue.prototype.$apollo.resetStore()
+          .then(r => {
+            context.dispatch('loadCarteira', trade.carteira.id)
+            context.dispatch('loadCarteiras', trade.carteira.id)
+            context.dispatch('loadLancamentos', trade.carteira.id)
+          })
+
+        resolve(resp)
+      })
       .catch(erro => {
-        console.log('erro', erro.networkError.result.errors[0])
+        console.log(erro)
+        console.log(erro.networkError.result.errors[0])
         reject(erro.networkError.result.errors[0].message)
-        // TODO inserir em lancamentos e carregar carteira
       })
   })
 }
@@ -70,9 +80,7 @@ const loadLancamentos = (context, idCarteira) => {
     variables: { idCarteira: parseInt(idCarteira) }
   })
     .then(resp => resp.data.movimentacoesByIdCarteira)
-    .then(lancamentos => {
-      context.commit('SET_LANCAMENTOS', lancamentos)
-    })
+    .then(lancamentos => context.commit('SET_LANCAMENTOS', lancamentos))
     .catch(error => console.log(error))
 }
 

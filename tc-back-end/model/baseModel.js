@@ -46,7 +46,10 @@ const findById = (table, id) => {
             .select()
             .where('id', id)
             .first()
-            .then(resp => resolve(resp))
+            .then(resp => {
+              resolve(resp)
+              // console.log(resp)
+            })
             .catch(error => {
                 console.log(error)
                 reject(error.detail)

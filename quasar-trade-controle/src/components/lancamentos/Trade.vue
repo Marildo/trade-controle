@@ -3,7 +3,11 @@
     <q-btn flat :color = "isBuy ? 'green' : 'red'"
        icon="fas fa-shopping-cart"
        @click="showForm = true"
-    />
+    >
+      <q-tooltip >
+         {{isBuy ? "Nova Compra" : "Nova Venda" }}
+      </q-tooltip>
+    </q-btn>
 
     <q-dialog v-model="showForm" persistent>
       <q-card>

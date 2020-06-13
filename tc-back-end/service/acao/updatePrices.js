@@ -19,6 +19,7 @@ const update = () => {
         .then(acoes => {
             acoes.forEach(acao => {
                 findCotacao(acao.codigo)
+                    .then(price => parseFloat(price))
                     .then(price =>
                         model.updatePrice(acao.id, price)
                             .then()//console.log('Updated ',acao.codigo))                       

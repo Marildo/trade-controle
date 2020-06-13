@@ -3,18 +3,13 @@
      <div class="row">
        <div class="col-md-4 col-12" v-for="carteira in carteiras" :key="carteira.id">
           <div class="carteira">
-              <div class="text-blue-8 text-h4  ">{{carteira.nome}}</div>
-              <div class="text-teal-5 text-h6  ">Caixa: {{carteira.saldoCaixa}}</div>
-              <div class="text-teal-5 text-h6  ">Ações: {{carteira.saldoAcoes}}</div>
-              <div class="text-teal-5 text-h6  ">Total: {{carteira.saldoCaixa + carteira.saldoAcoes}}</div>
+              <q-btn :to="getLink(carteira.id)" :label="carteira.nome" flat  class="text-blue-8 text-h5 "/>
+              <div class="text-teal-5 text-h6">Caixa: {{carteira.saldoCaixa}}</div>
+              <div class="text-teal-5 text-h6">Ações: {{carteira.saldoAcoes}}</div>
+              <div class="text-teal-5 text-h6">Total: {{carteira.saldoCaixa + carteira.saldoAcoes}}</div>
               <div> <hr></div>
               <div class="actions">
-                <q-btn flat color="primary" icon="fas fa-eye"
-                 :to="{
-                   name: 'Carteira',
-                   params: { id: carteira.id }
-                  }"
-                />
+                <q-btn flat color="primary" icon="fas fa-eye"  :to="getLink(carteira.id)" />
                 <trade :isBuy=true  :carteira="carteira" />
                 <trade :isBuy=false :carteira="carteira" />
                 <q-btn flat color="orange" icon="fas fa-retweet" />
@@ -42,6 +37,15 @@ export default {
   computed: {
     carteiras () {
       return this.$store.state.carteiras.all
+    }
+  },
+
+  methods: {
+    getLink (id) {
+      return {
+        name: 'Carteira',
+        params: { id }
+      }
     }
   }
 }

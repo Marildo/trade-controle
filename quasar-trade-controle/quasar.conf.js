@@ -132,7 +132,8 @@ module.exports = function (/* ctx */) {
         'QTable',
         'QTh',
         'QTr',
-        'QTd'
+        'QTd',
+        'QSpace'
       ],
 
       directives: [
