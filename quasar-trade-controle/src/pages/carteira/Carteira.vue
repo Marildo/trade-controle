@@ -6,13 +6,13 @@
         class="text-blue-grey-9"
         inline-label
       >
-        <q-tab name="dashboard" icon="insert_chart" :label="carteira.nome" />
+        <q-tab name="dashboard" icon="analytics" :label="carteira.nome" />
+        <q-tab name="portifolio" icon="view_sidebar" label="Portifólio" />
         <q-tab name="lancamentos" icon="list" label="Lançamentos" />
-        <q-tab name="movies" icon="movie" label="Movies" />
       </q-tabs>
       <q-space />
-      <ttrade :isBuy=true  :carteira="carteira" />
-      <ttrade :isBuy=false :carteira="carteira" />
+      <tTrade :isBuy=true  :carteira="carteira" />
+      <tTrade :isBuy=false :carteira="carteira" />
     </q-toolbar>
 
     <q-tab-panels v-model="tab" animated>
@@ -20,13 +20,12 @@
         <theaderCarteira :header="carteira" />
       </q-tab-panel>
 
-      <q-tab-panel name="lancamentos">
-        <tLancamentos />
+      <q-tab-panel name="portifolio">
+        <tPortifolio />
       </q-tab-panel>
 
-      <q-tab-panel name="movies">
-        <div class="text-h6">Movies</div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="lancamentos">
+        <tLancamentos />
       </q-tab-panel>
     </q-tab-panels>
  </q-card>
@@ -36,7 +35,8 @@
 
 import theaderCarteira from '../../components/HeaderCarteira.vue'
 import tLancamentos from '../../components/lancamentos/Lancamentos'
-import ttrade from '../../components/lancamentos/Trade.vue'
+import tTrade from '../../components/lancamentos/Trade.vue'
+import tPortifolio from '../../components/Portifolio'
 
 export default {
   name: 'Carteira',
@@ -44,7 +44,8 @@ export default {
   components: {
     theaderCarteira,
     tLancamentos,
-    ttrade
+    tPortifolio,
+    tTrade
   },
 
   data () {
