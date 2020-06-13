@@ -36,7 +36,13 @@ const movimentacoesByIdCarteira = gql`
   }
 }`
 
+const deleteMovimentacao = gql` 
+  mutation($id: ID!){
+    deleteMovimentacao(id :$id)
+}`
+
 export {
   saveTradeAcao,
-  movimentacoesByIdCarteira
+  movimentacoesByIdCarteira,
+  deleteMovimentacao
 }

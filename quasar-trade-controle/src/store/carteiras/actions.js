@@ -1,6 +1,8 @@
 import vue from 'vue'
 import { carteira, carteiras } from '../../graphql/carteiras'
-import { saveTradeAcao, movimentacoesByIdCarteira } from '../../graphql/lancamentos'
+import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao } from '../../graphql/lancamentos'
+
+// TODO centralizar tratamentos de erros
 
 const loadCarteiras = (context) => {
   vue.prototype.$apollo.query({
@@ -61,7 +63,7 @@ const saveTrade = (context, trade) => {
           .then(r => {
             context.dispatch('loadCarteira', trade.carteira.id)
             context.dispatch('loadCarteiras', trade.carteira.id)
-            context.dispatch('loadLancamentos', trade.carteira.id)
+            context.commit('ADD_LANCAMENTO', resp)
           })
 
         resolve(resp)
@@ -84,11 +86,27 @@ const loadLancamentos = (context, idCarteira) => {
     .catch(error => console.log(error))
 }
 
+const deleteLancamento = (context, lancamento) => {
+  vue.prototype.$apollo.mutate({
+    mutation: deleteMovimentacao,
+    variables: { id: lancamento.id }
+  })
+    .then(resp => {
+      context.commit('REMOVE_LANCAMENTO', lancamento)
+      context.dispatch('loadCarteira', lancamento.idCarteira)
+    })
+    .catch(error => {
+      console.log(error)
+      console.log(error.networkError)
+    })
+}
+
 export {
   loadCarteiras,
   loadCarteira,
   sumCarteiras,
 
   saveTrade,
-  loadLancamentos
+  loadLancamentos,
+  deleteLancamento
 }

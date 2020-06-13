@@ -14,6 +14,7 @@
       <ttrade :isBuy=true  :carteira="carteira" />
       <ttrade :isBuy=false :carteira="carteira" />
     </q-toolbar>
+
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="dashboard">
         <theaderCarteira :header="carteira" />

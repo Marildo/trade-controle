@@ -6,8 +6,26 @@
       :columns="columns"
       row-key="id"
       flat
-      bordered
-    />
+      bordered >
+      <template v-slot:body="props">
+        <q-tr :props="props">
+          <q-td
+            v-for="col in props.cols"
+            :key="col.name"
+            :props="props"
+          >
+            {{ col.value }}
+          </q-td>
+          <q-td auto-width>
+            <q-btn size="sm"
+              color="red"
+              icon="delete"
+              round dense
+              @click="deleteLancamento(props)"  />
+          </q-td>
+        </q-tr>
+      </template>
+    </q-table>
   </div>
 </template>
 
@@ -57,6 +75,12 @@ export default {
   computed: {
     lancamentos () {
       return this.$store.state.carteiras.lancamentos
+    }
+  },
+
+  methods: {
+    deleteLancamento ({ row }) {
+      this.$store.dispatch('carteiras/deleteLancamento', row)
     }
   }
 }
