@@ -23,16 +23,32 @@ const saveTradeAcao = gql`
             acao: $acao
         }
     ){
-        id dataMovimentacao valor descricao idCarteira
-        tipoLancamento {key descricao}
+        id
+        dataMovimentacao
+        valor
+        descricao
+        idCarteira
+        tipoLancamento
+        {
+          key
+          descricao
+        }
      }
 }`
 
 const movimentacoesByIdCarteira = gql`
   query($idCarteira: Int!){
     movimentacoesByIdCarteira(idCarteira: $idCarteira){
-      id dataMovimentacao valor descricao idCarteira
-      tipoLancamento {key descricao}
+      id 
+      dataMovimentacao
+      valor
+      descricao
+      idCarteira
+      tipoLancamento
+      {
+        key
+        descricao
+      }
   }
 }`
 

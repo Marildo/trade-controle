@@ -6,6 +6,12 @@ const SET_CARTEIRA = (state, payload) => {
   state.current = payload
 }
 
+const UPDATE_CARTEIRAS = (state, payload) => {
+  const carteiras = state.carteiras
+  const index = carteiras.findIndex(i => i.id === payload.id)
+  carteiras.splice(index, 1, payload)
+}
+
 const SET_SUM = (state, payload) => {
   state.sum = payload
 }
@@ -31,5 +37,6 @@ export {
 
   SET_LANCAMENTOS,
   ADD_LANCAMENTO,
-  REMOVE_LANCAMENTO
+  REMOVE_LANCAMENTO,
+  UPDATE_CARTEIRAS
 }

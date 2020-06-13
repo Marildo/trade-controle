@@ -14,6 +14,10 @@ const acoes = gql` query{
       id
       nome
     }
+    segmento {
+      id
+      nome
+    }
   }
 }`
 

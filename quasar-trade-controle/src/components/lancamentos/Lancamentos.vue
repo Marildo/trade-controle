@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-md">
     <q-table
-      class="my-sticky-header-table"
+      class="table-header-grey"
       :data="lancamentos"
       :columns="columns"
       row-key="id"
@@ -67,6 +67,9 @@ export default {
           label: 'Tipo',
           field: row => row.tipoLancamento.descricao,
           sortable: true
+        },
+        {
+          label: 'Excluir'
         }
       ]
     }
@@ -85,23 +88,3 @@ export default {
   }
 }
 </script>
-
-<style lang="sass">
-.my-sticky-header-table
-  .q-table__top,
-  .q-table__bottom,
-  thead tr:first-child th
-    /* bg color is important for th; just specify one */
-    background-color: $blue-grey-2
-
-  thead tr th
-    position: sticky
-    z-index: 1
-  thead tr:first-child th
-    top: 0
-
-  /* this is when the loading indicator appears */
-  &.q-table--loading thead tr:last-child th
-    /* height of all previous header rows */
-    top: 48px
-</style>

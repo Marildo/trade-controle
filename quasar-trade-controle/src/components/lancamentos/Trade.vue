@@ -2,7 +2,7 @@
   <div >
     <q-btn flat :color = "isBuy ? 'green' : 'red'"
        icon="fas fa-shopping-cart"
-       @click="showForm = true"
+       @click="onShowForm"
     >
       <q-tooltip >
          {{isBuy ? "Nova Compra" : "Nova Venda" }}
@@ -17,7 +17,7 @@
           <hr>
         </q-card-section>
 
-        <q-form @submit="onSubmit" @reset="onReset" class="q-gutter-md" >
+        <q-form @submit="onSubmit" class="q-gutter-md" >
           <q-card-actions class="row q-pa-md flex justify-start">
               <q-input class="q-ma-sm col-md-3 col-5"
                 filled
@@ -150,7 +150,7 @@
              />
             </q-card-actions>
             <q-card-actions align="right" class="row bg-blue-grey-14 shadow-box shadow-3">
-              <q-btn label="Cancelar" type="reset" color="negative" class="mBtn col-md-2 col-12" />
+              <q-btn label="Cancelar" @click="onReset"  type="button" color="negative" class="mBtn col-md-2 col-12" />
               <q-btn label="Salvar"  type="submit" color="positive" class="mBtn col-md-2 col-12" />
           </q-card-actions>
         </q-form>
@@ -194,6 +194,11 @@ export default {
   },
 
   methods: {
+    onShowForm () {
+      this.onReset()
+      this.showForm = true
+    },
+
     onReset () {
       this.showForm = false
       this.trade = {

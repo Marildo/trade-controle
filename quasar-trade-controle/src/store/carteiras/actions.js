@@ -11,7 +11,7 @@ const loadCarteiras = (context) => {
     .then(resp => resp.data.carteiras)
     .then(carteiras => {
       context.commit('SET_CARTEIRAS', carteiras)
-      context.dispatch('sumCarteiras', carteiras)
+      sumCarteiras(context, carteiras)
     })
     .catch(error => console.log(error))
 }
@@ -24,7 +24,10 @@ const loadCarteira = (context, id) => {
     }
   })
     .then(resp => resp.data.carteira)
-    .then(carteira => context.commit('SET_CARTEIRA', carteira))
+    .then(carteira => {
+      context.commit('SET_CARTEIRA', carteira)
+      updateCarteiras(context, carteira)
+    })
     .catch(error => console.log(error))
 }
 
@@ -39,12 +42,26 @@ const sumCarteiras = (context, carteiras) => {
   context.commit('SET_SUM', sum)
 }
 
+const updateCarteiras = (context, carteira) => {
+  const carteiras = context.state.carteiras
+  if (carteiras === undefined || carteira.lenght === 0) {
+    context.dispatch('loadCarteiras')
+  } else {
+    context.commit('UPDATE_CARTEIRAS', carteira)
+    sumCarteiras(context, carteiras)
+  }
+}
+
 const saveTrade = (context, trade) => {
+  const split = trade.dataTrade.split('/')
+  const dataTrade = new Date(split[1] + '/' + split[0] + '/' + split[2])
+
   return new Promise((resolve, reject) => {
     vue.prototype.$apollo.mutate({
       mutation: saveTradeAcao,
       variables: {
         ...trade,
+        dataTrade,
         quantidade: parseFloat(trade.quantidade),
         valor: parseFloat(trade.valor),
         corretagem: parseFloat(trade.corretagem),
@@ -62,7 +79,6 @@ const saveTrade = (context, trade) => {
         vue.prototype.$apollo.resetStore()
           .then(r => {
             context.dispatch('loadCarteira', trade.carteira.id)
-            context.dispatch('loadCarteiras', trade.carteira.id)
             context.commit('ADD_LANCAMENTO', resp)
           })
 
@@ -104,7 +120,6 @@ const deleteLancamento = (context, lancamento) => {
 export {
   loadCarteiras,
   loadCarteira,
-  sumCarteiras,
 
   saveTrade,
   loadLancamentos,

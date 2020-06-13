@@ -56,6 +56,7 @@ export default {
   mounted () {
     this.$store.dispatch('carteiras/loadCarteira', this.$route.params.id)
     this.$store.dispatch('carteiras/loadLancamentos', this.$route.params.id)
+    this.$store.dispatch('acoes/loadAcoes')
   },
 
   computed: {
