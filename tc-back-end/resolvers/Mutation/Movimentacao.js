@@ -1,4 +1,4 @@
-const { MovimentacaoModel,TradeAcaoModel } = require('../../model/')
+const { MovimentacaoModel,TradeAcaoModel, SummaryAcoesModel } = require('../../model/')
 
 const model = new MovimentacaoModel
 
@@ -6,6 +6,12 @@ const model = new MovimentacaoModel
 // TODO realizar validacoes
 
 const deleteMovimentacao = async (_, {id}) => {
+    const tradeModel = new TradeAcaoModel
+    const trade =  await tradeModel.findByMovimentacaoId(id)
+    if(trade != undefined){
+        trade.deleting = true
+        new SummaryAcoesModel().updateSummary(trade)
+    }
     return model.deleteById(id)
 }
 

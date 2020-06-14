@@ -7,33 +7,31 @@ function SummaryAcoesModel() {
 
     this.save = (summary) => save(table, summary)
 
-    this.updateSummary = (dados) => {
-        this.updateQuantidade(dados)
-    }
-
-    this.updateQuantidade = async (trade) => {
+    this.updateSummary = async (trade) => {
         try {
             const idCarteira = trade.idCarteira
             const idAcao = trade.acao.id
+           
+            const select =
+                `SELECT
+                 SUM(quantidade * preco_compra) / SUM(quantidade) prCompra, 
+                 SUM(quantidade * preco_venda) / SUM(quantidade) prVenda,
+                 SUM(quantidade) qtd
+                FROM trade_acoes
+                 WHERE acao_id = ? AND carteira_id = ? AND finalizada = false`
+
+            const query = await db.raw(select, [idAcao, idCarteira])
+            const row = query.rows[0]
 
             const summary = await this.findByAcaoAndIdCarteira(idAcao, idCarteira)
-            const quantidade = parseFloat(summary.quantidade)
-            const precoMedio = parseFloat(summary.preco_medio)
-            const quantidadeOperacao = trade.quantidade * (trade.compra ? 1 : -1)
-
-            const newQtd = quantidade + quantidadeOperacao
-
-            if (newQtd > 0 && trade.compra) {
-                summary.preco_medio =
-                    ((quantidade * precoMedio) + (trade.quantidade * trade.valor)) / newQtd
-            } else if (newQtd < 0 && !trade.compra) {
-                summary.preco_medio =
-                    (((quantidade * -1) * precoMedio) + (trade.quantidade * trade.valor)) / (newQtd * -1)
-            } else if (newQtd === 0) {
+            if (row) {
+                summary.quantidade = row.qtd
+                summary.preco_medio = row.prcompra > 0 ? row.prcompra : row.prvenda
+            } else {
+                summary.quantidade = 0
                 summary.preco_medio = 0
             }
 
-            summary.quantidade = newQtd
             return update(table, summary)
         } catch (error) {
             console.log(error)
@@ -52,7 +50,9 @@ function SummaryAcoesModel() {
                     } else {
                         const summary = {
                             acao_id,
-                            carteira_id
+                            carteira_id,
+                            quantidade: 0,
+                            preco_medio: 0
                         }
                         resolve(this.save(summary))
                     }

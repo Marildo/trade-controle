@@ -1,9 +1,10 @@
 type TradeAcoes {
       id:ID!
-      dataTrade: String!
-      compra: Boolean!
+      dataCompra: String
+      dataVenda: String
       quantidade: Int!
-      valor: Float!
+      precoCompra: Float
+      precoVenda: Float
       corretagem: Float
       impostos: Float
       acao:Acao
@@ -15,10 +16,11 @@ input AcaoInput {
 }
 
 input TradeAcoesInput {
-      dataTrade: String!
-      compra: Boolean!
+      dataCompra: String
+      dataVenda: String
       quantidade: Int!
-      valor: Float!
+      precoCompra: Float
+      precoVenda: Float
       corretagem: Float
       impostos: Float
       idCarteira:ID!

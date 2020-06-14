@@ -40,7 +40,6 @@ function CarteiraModel() {
                 FROM summary_acoes 
                 INNER JOIN acoes a ON acao_id = a.id
                 WHERE carteira_id = ?`
-
             db.raw(select, [id])
                 .then(resp => resolve(resp.rows[0].total))
                 .catch(error => {
@@ -49,11 +48,6 @@ function CarteiraModel() {
                 })
         })
     }
-
-    this.findOperacoes = (id) => {
-
-    }
-
 }
 
 module.exports = CarteiraModel
