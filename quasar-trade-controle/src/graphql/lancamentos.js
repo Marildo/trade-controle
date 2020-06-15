@@ -2,37 +2,40 @@ import gql from 'graphql-tag'
 
 const saveTradeAcao = gql`
   mutation(
-      $dataTrade: String!
-      $compra: Boolean!
+      $dataCompra: String
+      $dataVenda: String
       $quantidade: Int!
-      $valor: Float!
+      $precoCompra: Float
+      $precoVenda: Float
       $corretagem: Float
       $impostos: Float
       $idCarteira:ID!
       $acao:AcaoInput!
   ){ 
     saveTradeAcao(
-        dados:{
-            dataTrade: $dataTrade
-            compra: $compra
-            quantidade: $quantidade
-            valor: $valor
-            corretagem: $corretagem
-            impostos: $impostos
-            idCarteira:$idCarteira
-            acao: $acao
-        }
-    ){
-        id
-        dataMovimentacao
-        valor
+      dados:{
+        dataCompra: $dataCompra
+        dataVenda: $dataVenda
+        quantidade: $quantidade
+        precoCompra: $precoCompra
+        precoVenda: $precoVenda
+        corretagem: $corretagem
+        impostos: $impostos
+        idCarteira:$idCarteira
+        acao: $acao
+      }
+    )
+    {
+      id
+      dataMovimentacao
+      valor
+      descricao
+      idCarteira
+      tipoLancamento
+      {
+        key
         descricao
-        idCarteira
-        tipoLancamento
-        {
-          key
-          descricao
-        }
+      }
      }
 }`
 

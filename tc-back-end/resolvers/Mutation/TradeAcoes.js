@@ -4,8 +4,6 @@ const { formateReal } = require('../../lib/numberUtils')
 
 // TODO validar se acao e carteiras existem
 
-
-
 async function saveTradeAcao(_, { dados }) {
     try {
         dados.compra = dados.precoCompra > 0  && (isNaN(dados.precoVenda) || dados.precoVenda == 0)

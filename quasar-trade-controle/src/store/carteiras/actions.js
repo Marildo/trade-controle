@@ -54,16 +54,20 @@ const updateCarteiras = (context, carteira) => {
 
 const saveTrade = (context, trade) => {
   const split = trade.dataTrade.split('/')
-  const dataTrade = new Date(split[1] + '/' + split[0] + '/' + split[2])
+  if (trade.compra) {
+    trade.dataCompra = new Date(split[1] + '/' + split[0] + '/' + split[2])
+    trade.precoCompra = parseFloat(trade.valor)
+  } else {
+    trade.dataVenda = new Date(split[1] + '/' + split[0] + '/' + split[2])
+    trade.precoVenda = parseFloat(trade.valor)
+  }
 
   return new Promise((resolve, reject) => {
     vue.prototype.$apollo.mutate({
       mutation: saveTradeAcao,
       variables: {
         ...trade,
-        dataTrade,
         quantidade: parseFloat(trade.quantidade),
-        valor: parseFloat(trade.valor),
         corretagem: parseFloat(trade.corretagem),
         impostos: parseFloat(trade.impostos),
         idCarteira: trade.carteira.id,

@@ -4,6 +4,7 @@
       class="table-header-grey"
       :data="lancamentos"
       :columns="columns"
+      :pagination.sync="pagination"
       row-key="id"
       flat
       bordered >
@@ -37,6 +38,9 @@ export default {
 
   data () {
     return {
+      pagination: {
+        rowsPerPage: 30
+      },
       columns: [
         {
           name: 'data',

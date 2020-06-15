@@ -20,10 +20,10 @@ function CarteiraModel() {
 
             const select =
                 `SELECT COALESCE(
-                    SUM(CASE WHEN tipo IN (${tiposSaida}) THEN valor ELSE 0 END) -
-                    SUM(CASE WHEN tipo IN (${tiposEntrada}) THEN valor ELSE 0 END), 0) saldo 
+                  SUM(CASE WHEN tipo IN (${tiposSaida}) THEN valor ELSE 0 END) -
+                  SUM(CASE WHEN tipo IN (${tiposEntrada}) THEN valor ELSE 0 END), 0) saldo 
                  FROM movimentacoes_carteiras
-                 WHERE carteira_id = ?`
+                  WHERE carteira_id = ?`
             db.raw(select, [id])
                 .then(resp => resolve(resp.rows[0].saldo))
                 .catch(error => {
