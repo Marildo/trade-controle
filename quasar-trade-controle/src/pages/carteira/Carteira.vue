@@ -11,8 +11,9 @@
         <q-tab name="lancamentos" icon="list" label="Lançamentos" />
       </q-tabs>
       <q-space />
-      <tTrade :isBuy=true  :carteira="carteira" />
-      <tTrade :isBuy=false :carteira="carteira" />
+      <tTrade tipoTrade="compra" :carteira="carteira" />
+      <tTrade tipoTrade="venda" :carteira="carteira" />
+      <tTrade tipoTrade="dayTrade" :carteira="carteira" />
     </q-toolbar>
 
     <q-tab-panels v-model="tab" animated>

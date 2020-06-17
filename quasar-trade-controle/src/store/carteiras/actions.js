@@ -1,6 +1,7 @@
 import vue from 'vue'
 import { carteira, carteiras } from '../../graphql/carteiras'
 import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao } from '../../graphql/lancamentos'
+import { stringToFloat } from '../../utils/numberUtils'
 
 // TODO centralizar tratamentos de erros
 
@@ -53,13 +54,21 @@ const updateCarteiras = (context, carteira) => {
 }
 
 const saveTrade = (context, trade) => {
+  console.info(trade.precoCompra)
+
+  trade.precoCompra = stringToFloat(trade.precoCompra)
+  trade.precoVenda = stringToFloat(trade.precoVenda)
+
+  console.info(trade.precoCompra)
+
   const split = trade.dataTrade.split('/')
-  if (trade.compra) {
+
+  if (trade.precoCompra > 0) {
     trade.dataCompra = new Date(split[1] + '/' + split[0] + '/' + split[2])
-    trade.precoCompra = parseFloat(trade.valor)
-  } else {
+  }
+
+  if (trade.precoVenda > 0) {
     trade.dataVenda = new Date(split[1] + '/' + split[0] + '/' + split[2])
-    trade.precoVenda = parseFloat(trade.valor)
   }
 
   return new Promise((resolve, reject) => {
@@ -67,9 +76,9 @@ const saveTrade = (context, trade) => {
       mutation: saveTradeAcao,
       variables: {
         ...trade,
-        quantidade: parseFloat(trade.quantidade),
-        corretagem: parseFloat(trade.corretagem),
-        impostos: parseFloat(trade.impostos),
+        quantidade: parseInt(trade.quantidade),
+        corretagem: stringToFloat(trade.corretagem),
+        impostos: stringToFloat(trade.impostos),
         idCarteira: trade.carteira.id,
         acao: {
           id: trade.acao.id,

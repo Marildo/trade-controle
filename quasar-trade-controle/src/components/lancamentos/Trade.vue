@@ -1,23 +1,23 @@
 <template>
   <div >
-    <q-btn flat :color = "isBuy ? 'green' : 'red'"
-       icon="fas fa-shopping-cart"
+    <q-btn flat :color = "getColor()"
+       :icon="getIcon()"
        @click="onShowForm"
     >
       <q-tooltip >
-         {{isBuy ? "Nova Compra" : "Nova Venda" }}
+         {{ title() }}
       </q-tooltip>
     </q-btn>
 
     <q-dialog v-model="showForm" persistent>
       <q-card>
         <q-card-section>
-          <q-avatar icon="fas fa-shopping-cart" :color = "isBuy ? 'green' : 'red'" text-color="white" />
-          <span class="q-ml-sm text-subtitle1 text-blue-grey-9">{{ isBuy ? "Compra" : "Venda"}} de ações</span>
+          <q-avatar :icon="getIcon()" :color = "getColor()" text-color="white" />
+          <span class="q-ml-sm text-subtitle1 text-blue-grey-9">{{ title() }} de ações</span>
           <hr>
         </q-card-section>
 
-        <q-form @submit="onSubmit" class="q-gutter-md" >
+        <q-form class="q-gutter-md"  ref="formTrade" >
           <q-card-actions class="row q-pa-md flex justify-start">
               <q-input class="q-ma-sm col-md-3 col-5"
                 filled
@@ -59,13 +59,34 @@
                 :rules="quantidadeRule"
               />
 
-             <q-field class="q-ma-sm col-md-3 col-5"
+             <q-field class="q-ma-sm col-md-3 col-5"  v-show="showFieldCompra()"
               filled
-              v-model="trade.valor"
-              label="Valor *"
+              v-model="trade.precoCompra"
+              label="Pr. Compra *"
               prefix= 'R$ '
               lazy-rules
-              :rules="valorRule"
+              :rules="compraRule"
+              >
+              <template v-slot:control="{ id, floatingLabel, value, emitValue }">
+                <input :id="id" class="q-field__input text-right"
+                  :value="value"
+                  @change="e => emitValue(e.target.value)"
+                  v-money="moneyFormatForDirective"
+                  v-show="floatingLabel"
+                >
+              </template>
+              <q-tooltip >
+                Cotação: {{ trade.acao.preco }}
+              </q-tooltip>
+             </q-field>
+
+              <q-field class="q-ma-sm col-md-3 col-5"  v-show="showFieldVenda()"
+              filled
+              v-model="trade.precoVenda"
+              label="Pr. Venda *"
+              prefix= 'R$ '
+              lazy-rules
+              :rules="vendaRule"
               >
               <template v-slot:control="{ id, floatingLabel, value, emitValue }">
                 <input :id="id" class="q-field__input text-right"
@@ -127,6 +148,8 @@
                v-model="trade.dataTrade"
                label="Data"
                mask="##/##/#### ##:##:##"
+              lazy-rules
+              :rules="['']"
              >
                <template v-slot:prepend>
                  <q-icon name="event" class="cursor-pointer">
@@ -143,15 +166,10 @@
                  </q-icon>
                </template>
              </q-input>
-
-             <q-checkbox class="q-ma-sm col-md-4 col-10"
-              v-model="trade.continue"
-              label="Salvar e continuar"
-             />
             </q-card-actions>
             <q-card-actions align="right" class="row bg-blue-grey-14 shadow-box shadow-3">
-              <q-btn label="Cancelar" @click="onReset"  type="button" color="negative" class="mBtn col-md-2 col-12" />
-              <q-btn label="Salvar"  type="submit" color="positive" class="mBtn col-md-2 col-12" />
+              <q-btn label="Cancelar" @click="onReset" type="button" color="negative" class="mBtn col-md-2 col-12" />
+              <q-btn label="Salvar" @click="onSubmit" type="button" color="positive" class="mBtn col-md-2 col-12" />
           </q-card-actions>
         </q-form>
       </q-card>
@@ -167,7 +185,7 @@ import { sucessMessage, errorMessage } from '../../utils/message'
 export default {
   name: 'Trade',
 
-  props: ['carteira', 'isBuy'],
+  props: ['carteira', 'isBuy', 'tipoTrade'],
 
   data () {
     return {
@@ -179,11 +197,12 @@ export default {
         decimal: ',',
         thousands: '.',
         precision: 2,
-        masked: false /* doesn't work with directive */
+        masked: false
       },
 
-      quantidadeRule: [v => (!!v && parseInt(v) > 0) || 'Informe a quantidade'],
-      valorRule: [v => (!!v && parseFloat(v.replace(',', '.')) >= 0.05) || 'Valor deve ser maior 0,05'],
+      quantidadeRule: [v => this.validateQuantidade(v) || 'Informe a quantidade'],
+      compraRule: [v => ((!this.showFieldCompra()) || (!!v && v !== '0,00')) || 'Informe o preço de compra'],
+      vendaRule: [v => ((!this.showFieldVenda()) || (!!v && v !== '0,00')) || 'Informe o preco de venda'],
       acaoRule: [val => (val && val.codigo.length > 3) || 'Selecione uma ação']
     }
   },
@@ -194,6 +213,10 @@ export default {
   },
 
   methods: {
+    validateQuantidade (v) {
+      return !!v && (v.indexOf(',') + v.indexOf('.') === -2)
+    },
+
     onShowForm () {
       this.onReset()
       this.showForm = true
@@ -202,21 +225,30 @@ export default {
     onReset () {
       this.showForm = false
       this.trade = {
-        valor: '10,00',
+        precoCompra: 0,
+        precoVenda: 0,
         carteira: this.carteira,
         acao: { codigo: '', preco: '0,00' },
-        quantidade: '100',
-        continue: false,
-        compra: this.isBuy,
+        quantidade: 100,
         dataTrade: new Date().toLocaleString()
       }
     },
 
     onSubmit () {
+      // console.trace(this.trade)
+      this.$refs.formTrade.validate()
+        .then(resp => {
+          if (resp) {
+            this.sendForm()
+          }
+        })
+    },
+
+    sendForm () {
       this.$store.dispatch('carteiras/saveTrade', this.trade)
         .then(resp => {
-          sucessMessage('Operação registrada com sucesso!')
           this.onReset()
+          sucessMessage('Operação registrada com sucesso!')
         })
         .catch(error => errorMessage('Falha ao realizar operação!', error))
     },
@@ -227,6 +259,40 @@ export default {
         this.acoes = all.slice(0, all.length)
           .filter(v => v.codigo.indexOf(val.toUpperCase()) > -1)
       })
+    },
+
+    showFieldCompra () {
+      return this.tipoTrade === 'dayTrade' || this.tipoTrade === 'compra'
+    },
+
+    showFieldVenda () {
+      return this.tipoTrade === 'dayTrade' || this.tipoTrade === 'venda'
+    },
+
+    title () {
+      const tipo = this.tipoTrade
+      if (tipo === 'dayTrade') {
+        return 'Novo day trade'
+      } else if (tipo === 'compra') {
+        return 'Nova compra'
+      } else if (tipo === 'venda') {
+        return 'Nova venda'
+      }
+    },
+
+    getIcon () {
+      return 'fas fa-shopping-cart'
+    },
+
+    getColor () {
+      const tipo = this.tipoTrade
+      if (tipo === 'dayTrade') {
+        return 'orange'
+      } else if (tipo === 'compra') {
+        return 'green'
+      } else if (tipo === 'venda') {
+        return 'red'
+      }
     }
   },
   directives: { money: VMoney }

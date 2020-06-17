@@ -10,8 +10,9 @@
           <div> <hr></div>
           <div class="actions">
             <q-btn flat color="primary" icon="fas fa-eye"  :to="getLink(carteira.id)" />
-            <trade :isBuy=true  :carteira="carteira" />
-            <trade :isBuy=false :carteira="carteira" />
+            <trade tipoTrade="compra"  :carteira="carteira" />
+            <trade tipoTrade="venda" :carteira="carteira" />
+            <trade tipoTrade="dayTrade" :carteira="carteira" />
             <q-btn flat color="orange" icon="fas fa-retweet" />
           </div>
         </div>
