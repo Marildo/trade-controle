@@ -6,13 +6,13 @@ const { formateReal } = require('../../lib/numberUtils')
 
 async function saveTradeAcao(_, { dados }) {
     try {
-        dados.compra = dados.precoCompra > 0  && (isNaN(dados.precoVenda) || dados.precoVenda == 0)
-        dados.venda = dados.precoVenda > 0  && (isNaN(dados.precoCompra) || dados.precoCompra == 0)
-        dados.gain = !dados.compra && !dados.venda && dados.precoVenda > dados.precoCompra
-        dados.loss = !dados.compra && !dados.venda && dados.precoVenda <= dados.precoCompra
+        const compra = dados.precoCompra > 0  && (isNaN(dados.precoVenda) || dados.precoVenda == 0)
+        const venda = dados.precoVenda > 0  && (isNaN(dados.precoCompra) || dados.precoCompra == 0)
+        const gain = !compra && !venda && dados.precoVenda > dados.precoCompra
+        const loss = !compra && !venda && dados.precoVenda <= dados.precoCompra
 
         let data_compra = dados.dataCompra
-        if (dados.compra || dados.gain || dados.loss) {
+        if (compra || gain || loss) {
             if (!isNaN(data_compra)) {
                 data_compra = new Date(parseInt(data_compra))
             }
@@ -21,7 +21,7 @@ async function saveTradeAcao(_, { dados }) {
         }
 
         let data_venda = dados.dataVenda
-        if (dados.venda || dados.gain || dados.loss) {
+        if (venda || gain || loss) {
             if (!isNaN(data_venda)) {
                 data_venda = new Date(parseInt(data_venda))
             }
@@ -29,17 +29,20 @@ async function saveTradeAcao(_, { dados }) {
                 return new Error("Data inválida")
         }
 
+        let valorUnitario = 0
         let valor = 0
-        if (dados.compra) {
+        if (compra) {
             valor = dados.quantidade * dados.precoCompra
-        } else if (dados.venda) {
+            valorUnitario = dados.precoCompra
+        } else if (venda) {
             valor = dados.quantidade * dados.precoVenda
+            valorUnitario = dados.precoVenda
         } else {
             valor = (dados.quantidade * dados.precoCompra) - (dados.quantidade * dados.precoVenda)
         }
 
-        const tipo = selectCompraOrVenda(dados)
-        const descricao = `${tipo.descricao} de ${dados.acao.codigo} (${dados.quantidade} X ${formateReal(valor)})`
+        const tipo = selectCompraOrVenda({compra, venda, gain, loss})
+        const descricao = `${tipo.descricao} de ${dados.acao.codigo} (${dados.quantidade} X ${formateReal(valorUnitario)})`
 
         const movimentacao = {
             tipo: tipo.key,
@@ -52,26 +55,25 @@ async function saveTradeAcao(_, { dados }) {
         const mov = await new MovimentacaoModel().save(movimentacao)
 
         const trade = {
+            compra,
+            venda,
             preco_venda: dados.precoVenda,
             preco_compra: dados.precoCompra,
             quantidade: dados.quantidade,
             data_compra,
             data_venda,
-            finalizada: dados.gain || dados.loss,
+            finalizada: gain || loss,
             acao_id: dados.acao.id,
             carteira_id: dados.idCarteira,
             movimentacao_id: mov.id
         }
 
-        const tradeModel = new TradeAcaoModel()
-        await tradeModel
-            .save(trade)
-            .catch(() => new MovimentacaoModel().deleteById(mov.id))
-
-        new SummaryAcoesModel().updateSummary(dados)
+        await new TradeAcaoModel().save(trade)
+        await new SummaryAcoesModel().updateSummary(dados)
 
         return mov
     } catch (error) {
+        
         console.log(error)
         throw new Error(error)
     }

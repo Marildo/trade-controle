@@ -1,6 +1,8 @@
 const dotenv = require('dotenv')
 dotenv.config()
 
+// TODO Usar classes  typescript se possivel
+
 const { ApolloServer } = require('apollo-server')
 const { importSchema} = require('graphql-import')
 

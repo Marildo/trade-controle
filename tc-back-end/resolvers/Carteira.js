@@ -27,8 +27,8 @@ const makePortifolio = (summary) => {
 
 //TODO tem alguma maneira de ultilizar o resolver acao?
 const portifolio = async (carteira) => {
-    const trades = await new SummaryAcoesModel().findAllByIdCarteira(carteira.id)
-    return trades.map(t => makePortifolio(t))
+    const summarys = await new SummaryAcoesModel().findAllByIdCarteira(carteira.id)
+    return summarys.map(t => makePortifolio(t))
 }
 
 function saldoCaixa(carteira) {
