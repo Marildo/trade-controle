@@ -1,9 +1,9 @@
 <template>
   <div>
     <q-toolbar>
-      <theader-carteira :header="sum" />
+      <tHeaderCarteira :header="sum" />
       <q-space />
-      <tnovaCarteira />
+      <tNovaCarteira />
     </q-toolbar>
     <div class="row">
       <div
@@ -35,10 +35,10 @@
               icon="fas fa-eye"
               :to="getLink(carteira.id)"
             />
-            <ttrade tipoTrade="compra" :carteira="carteira" />
-            <ttrade tipoTrade="venda" :carteira="carteira" />
-            <ttrade tipoTrade="dayTrade" :carteira="carteira" />
-            <q-btn flat color="orange" icon="fas fa-retweet" />
+            <tTrade tipoTrade="compra" :carteira="carteira" />
+            <tTrade tipoTrade="venda" :carteira="carteira" />
+            <tTrade tipoTrade="dayTrade" :carteira="carteira" />
+            <tNovoLancamento :carteira="carteira" />
           </div>
         </div>
       </div>
@@ -47,16 +47,19 @@
 </template>
 
 <script>
-import ttrade from '../../components/lancamentos/Trade.vue'
-import tnovaCarteira from '../../components/carteiras/NovaCarteira'
-import theaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
+import tTrade from '../../components/lancamentos/Trade.vue'
+import tNovaCarteira from '../../components/carteiras/NovaCarteira'
+import tHeaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
+import tNovoLancamento from '../../components/lancamentos/NovoLancamento'
+
 export default {
   name: 'CateirasIndex',
 
   components: {
-    theaderCarteira,
-    ttrade,
-    tnovaCarteira
+    tHeaderCarteira,
+    tTrade,
+    tNovaCarteira,
+    tNovoLancamento
   },
 
   mounted () {
@@ -90,7 +93,7 @@ export default {
   flex-direction: column;
   padding: 1em;
   margin: 0.5em;
-  background: #eeffee;
+  background: #e0e2e024;
   box-shadow: 1px 1px 1px 0px rgba(181, 199, 230, 1);
 }
 .actions {

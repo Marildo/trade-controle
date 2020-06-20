@@ -1,6 +1,6 @@
 import vue from 'vue'
 import { carteira, carteiras, saveCarteira } from '../../graphql/carteiras'
-import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao } from '../../graphql/lancamentos'
+import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao, saveMovimentacao } from '../../graphql/lancamentos'
 import { stringToFloat } from '../../utils/numberUtils'
 
 // TODO centralizar tratamentos de erros
@@ -141,6 +141,39 @@ const loadLancamentos = (context, idCarteira) => {
     .catch((error) => console.log(error))
 }
 
+const addLancamento = (context, lancamento) => {
+  return new Promise((resolve, reject) => {
+    const idCarteira = parseInt(lancamento.carteira.id)
+
+    const split = lancamento.dataMovimentacao.split('/')
+    const dataMovimentacao = new Date(split[1] + '/' + split[0] + '/' + split[2])
+
+    vue.prototype.$apollo.mutate({
+      mutation: saveMovimentacao,
+      variables: {
+        tipo: lancamento.tipo.key,
+        descricao: lancamento.descricao,
+        valor: parseFloat(lancamento.valor),
+        idCarteira,
+        dataMovimentacao
+      }
+    })
+      .then(() => vue.prototype.$apollo.resetStore())
+      .then(() => context.dispatch('loadLancamentos', lancamento.carteira.id))
+      .then(() => resolve(true))
+      .catch(error => {
+        console.log(error)
+        if (error.networkError.result.errors) {
+          console.log(error.networkError.result.errors[0].message)
+        }
+        if (error.networkError) {
+          console.log(error.networkError)
+        }
+        reject(error.networkError.result.errors[0].message)
+      })
+  })
+}
+
 const deleteLancamento = (context, lancamento) => {
   vue.prototype.$apollo
     .mutate({
@@ -165,5 +198,6 @@ export {
   addCarteira,
   saveTrade,
   loadLancamentos,
+  addLancamento,
   deleteLancamento
 }

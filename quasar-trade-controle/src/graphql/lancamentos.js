@@ -2,18 +2,18 @@ import gql from 'graphql-tag'
 
 const saveTradeAcao = gql`
   mutation(
-      $dataCompra: String
-      $dataVenda: String
-      $quantidade: Int!
-      $precoCompra: Float
-      $precoVenda: Float
-      $corretagem: Float
-      $impostos: Float
-      $idCarteira:ID!
-      $acao:AcaoInput!
-  ){ 
+    $dataCompra: String
+    $dataVenda: String
+    $quantidade: Int!
+    $precoCompra: Float
+    $precoVenda: Float
+    $corretagem: Float
+    $impostos: Float
+    $idCarteira: ID!
+    $acao: AcaoInput!
+  ) {
     saveTradeAcao(
-      dados:{
+      dados: {
         dataCompra: $dataCompra
         dataVenda: $dataVenda
         quantidade: $quantidade
@@ -21,47 +21,77 @@ const saveTradeAcao = gql`
         precoVenda: $precoVenda
         corretagem: $corretagem
         impostos: $impostos
-        idCarteira:$idCarteira
+        idCarteira: $idCarteira
         acao: $acao
       }
-    )
-    {
+    ) {
       id
       dataMovimentacao
       valor
       descricao
       idCarteira
-      tipoLancamento
-      {
+      tipoLancamento {
         key
         descricao
       }
-     }
-}`
+    }
+  }
+`
 
 const movimentacoesByIdCarteira = gql`
-  query($idCarteira: Int!){
-    movimentacoesByIdCarteira(idCarteira: $idCarteira){
-      id 
+  query($idCarteira: Int!) {
+    movimentacoesByIdCarteira(idCarteira: $idCarteira) {
+      id
       dataMovimentacao
       valor
       descricao
       idCarteira
-      tipoLancamento
-      {
+      tipoLancamento {
         key
         descricao
       }
+    }
   }
-}`
+`
 
-const deleteMovimentacao = gql` 
-  mutation($id: ID!){
-    deleteMovimentacao(id :$id)
-}`
+const saveMovimentacao = gql`
+  mutation(
+    $tipo: Int!
+    $valor: Float!
+    $idCarteira: Int!
+    $descricao: String
+    $dataMovimentacao: String
+  ) {
+    saveMovimentacao(
+      dados: {
+        tipo: $tipo
+        valor: $valor
+        idCarteira: $idCarteira
+        descricao: $descricao
+        dataMovimentacao: $dataMovimentacao
+      }
+    ) {
+      id
+      dataMovimentacao
+      valor
+      descricao
+      idCarteira
+      tipoLancamento {
+        key
+        descricao
+      }
+    }
+  }
+`
+const deleteMovimentacao = gql`
+  mutation($id: ID!) {
+    deleteMovimentacao(id: $id)
+  }
+`
 
 export {
   saveTradeAcao,
   movimentacoesByIdCarteira,
-  deleteMovimentacao
+  deleteMovimentacao,
+  saveMovimentacao
 }

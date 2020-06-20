@@ -14,6 +14,7 @@
       <tTrade tipoTrade="compra" :carteira="carteira" />
       <tTrade tipoTrade="venda" :carteira="carteira" />
       <tTrade tipoTrade="dayTrade" :carteira="carteira" />
+      <tNovoLancamento :carteira="carteira" />
     </q-toolbar>
 
     <q-tab-panels v-model="tab" animated>
@@ -38,6 +39,7 @@ import theaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
 import tPortifolio from '../../components/carteiras/Portifolio'
 import tLancamentos from '../../components/lancamentos/Lancamentos'
 import tTrade from '../../components/lancamentos/Trade.vue'
+import tNovoLancamento from '../../components/lancamentos/NovoLancamento'
 
 export default {
   name: 'Carteira',
@@ -46,7 +48,8 @@ export default {
     theaderCarteira,
     tLancamentos,
     tPortifolio,
-    tTrade
+    tTrade,
+    tNovoLancamento
   },
 
   data () {
