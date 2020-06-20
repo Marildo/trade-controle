@@ -213,8 +213,8 @@ export default {
   },
 
   methods: {
-    validateQuantidade (v) {
-      return !!v && (v.indexOf(',') + v.indexOf('.') === -2)
+    validateQuantidade (value) {
+      return !!value && (value.indexOf(',') + value.indexOf('.') === -2)
     },
 
     onShowForm () {
@@ -229,7 +229,7 @@ export default {
         precoVenda: 0,
         carteira: this.carteira,
         acao: { codigo: '', preco: '0,00' },
-        quantidade: 100,
+        quantidade: '100',
         dataTrade: new Date().toLocaleString()
       }
     },

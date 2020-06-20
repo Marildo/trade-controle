@@ -1,44 +1,48 @@
 import vue from 'vue'
-import { carteira, carteiras } from '../../graphql/carteiras'
+import { carteira, carteiras, saveCarteira } from '../../graphql/carteiras'
 import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao } from '../../graphql/lancamentos'
 import { stringToFloat } from '../../utils/numberUtils'
 
 // TODO centralizar tratamentos de erros
 
+// TODO serar actions de trades e carteiras em arquivos diferentes
+
 const loadCarteiras = (context) => {
-  vue.prototype.$apollo.query({
-    query: carteiras
-  })
-    .then(resp => resp.data.carteiras)
-    .then(carteiras => {
+  vue.prototype.$apollo
+    .query({
+      query: carteiras
+    })
+    .then((resp) => resp.data.carteiras)
+    .then((carteiras) => {
       context.commit('SET_CARTEIRAS', carteiras)
       sumCarteiras(context, carteiras)
     })
-    .catch(error => console.log(error))
+    .catch((error) => console.log(error))
 }
 
 const loadCarteira = (context, id) => {
-  vue.prototype.$apollo.query({
-    query: carteira,
-    variables: {
-      id
-    }
-  })
-    .then(resp => resp.data.carteira)
-    .then(carteira => {
+  vue.prototype.$apollo
+    .query({
+      query: carteira,
+      variables: {
+        id
+      }
+    })
+    .then((resp) => resp.data.carteira)
+    .then((carteira) => {
       context.commit('SET_CARTEIRA', carteira)
       updateCarteiras(context, carteira)
     })
-    .catch(error => console.log(error))
+    .catch((error) => console.log(error))
 }
 
 const sumCarteiras = (context, carteiras) => {
   const sum = {
-    saldoAcoes: carteiras.map(c => c.saldoAcoes).reduce((c, n) => c + n),
-    saldoCaixa: carteiras.map(c => c.saldoCaixa).reduce((c, n) => c + n),
-    resultadoMensal: carteiras.map(c => c.resultadoMensal).reduce((c, n) => c + n),
-    resultadoSemanal: carteiras.map(c => c.resultadoSemanal).reduce((c, n) => c + n),
-    ultimoResultado: carteiras.map(c => c.ultimoResultado).reduce((c, n) => c + n)
+    saldoAcoes: carteiras.map((c) => c.saldoAcoes).reduce((c, n) => c + n),
+    saldoCaixa: carteiras.map((c) => c.saldoCaixa).reduce((c, n) => c + n),
+    resultadoMensal: carteiras.map((c) => c.resultadoMensal).reduce((c, n) => c + n),
+    resultadoSemanal: carteiras.map((c) => c.resultadoSemanal).reduce((c, n) => c + n),
+    ultimoResultado: carteiras.map((c) => c.ultimoResultado).reduce((c, n) => c + n)
   }
   context.commit('SET_SUM', sum)
 }
@@ -53,51 +57,72 @@ const updateCarteiras = (context, carteira) => {
   }
 }
 
-const saveTrade = (context, trade) => {
-  console.info(trade.precoCompra)
-
-  trade.precoCompra = stringToFloat(trade.precoCompra)
-  trade.precoVenda = stringToFloat(trade.precoVenda)
-
-  console.info(trade.precoCompra)
-
-  const split = trade.dataTrade.split('/')
-
-  if (trade.precoCompra > 0) {
-    trade.dataCompra = new Date(split[1] + '/' + split[0] + '/' + split[2])
-  }
-
-  if (trade.precoVenda > 0) {
-    trade.dataVenda = new Date(split[1] + '/' + split[0] + '/' + split[2])
-  }
-
+const addCarteira = (context, nome) => {
   return new Promise((resolve, reject) => {
     vue.prototype.$apollo.mutate({
-      mutation: saveTradeAcao,
-      variables: {
-        ...trade,
-        quantidade: parseInt(trade.quantidade),
-        corretagem: stringToFloat(trade.corretagem),
-        impostos: stringToFloat(trade.impostos),
-        idCarteira: trade.carteira.id,
-        acao: {
-          id: trade.acao.id,
-          codigo: trade.acao.codigo
-        }
-      }
+      mutation: saveCarteira,
+      variables: { nome }
     })
-      .then(resp => resp.data.saveTradeAcao)
-      .then(resp => {
-        // TODO não recarregar tudo
-        vue.prototype.$apollo.resetStore()
-          .then(r => {
-            context.dispatch('loadCarteira', trade.carteira.id)
-            context.commit('ADD_LANCAMENTO', resp)
-          })
-
-        resolve(resp)
+      .then(() => vue.prototype.$apollo.resetStore())
+      .then(() => context.dispatch('loadCarteiras'))
+      .then(() => resolve(true))
+      .catch(error => {
+        if (error.networkError.result.errors) {
+          console.log(error.networkError.result.errors[0].message)
+        }
+        if (error.networkError) {
+          console.log(error.networkError)
+        }
+        console.log(error)
+        reject(error.networkError.result.errors[0].message)
       })
-      .catch(erro => {
+  })
+}
+
+const saveTrade = (context, trade) => {
+  return new Promise((resolve, reject) => {
+    const precoCompra = stringToFloat(trade.precoCompra)
+    const precoVenda = stringToFloat(trade.precoVenda)
+
+    const split = trade.dataTrade.split('/')
+
+    let dataCompra
+    if (precoCompra > 0) {
+      dataCompra = new Date(split[1] + '/' + split[0] + '/' + split[2])
+    }
+
+    let dataVenda
+    if (precoVenda > 0) {
+      dataVenda = new Date(split[1] + '/' + split[0] + '/' + split[2])
+    }
+    vue.prototype.$apollo
+      .mutate({
+        mutation: saveTradeAcao,
+        variables: {
+          dataCompra,
+          dataVenda,
+          precoCompra,
+          precoVenda,
+          quantidade: parseInt(trade.quantidade),
+          corretagem: stringToFloat(trade.corretagem),
+          impostos: stringToFloat(trade.impostos),
+          idCarteira: trade.carteira.id,
+          acao: {
+            id: trade.acao.id,
+            codigo: trade.acao.codigo
+          }
+        }
+      })
+      .then((resp) => resp.data.saveTradeAcao)
+      .then((resp) => {
+        // TODO não recarregar tudo
+        vue.prototype.$apollo.resetStore().then(() => {
+          context.dispatch('loadCarteira', trade.carteira.id)
+          context.commit('ADD_LANCAMENTO', resp)
+          resolve(resp)
+        })
+      })
+      .catch((erro) => {
         console.log(erro)
         console.log(erro.networkError.result.errors[0])
         reject(erro.networkError.result.errors[0].message)
@@ -106,25 +131,29 @@ const saveTrade = (context, trade) => {
 }
 
 const loadLancamentos = (context, idCarteira) => {
-  vue.prototype.$apollo.query({
-    query: movimentacoesByIdCarteira,
-    variables: { idCarteira: parseInt(idCarteira) }
-  })
-    .then(resp => resp.data.movimentacoesByIdCarteira)
-    .then(lancamentos => context.commit('SET_LANCAMENTOS', lancamentos))
-    .catch(error => console.log(error))
+  vue.prototype.$apollo
+    .query({
+      query: movimentacoesByIdCarteira,
+      variables: { idCarteira: parseInt(idCarteira) }
+    })
+    .then((resp) => resp.data.movimentacoesByIdCarteira)
+    .then((lancamentos) => context.commit('SET_LANCAMENTOS', lancamentos))
+    .catch((error) => console.log(error))
 }
 
 const deleteLancamento = (context, lancamento) => {
-  vue.prototype.$apollo.mutate({
-    mutation: deleteMovimentacao,
-    variables: { id: lancamento.id }
-  })
-    .then(resp => {
-      context.commit('REMOVE_LANCAMENTO', lancamento)
-      context.dispatch('loadCarteira', lancamento.idCarteira)
+  vue.prototype.$apollo
+    .mutate({
+      mutation: deleteMovimentacao,
+      variables: { id: lancamento.id }
     })
-    .catch(error => {
+    .then(() => {
+      vue.prototype.$apollo.resetStore().then(() => {
+        context.commit('REMOVE_LANCAMENTO', lancamento)
+        context.dispatch('loadCarteira', lancamento.idCarteira)
+      })
+    })
+    .catch((error) => {
       console.log(error)
       console.log(error.networkError)
     })
@@ -133,7 +162,7 @@ const deleteLancamento = (context, lancamento) => {
 export {
   loadCarteiras,
   loadCarteira,
-
+  addCarteira,
   saveTrade,
   loadLancamentos,
   deleteLancamento
