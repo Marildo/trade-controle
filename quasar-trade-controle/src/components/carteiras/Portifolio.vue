@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { formaterReal, formaterPercent } from '../utils/numberUtils'
+import { formaterReal, formaterPercent } from '../../utils/numberUtils'
 
 export default {
   name: 'Portifolio',

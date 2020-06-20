@@ -2,6 +2,7 @@ export default function () {
   return {
     all: [],
     lancamentos: [],
-    current: {}
+    current: {},
+    sum: {}
   }
 }

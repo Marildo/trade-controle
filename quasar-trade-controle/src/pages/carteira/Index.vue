@@ -1,8 +1,9 @@
 <template>
   <div>
     <q-toolbar>
+      <theader-carteira :header="sum" />
       <q-space />
-      <novaCarteira />
+      <tnovaCarteira />
     </q-toolbar>
     <div class="row">
       <div
@@ -34,9 +35,9 @@
               icon="fas fa-eye"
               :to="getLink(carteira.id)"
             />
-            <trade tipoTrade="compra" :carteira="carteira" />
-            <trade tipoTrade="venda" :carteira="carteira" />
-            <trade tipoTrade="dayTrade" :carteira="carteira" />
+            <ttrade tipoTrade="compra" :carteira="carteira" />
+            <ttrade tipoTrade="venda" :carteira="carteira" />
+            <ttrade tipoTrade="dayTrade" :carteira="carteira" />
             <q-btn flat color="orange" icon="fas fa-retweet" />
           </div>
         </div>
@@ -46,14 +47,16 @@
 </template>
 
 <script>
-import trade from '../../components/lancamentos/Trade.vue'
-import novaCarteira from '../../components/carteiras/NovaCarteira'
+import ttrade from '../../components/lancamentos/Trade.vue'
+import tnovaCarteira from '../../components/carteiras/NovaCarteira'
+import theaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
 export default {
   name: 'CateirasIndex',
 
   components: {
-    trade,
-    novaCarteira
+    theaderCarteira,
+    ttrade,
+    tnovaCarteira
   },
 
   mounted () {
@@ -64,6 +67,9 @@ export default {
   computed: {
     carteiras () {
       return this.$store.state.carteiras.all
+    },
+    sum () {
+      return this.$store.state.carteiras.sum
     }
   },
 

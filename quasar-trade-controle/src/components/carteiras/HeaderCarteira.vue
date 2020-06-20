@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import tCard from './TCard.vue'
+import tCard from '../TCard.vue'
 
 export default {
   name: 'HeaderCarteira',

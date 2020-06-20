@@ -18,7 +18,7 @@
 
     <q-tab-panels v-model="tab" animated>
       <q-tab-panel name="dashboard">
-        <theaderCarteira :header="carteira" />
+        <theader-carteira :header="carteira" />
       </q-tab-panel>
 
       <q-tab-panel name="portifolio">
@@ -34,10 +34,10 @@
 
 <script>
 
-import theaderCarteira from '../../components/HeaderCarteira.vue'
+import theaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
+import tPortifolio from '../../components/carteiras/Portifolio'
 import tLancamentos from '../../components/lancamentos/Lancamentos'
 import tTrade from '../../components/lancamentos/Trade.vue'
-import tPortifolio from '../../components/Portifolio'
 
 export default {
   name: 'Carteira',
