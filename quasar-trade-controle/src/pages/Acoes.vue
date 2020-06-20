@@ -1,5 +1,9 @@
 <template>
   <div class="q-pa-md">
+    <q-toolbar>
+      <q-space />
+      <tNovaAcao />
+    </q-toolbar>
     <q-table
       class="table-header-grey"
       :data="acoes"
@@ -13,9 +17,14 @@
 
 <script>
 import { formaterReal } from '../utils/numberUtils'
+import tNovaAcao from '../components/acoes/NovaAcao'
 
 export default {
   name: 'Acoes',
+
+  components: {
+    tNovaAcao
+  },
 
   data () {
     return {

@@ -229,7 +229,7 @@ export default {
         precoVenda: 0,
         carteira: this.carteira,
         acao: { codigo: '', preco: '0,00' },
-        quantidade: '100',
+        quantidade: '0',
         dataTrade: new Date().toLocaleString()
       }
     },

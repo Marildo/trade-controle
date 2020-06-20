@@ -7,14 +7,14 @@
       rounded
       @click="setShowForm()"
     >
-      <q-tooltip> Nova Carteira </q-tooltip>
+      <q-tooltip> Adicionar uma Ação </q-tooltip>
     </q-btn>
     <q-dialog v-model="showForm" persistent>
       <q-card  style="width: 300px">
         <q-card-section>
           <q-avatar icon="add_circle" color="primary" text-color="white" />
           <span class="q-ml-sm text-subtitle1 text-blue-grey-9"
-            >Nova carteira</span
+            >Nova Ação</span
           >
           <hr />
         </q-card-section>
@@ -24,9 +24,9 @@
             <q-input
               class="q-ma-sm col-12"
               filled
-              v-model="nome"
-              label="Carteira"
-              :rules="nomeRule"
+              v-model="codigo"
+              label="Código da Ação"
+              :rules="codigoRule"
             />
           </q-card-actions>
           <q-card-actions
@@ -55,32 +55,40 @@
 </template>
 
 <script>
-import { errorMessage } from '../../utils/message'
+// TODO - Criar um componente com botoes dos formularios
+
+import { sucessMessage, errorMessage } from '../../utils/message'
 
 export default {
-  name: 'NovaCarteira',
+  name: 'NovaAcao',
+
   data () {
     return {
       showForm: false,
-      nome: '',
-      nomeRule: [
+      codigo: '',
+      codigoRule: [
         (val) =>
-          (val && val.length > 3) ||
-          'Nome da carteira deve ter no mínimo 4 caracteres'
+          (val && val.length >= 5 && val.length <= 6) ||
+          'Informe o código da ação com 5 ou 6 caracteres'
       ]
     }
   },
 
   methods: {
     setShowForm () {
-      this.nome = ''
+      this.codigo = ''
       this.showForm = true
     },
 
     onSubmit () {
-      this.$store.dispatch('carteiras/addCarteira', this.nome)
-        .then(this.showForm = false)
-        .catch(error => errorMessage('Falha ao realizar operação!', error))
+      this.$store.dispatch('acoes/addAcao', this.codigo)
+        .then(() => {
+          this.showForm = false
+          sucessMessage('Ação adicionada com sucesso!')
+        })
+        .catch(e => {
+          errorMessage('Falha ao adicionar ação!', e.message)
+        })
     }
   }
 }
