@@ -22,7 +22,7 @@ const update = () => {
                     .then(price => parseFloat(price))
                     .then(price =>
                         model.updatePrice(acao.id, price)
-                            .then()//console.log('Updated ',acao.codigo))                       
+                           // .then(console.log('Updated ',acao.codigo))                       
                             .catch(error => console.log(error))
                     )
                     .catch(error => console.log(error))

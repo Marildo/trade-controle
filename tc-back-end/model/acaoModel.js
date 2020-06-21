@@ -44,6 +44,9 @@ function AcaoModel() {
     }
 
     this.updatePrice = (id, price) => {
+        if(isNaN(price)){
+            return
+        }
         return new Promise((resolve, reject) => {
             table()
                 .where('id', '=', id)

@@ -12,7 +12,6 @@ module.exports = {
             if (find)
                 return find
 
-
             const papel = await findAcao(codigo);
             if (!papel) {
                 return new Error("Ação não localizada!")

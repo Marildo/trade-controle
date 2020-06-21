@@ -85,7 +85,7 @@ function SummaryAcoesModel() {
         .where('carteira_id', idCarteira)
         .andWhere('quantidade', '<>', 0)
         .then((resp) => {
-          console.log('findAllByIdCarteira', resp, new Date())
+         // console.log('findAllByIdCarteira', resp, new Date())
           resolve(resp)
         })
         .catch((error) => {
