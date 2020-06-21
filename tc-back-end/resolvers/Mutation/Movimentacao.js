@@ -1,16 +1,14 @@
 const {
-  MovimentacaoModel,
+  movimentacaoModel,
   TradeAcaoModel,
   SummaryAcoesModel,
 } = require('../../model/')
-
-const model = new MovimentacaoModel()
 
 // TODO padronizar retorno de erros pelos codigos
 // TODO realizar validacoes
 
 const deleteMovimentacao = async (_, { id }) => {
-  const deleted = await model.deleteById(id)
+  const deleted = await movimentacaoModel.deleteById(id)
   const tradeModel = new TradeAcaoModel()
   const trade = await tradeModel.findByMovimentacaoId(id)
   if (trade != undefined) {
@@ -39,7 +37,7 @@ const saveMovimentacao = (_, { dados }) => {
     delete movimentacao.idCarteira
     delete movimentacao.dataMovimentacao
 
-    return model.save(movimentacao)
+    return movimentacaoModel.save(movimentacao)
   } catch (error) {
     console.log(error)
     return new Error('Error: ' + error.code)
