@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --ext js,graphql",
-    "test": "mocha ./tests/**/*"
+    "test": "mocha ./tests/**/* --exit",
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test"
   },
   "author": "Marilco Cesar",
   "license": "ISC",
@@ -24,6 +25,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "mocha": "^8.0.1",
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "nyc": "^15.1.0"
   }
 }

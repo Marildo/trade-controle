@@ -1,6 +1,6 @@
 const AcaoModel = require('./acaoModel')
 const CarteiraModel = require('./carteiraModel')
-const MovimentacaoModel = require('./movimentacaoModel')
+const movimentacaoModel = require('./movimentacaoModel')
 
 const SetorModel = require('./setorModel')
 const SubsetorModel = require('./subSetorModel')
@@ -13,7 +13,7 @@ const SummaryAcoesModel = require('./summaryAcoesModel')
 module.exports = {
     AcaoModel,
     CarteiraModel,
-    MovimentacaoModel,
+    movimentacaoModel,
     TradeAcaoModel,
     SummaryAcoesModel,
     
