@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for tc-back-end/model/movimentacaoModel.js</title>
+    <title>Code coverage report for tc-back-end/model/index.js</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">tc-back-end/model</a> movimentacaoModel.js</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">tc-back-end/model</a> index.js</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.5% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>14/16</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/8</span>
+                <span class='fraction'>0/0</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>10/12</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -80,28 +80,15 @@
 <a name='L21'></a><a href='#L21'>21</a>
 <a name='L22'></a><a href='#L22'>22</a>
 <a name='L23'></a><a href='#L23'>23</a>
-<a name='L24'></a><a href='#L24'>24</a>
-<a name='L25'></a><a href='#L25'>25</a>
-<a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a>
-<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L24'></a><a href='#L24'>24</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -111,32 +98,33 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const db = require('../config/db')
-const baseModel = require('./baseModel')
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const AcaoModel = require('./acaoModel')
+const CarteiraModel = require('./carteiraModel')
+const movimentacaoModel = require('./movimentacaoModel')
 &nbsp;
-const table = () =&gt; db('movimentacoes_carteiras')
+const SetorModel = require('./setorModel')
+const SubsetorModel = require('./subSetorModel')
+const SegmentoModel = require('./segmentoModel')
+const TradeAcaoModel = require('./tradeAcoesModel')
+const SummaryAcoesModel = require('./summaryAcoesModel')
 &nbsp;
-const findById = (id) =&gt; baseModel.findById(table, id)
-&nbsp;
-const save = (movimentacao) =&gt; baseModel.save(table, movimentacao)
-&nbsp;
-const deleteById = (id) =&gt; baseModel.deleteById(table, id)
-&nbsp;
-//TODO criar metodo no base model que receba o where
-const findByIdCarteira = (idCarteira) =&gt; {
-  return new Promise((resolve, reject) =&gt; {
-    table()
-      .where('carteira_id', idCarteira)
-      .then(<span class="fstat-no" title="function not covered" >(r</span>esp) =&gt; <span class="cstat-no" title="statement not covered" >resolve(resp))</span>
-      .catch(<span class="fstat-no" title="function not covered" >(e</span>rror) =&gt; <span class="cstat-no" title="statement not covered" >reject(error.detail))</span>
-  })
-}
+//TODO é possivel deixar isso mais generico? SIMMM!
 &nbsp;
 module.exports = {
-   findById, 
-   save, 
-   deleteById, 
-   findByIdCarteira
+    AcaoModel,
+    CarteiraModel,
+    movimentacaoModel,
+    TradeAcaoModel,
+    SummaryAcoesModel,
+    
+    SetorModel,
+    SubsetorModel,
+    SegmentoModel
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -145,7 +133,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Sun Jun 21 2020 16:34:37 GMT-0300 (GMT-03:00)
+                at Sun Jun 21 2020 16:08:37 GMT-0300 (GMT-03:00)
             </div>
         </div>
         <script src="../../prettify.js"></script>
