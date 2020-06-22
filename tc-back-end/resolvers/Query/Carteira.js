@@ -1,6 +1,4 @@
-const { CarteiraModel } = require('../../model')
-
-const carteiraModel = new CarteiraModel
+const  carteiraModel  = require('../../model/carteiraModel')
 
 const carteiras = () => {
     return carteiraModel.findAll()

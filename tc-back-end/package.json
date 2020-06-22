@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon --ext js,graphql",
-    "test": "mocha ./tests/**/* --exit",
-    "coverage": "nyc --reporter=lcov --reporter=text npm run test"
+    "test": "mocha ./tests/**/*.test.js --exit",
+    "coverage": "nyc --reporter=lcov --reporter=text npm run test",
+    "test:current": "nyc --reporter=lcov --reporter=text mocha ./tests/model/movimentacaoModel.test.js --exit"
   },
   "author": "Marilco Cesar",
   "license": "ISC",

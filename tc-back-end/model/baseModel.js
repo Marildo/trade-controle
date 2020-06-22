@@ -8,7 +8,7 @@ const save = (table, dados) => {
                 //  console.log(resp)
             })
             .catch(error => {
-                console.log(error)
+               // console.log(error)
                 reject(error.detail)
             })
     })

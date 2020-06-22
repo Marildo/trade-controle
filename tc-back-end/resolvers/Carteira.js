@@ -1,4 +1,4 @@
-const { CarteiraModel, SummaryAcoesModel } = require('../model')
+const { carteiraModel, SummaryAcoesModel } = require('../model')
 
 const makePortifolio = (summary) => {
     const { quantidade, preco_medio, acao_id, codigo, preco,
@@ -32,12 +32,10 @@ const portifolio = async (carteira) => {
 }
 
 function saldoCaixa(carteira) {
-    const carteiraModel = new CarteiraModel
     return carteiraModel.calculateSaldoCaixa(carteira.id)
 }
 
 function saldoAcoes(carteira) {
-    const carteiraModel = new CarteiraModel
     return carteiraModel.calculateSaldoAcoes(carteira.id)
 }
 

@@ -14,8 +14,11 @@ describe('Movimentacao Model', () => {
 
       movimentacaoModel
         .save(mov)
-        .then((resp) => assert.isNumber(resp.id))
-        .then(done())
+        .then((resp) => {
+          assert.isNotEmpty(resp)
+          done()
+        })
+        .catch((err) => done(err))
     })
   })
 
@@ -24,15 +27,21 @@ describe('Movimentacao Model', () => {
     it('Deve retorna pelo id', function (done) {
       movimentacaoModel
         .findById(id)
-        .then((resp) => expect(resp.id).to.equal(id))
-        .then(done())
+        .then((resp) => {
+          assert.equal(id, resp.id)
+          done()
+        })
+        .catch((err) => done(err))
     })
 
     it('Deve retorna undefined', (done) => {
       movimentacaoModel
         .findById(30466)
-        .then((resp) => expect(resp).to.equal(undefined))
-        .then(done())
+        .then((resp) => {
+          assert.equal(resp, undefined)
+          done()
+        })
+        .catch((err) => done(err))
     })
   })
 
@@ -41,33 +50,43 @@ describe('Movimentacao Model', () => {
       const idCarteira = 1
       movimentacaoModel
         .findByIdCarteira(idCarteira)
-        .then((resp) =>
-          expect(resp.filter((i) => i.carteira_id !== idCarteira).to.be.empty)
-        )
-        .then(done())
+        .then((resp) => {          
+          assert.equal(resp[0].carteira_id, idCarteira)
+          done()
+        })
+        .catch((err) => done(err))
     })
 
-    it('FindByIdCarteira: Deve retorna []', function (done) {
+    it('Deve retorna []', function (done) {
       const idCarteira = 1544
       movimentacaoModel
         .findByIdCarteira(idCarteira)
-        .then((resp) => expect(resp.to.be.empty))
-        .then(done())
+        .then((resp) => {
+          assert.isEmpty(resp)
+          done()
+        })
+        .catch((err) => done(err))
     })
   })
 
   describe('#DeleteById', () => {
-    it('DeleteById: Deve deletar e retornar sucesso(1)', function (done) {
-        movimentacaoModel
-        .deleteById(20)
-        .then(resp => expect(resp).to.equal(1) )
-        .then(done())
-    })
-    it('DeleteById: Deve deletar e retornar not falha(0)',  function (done) {
+    it('Deve deletar e retornar sucesso(1)', function (done) {
       movimentacaoModel
-      .deleteById(20)
-      .then(resp => expect(resp).to.equal(0) )
-      .then(done())
+        .deleteById(42)
+        .then((resp) => {
+          expect(resp).to.equal(1)
+          done()
+        })
+        .catch((err) => done(err))
+    })
+    it('Deve deletar e retornar not falha(0)', function (done) {
+      movimentacaoModel
+        .deleteById(2660)
+        .then((resp) => {
+          expect(resp).to.equal(0)
+          done()
+        })
+        .catch((err) => done(err))
     })
   })
 })
