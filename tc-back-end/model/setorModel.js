@@ -1,35 +1,31 @@
 const db = require('../config/db')
+const baseModel = require('./baseModel')
 
-const table = () => db('setores')
+const saveSetor = (setor) => save('setores', setor)
 
-function SetorModel() {
-    this.findById = (id) => {
-        return new Promise((resolve, reject) => {
+const saveSubSetor = (subsetor) => save('subsetores', subsetor)
+
+const saveSegmento = (segmento) => save('segmentos', segmento)
+
+const save = (tableName, item) => {
+  return new Promise((resolve, reject) => {
+
+    const table = () => db(tableName)
+
+    baseModel.findById(table, item.id)
+      .then((resp) => {
+        if (resp) {
+          resolve(resp)
+        } else {
             table()
-                .where('id', id)
-                .first()
-                .then(resp => resolve(resp))
-                .catch(error => reject(error.detail))
-        })
-    }
-
-    this.save = (setor) => {
-        return new Promise((resolve, reject) => {
-            this.findById(setor.id)
-                .then(resp => {
-                    if (resp) {
-                        resolve(resp)
-                    } else {
-                        table()
-                            .insert(setor)
-                            .returning('*')
-                            .then(resp => resolve(resp[0]))
-                            .catch(error => reject(error.detail))
-                    }
-                })
-                .catch(error => reject(error.detail))
-        })
-    }
+            .insert(item)
+            .returning('*')
+            .then((resp) => resolve(resp[0]))
+            .catch((error) => reject(error))
+        }
+      })
+      .catch((error) => reject(error))
+  })
 }
 
-module.exports = SetorModel
+module.exports = { saveSetor, saveSubSetor, saveSegmento }

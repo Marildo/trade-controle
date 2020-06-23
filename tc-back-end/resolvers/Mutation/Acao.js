@@ -1,4 +1,4 @@
-const { SetorModel, SubsetorModel, SegmentoModel, AcaoModel } = require('../../model/')
+const {  acaoModel, setorModel } = require('../../model/')
 const { findAcao } = require('../../service/acao/Statusinvest')
 
 module.exports = {
@@ -6,8 +6,7 @@ module.exports = {
         try {
             codigo = codigo.toUpperCase()
 
-            let model = new AcaoModel
-            const find = await model.findByCodigo(codigo)
+            const find = await acaoModel.findByCodigo(codigo)
 
             if (find)
                 return find
@@ -16,15 +15,10 @@ module.exports = {
             if (!papel) {
                 return new Error("Ação não localizada!")
             }
-
-            model = new SetorModel
-            const setor = await model.save(papel.setor)
-
-            model= new SubsetorModel
-            const subsetor = await model.save(papel.subsetor)
-
-            model = new SegmentoModel
-            const segmento = await model.save(papel.segmento)
+            
+            const setor = await setorModel.saveSetor(papel.setor)
+            const subsetor = await setorModel.saveSubSetor(papel.subsetor)
+            const segmento = await setorModel.saveSegmento(papel.segmento)
             
             const acao = {
                 codigo,
@@ -36,9 +30,7 @@ module.exports = {
                 segmento_id: papel.segmento.id
             }
       
-            model = new AcaoModel
-            const result = await model.save(acao)
-
+            const result = await acaoModel.save(acao)
             const newAcao = {
                 setor: papel.setor.nome,
                 subsetor: papel.subsetor.nome,

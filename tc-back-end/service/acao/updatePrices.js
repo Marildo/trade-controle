@@ -1,6 +1,6 @@
 const schedule = require('node-schedule');
 
-const { AcaoModel } = require('../../model/')
+const  model = require('../../model/acaoModel')
 const { findCotacao } = require('./statusInvest')
 
 const updatePrices = () => {
@@ -14,7 +14,6 @@ const updatePrices = () => {
 }
 
 const update = () => {
-    const model = new AcaoModel
     model.findAll()
         .then(acoes => {
             acoes.forEach(acao => {

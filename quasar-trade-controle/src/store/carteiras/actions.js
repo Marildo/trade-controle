@@ -158,9 +158,13 @@ const addLancamento = (context, lancamento) => {
         dataMovimentacao
       }
     })
-      .then(() => vue.prototype.$apollo.resetStore())
-      .then(() => context.dispatch('loadLancamentos', lancamento.carteira.id))
-      .then(() => resolve(true))
+      .then(() => {
+        vue.prototype.$apollo.resetStore().then(() => {
+          context.dispatch('loadCarteira', idCarteira)
+          context.dispatch('loadLancamentos', idCarteira)
+          resolve(true)
+        })
+      })
       .catch(error => {
         console.log(error)
         if (error.networkError.result.errors) {
