@@ -1,6 +1,6 @@
-const {TradeAcaoModel} = require('../../model/')
+const { tradeAcaoModel } = require("../../model")
 
-const model = new TradeAcaoModel
+const model = require('../../model/tradeAcoesModel')
 
 function tradeAcoes(_) {
   return model.findAll()

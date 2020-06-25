@@ -1,11 +1,13 @@
-const { TradeAcaoModel, MovimentacaoModel, SummaryAcoesModel } = require('../../model/')
+const { tradeAcaoModel, movimentacaoModel, summaryAcoesModel } = require('../../model/')
 const { selectCompraOrVenda } = require('../../model/enunsModel')
 const { formateReal } = require('../../lib/numberUtils')
+const { ProvidedRequiredArgumentsOnDirectivesRule } = require('graphql/validation/rules/ProvidedRequiredArgumentsRule')
 
 // TODO validar se acao e carteiras existem
 
-async function saveTradeAcao(_, { dados }) {
-    try {
+ function saveTradeAcao(_, { dados }) {
+    return new Promise(async (resolve, reject) => {
+     try {
         const compra = dados.precoCompra > 0  && (isNaN(dados.precoVenda) || dados.precoVenda == 0)
         const venda = dados.precoVenda > 0  && (isNaN(dados.precoCompra) || dados.precoCompra == 0)
         const gain = !compra && !venda && dados.precoVenda > dados.precoCompra
@@ -52,7 +54,7 @@ async function saveTradeAcao(_, { dados }) {
             descricao
         }
 
-        const mov = await new MovimentacaoModel().save(movimentacao)
+        const mov = await movimentacaoModel.save(movimentacao)
 
         const trade = {
             compra,
@@ -68,15 +70,15 @@ async function saveTradeAcao(_, { dados }) {
             movimentacao_id: mov.id
         }
 
-        await new TradeAcaoModel().save(trade)
-        await new SummaryAcoesModel().updateSummary(dados)
+         tradeAcaoModel.save(trade)
+         .then(resp => summaryAcoesModel.updateSummary(dados) )
 
-        return mov
+        resolve(mov)
     } catch (error) {
-        
         console.log(error)
-        throw new Error(error)
+       reject(error)
     }
+ })
 }
 
 module.exports = {

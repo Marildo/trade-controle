@@ -22,8 +22,11 @@ const calculateSaldoCaixa = (id) => {
                  FROM movimentacoes_carteiras
                   WHERE carteira_id = ?`
     db.raw(select, [id])
-     // .on('query', q => console.log(q.sql))
-      .then((resp) => resolve(resp.rows[0].saldo))      
+   // .on('query', q => console.log(q.sql))
+      .then((resp) => {
+       //  console.log(resp.rows[0])
+         resolve(resp.rows[0].saldo)
+      })      
       .catch((error) => {
         console.log(error)
         reject(error.detail)

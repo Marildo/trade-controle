@@ -7,8 +7,8 @@ function tipoLancamentoFactory(key, descricao, isSaida) {
 }
 
 const tiposLancamentos = () => [
-    tipoLancamentoFactory(0, 'Compra', false),
-    tipoLancamentoFactory(1, 'Venda', true),
+    tipoLancamentoFactory(0, 'Compra', true),
+    tipoLancamentoFactory(1, 'Venda', false),
     tipoLancamentoFactory(2, 'Aporte', false),
     tipoLancamentoFactory(3, 'Retirada', true),
     tipoLancamentoFactory(4, 'Outros Créditos', false),

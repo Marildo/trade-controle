@@ -20,4 +20,4 @@ server.listen().then(({ url }) => {
 })
 
 const {updatePrices} = require('./service/acao/updatePrices')
-updatePrices()
+// updatePrices()

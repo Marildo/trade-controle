@@ -1,4 +1,4 @@
-const { AcaoModel } = require('../model')
+const model = require('../model/acaoModel')
 
 const dataCompra = (trade) => trade.data_compra
 
@@ -8,7 +8,7 @@ const precoCompra = (trade) => trade.preco_compra
 
 const precoVenda = (trade) => trade.preco_venda
 
-const acao = (trade) => new AcaoModel().findById(trade.acao_id)
+const acao = (trade) => model.findById(trade.acao_id)
 
 module.exports = {
   dataCompra,

@@ -1,4 +1,4 @@
-const { carteiraModel, SummaryAcoesModel } = require('../model')
+const { carteiraModel, summaryAcoesModel } = require('../model')
 
 const makePortifolio = (summary) => {
     const { quantidade, preco_medio, acao_id, codigo, preco,
@@ -27,7 +27,7 @@ const makePortifolio = (summary) => {
 
 //TODO tem alguma maneira de ultilizar o resolver acao?
 const portifolio = async (carteira) => {
-    const summarys = await new SummaryAcoesModel().findAllByIdCarteira(carteira.id)
+    const summarys = await summaryAcoesModel.findAllByIdCarteira(carteira.id)
     return summarys.map(t => makePortifolio(t))
 }
 

@@ -1,15 +1,14 @@
 const db = require('../config/db')
-const { save, findAll, update } = require('./baseModel')
-const { assertObjectType } = require('graphql')
+const baseModel = require('./baseModel')
 
 const table = () => db('trade_acoes')
 
-function TradeAcaoModel() {
-  this.save = async (trade) => {
+const save = (trade) => {
+  return new Promise(async (resolve, reject) => {
     if (trade.finalizada) {
       delete trade.compra
       delete trade.venda
-      save(table, trade)
+      baseModel.save(table, trade)
     } else {
       try {
         const tradesAbertos = await table()
@@ -23,26 +22,42 @@ function TradeAcaoModel() {
         if (tradesAbertos.length === 0) {
           delete trade.compra
           delete trade.venda
-          await save(table, trade)
+          trade = await baseModel.save(table, trade)
         } else {
           let quantidadeAFinalizar = trade.quantidade
-          tradesAbertos.forEach(async (tradeAberto) => {
-            if (quantidadeAFinalizar > 0) {
+
+          let i = 0
+          while (quantidadeAFinalizar > 0) {
+            tradeAberto = tradesAbertos[i]
+            i++
+            if (tradeAberto.quantidade == quantidadeAFinalizar) {
+              quantidadeAFinalizar = await finalizeWhenEqual(tradeAberto)
+            } else {
               quantidadeAFinalizar = await finalizeTrade(
                 trade,
                 tradeAberto,
                 quantidadeAFinalizar
               )
             }
-          })
+          }
         }
+        resolve(true)
       } catch (error) {
         console.log(error)
+        reject(error)
       }
     }
-  }
+  })
+}
 
-  finalizeTrade = async (trade, tradeAberto, quantidadeAFinalizar) => {
+finalizeWhenEqual = async (trade) => {
+  trade.finalizada = true
+  await baseModel.update(table, trade)
+  return 0
+}
+
+finalizeTrade = async (trade, tradeAberto, quantidadeAFinalizar) => {
+  try {
     const valor = trade.compra ? 'preco_compra' : 'preco_venda'
     const data = trade.compra ? 'data_compra' : 'data_venda'
 
@@ -51,15 +66,14 @@ function TradeAcaoModel() {
         ...tradeAberto,
         id: undefined,
         finalizada: true,
-        quantidade: quantidadeAFinalizar,
+        quantidade: tradeAberto.quantidade - quantidadeAFinalizar,
       }
-
       copyTrade[valor] = trade[valor]
       copyTrade[data] = trade[data]
-      await save(table, copyTrade).catch((error) => console.log(error))
 
       tradeAberto.quantidade -= quantidadeAFinalizar
-      await update(table, tradeAberto).catch((error) => console.log(error))
+      await baseModel.update(table, tradeAberto)
+      await baseModel.save(table, copyTrade)
 
       return 0
     } else if (tradeAberto.quantidade < quantidadeAFinalizar) {
@@ -68,35 +82,36 @@ function TradeAcaoModel() {
       tradeAberto.finalizada = true
       tradeAberto.corretagem = trade.corretagem
       tradeAberto.impostos = trade.impostos
-      await update(table, tradeAberto)
+      await baseModel.update(table, tradeAberto)
 
       return quantidadeAFinalizar - tradeAberto.quantidade
-    } else if (tradeAberto.quantidade === quantidadeAFinalizar) {
-      update(table, tradeAberto)
-      return 0
     }
-  }
-
-  this.findAll = () => findAll(table)
-
-  this.findByMovimentacaoId = async (idMov) => {
-    const trade = await table().select().where('movimentacao_id', idMov)
-    if (trade.length > 0) {
-      return {
-        acao: { id: trade[0].acao_id },
-        idCarteira: trade[0].carteira_id,
-      }
-    }
-    return undefined
-  }
-
-  this.findByIdCarteiraIdAndIdAcao = (idCarteira, idAcao) => {
-    const trade = table()
-      .select()
-      .where('carteira_id', idCarteira)
-      .andWhere('acao_id', idAcao)
-    return trade
+  } catch (error) {
+    console.log(error)
   }
 }
 
-module.exports = TradeAcaoModel
+const findAll = () => findAll(table)
+
+const findByMovimentacaoId = async (idMov) => {
+  const trade = await table().select().where('movimentacao_id', '=', idMov)
+  if (trade.length > 0) {
+    return {
+      acao: { id: trade[0].acao_id },
+      idCarteira: trade[0].carteira_id,
+    }
+  }
+  return undefined
+}
+
+/*
+const findByIdCarteiraIdAndIdAcao = (idCarteira, idAcao) => {
+  const trade = table()
+    .select()
+    .where('carteira_id', idCarteira)
+    .andWhere('acao_id', idAcao)
+  return trade
+}
+*/
+
+module.exports = { save, findByMovimentacaoId }

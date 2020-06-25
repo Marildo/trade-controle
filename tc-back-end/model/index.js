@@ -2,8 +2,8 @@ const acaoModel = require('./acaoModel')
 const carteiraModel = require('./carteiraModel')
 const movimentacaoModel = require('./movimentacaoModel')
 const setorModel = require('./setorModel')
-const TradeAcaoModel = require('./tradeAcoesModel')
-const SummaryAcoesModel = require('./summaryAcoesModel')
+const tradeAcaoModel = require('./tradeAcoesModel')
+const summaryAcoesModel = require('./summaryAcoesModel')
 
 //TODO é possivel deixar isso mais generico? SIMMM!
 
@@ -12,6 +12,6 @@ module.exports = {
     setorModel,    
     carteiraModel,
     movimentacaoModel,
-    TradeAcaoModel,
-    SummaryAcoesModel
+    tradeAcaoModel,
+    summaryAcoesModel
 }
