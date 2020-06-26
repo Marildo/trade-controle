@@ -1,7 +1,7 @@
-const { tradeAcaoModel, movimentacaoModel, summaryAcoesModel } = require('../../model/')
+const { tradeAcaoModel, movimentacaoModel, summaryAcoesModel, carteiraModel } = require('../../model/')
 const { selectCompraOrVenda } = require('../../model/enunsModel')
 const { formateReal } = require('../../lib/numberUtils')
-const { ProvidedRequiredArgumentsOnDirectivesRule } = require('graphql/validation/rules/ProvidedRequiredArgumentsRule')
+
 
 // TODO validar se acao e carteiras existem
 
@@ -71,7 +71,10 @@ const { ProvidedRequiredArgumentsOnDirectivesRule } = require('graphql/validatio
         }
 
          tradeAcaoModel.save(trade)
-         .then(resp => summaryAcoesModel.updateSummary(dados) )
+         .then(resp => 
+            summaryAcoesModel.updateSummary(dados) 
+            .then(carteiraModel.updateCarteira(dados.idCarteira))
+         )
 
         resolve(mov)
     } catch (error) {

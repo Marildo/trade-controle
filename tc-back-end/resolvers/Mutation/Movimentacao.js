@@ -2,6 +2,7 @@ const {
   movimentacaoModel,
   tradeAcaoModel,
   summaryAcoesModel,
+  carteiraModel
 } = require('../../model/')
 
 // TODO padronizar retorno de erros pelos codigos
@@ -37,6 +38,8 @@ const saveMovimentacao = (_, { dados }) => {
       carteira_id: dados.idCarteira,
       data_movimentacao,
     }
+
+    carteiraModel.updateCarteira(dados.idCarteira)
 
     delete movimentacao.idCarteira
     delete movimentacao.dataMovimentacao

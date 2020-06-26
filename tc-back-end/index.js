@@ -21,3 +21,6 @@ server.listen().then(({ url }) => {
 
 const {updatePrices} = require('./service/acao/updatePrices')
 // updatePrices()
+
+const {updateCarteiras} = require('./model/carteiraModel')
+updateCarteiras()

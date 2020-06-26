@@ -2,6 +2,6 @@ type Carteira{
     id: ID!
     nome: String!
     saldoCaixa:Float!
-    saldoAcoes:Float!
+    saldoAtivos:Float!
     portifolio:[SummaryAcoes]!  
 }

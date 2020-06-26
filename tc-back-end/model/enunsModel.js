@@ -9,8 +9,8 @@ function tipoLancamentoFactory(key, descricao, isSaida) {
 const tiposLancamentos = () => [
     tipoLancamentoFactory(0, 'Compra', true),
     tipoLancamentoFactory(1, 'Venda', false),
-    tipoLancamentoFactory(2, 'Aporte', false),
-    tipoLancamentoFactory(3, 'Retirada', true),
+    tipoLancamentoFactory(2, 'Retirada', true),
+    tipoLancamentoFactory(3, 'Aporte', false),   
     tipoLancamentoFactory(4, 'Outros Créditos', false),
     tipoLancamentoFactory(5, 'Outros Débitos', true),
     tipoLancamentoFactory(6, 'Gain day trade', false),

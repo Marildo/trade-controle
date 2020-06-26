@@ -32,15 +32,15 @@ const portifolio = async (carteira) => {
 }
 
 function saldoCaixa(carteira) {
-    return carteiraModel.calculateSaldoCaixa(carteira.id)
+    return carteira.saldo_caixa
 }
 
-function saldoAcoes(carteira) {
-    return carteiraModel.calculateSaldoAcoes(carteira.id)
+function saldoAtivos(carteira) {
+    return carteira.saldo_ativos
 }
 
 module.exports = {
     portifolio,
     saldoCaixa,
-    saldoAcoes
+    saldoAtivos
 }
