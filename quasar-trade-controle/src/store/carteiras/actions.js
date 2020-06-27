@@ -24,9 +24,8 @@ const loadCarteira = (context, id) => {
   vue.prototype.$apollo
     .query({
       query: carteira,
-      variables: {
-        id
-      }
+      variables: { id },
+      fetchPolicy: 'network-only'
     })
     .then((resp) => resp.data.carteira)
     .then((carteira) => {
@@ -38,7 +37,7 @@ const loadCarteira = (context, id) => {
 
 const sumCarteiras = (context, carteiras) => {
   const sum = {
-    saldoAcoes: carteiras.map((c) => c.saldoAcoes).reduce((c, n) => c + n),
+    saldoAtivos: carteiras.map((c) => c.saldoAtivos).reduce((c, n) => c + n),
     saldoCaixa: carteiras.map((c) => c.saldoCaixa).reduce((c, n) => c + n),
     resultadoMensal: carteiras.map((c) => c.resultadoMensal).reduce((c, n) => c + n),
     resultadoSemanal: carteiras.map((c) => c.resultadoSemanal).reduce((c, n) => c + n),
@@ -116,11 +115,11 @@ const saveTrade = (context, trade) => {
       .then((resp) => resp.data.saveTradeAcao)
       .then((resp) => {
         // TODO não recarregar tudo
-        vue.prototype.$apollo.resetStore().then(() => {
-          context.dispatch('loadCarteira', trade.carteira.id)
-          context.commit('ADD_LANCAMENTO', resp)
-          resolve(resp)
-        })
+        // vue.prototype.$apollo.resetStore().then(() => {
+        context.dispatch('loadCarteira', trade.carteira.id)
+        context.commit('ADD_LANCAMENTO', resp)
+        resolve(resp)
+      //  })
       })
       .catch((erro) => {
         console.log(erro)
@@ -144,6 +143,7 @@ const loadLancamentos = (context, idCarteira) => {
 const addLancamento = (context, lancamento) => {
   return new Promise((resolve, reject) => {
     const idCarteira = parseInt(lancamento.carteira.id)
+    const valor = stringToFloat(lancamento.valor)
 
     const split = lancamento.dataMovimentacao.split('/')
     const dataMovimentacao = new Date(split[1] + '/' + split[0] + '/' + split[2])
@@ -153,17 +153,17 @@ const addLancamento = (context, lancamento) => {
       variables: {
         tipo: lancamento.tipo.key,
         descricao: lancamento.descricao,
-        valor: parseFloat(lancamento.valor),
+        valor,
         idCarteira,
         dataMovimentacao
       }
     })
       .then(() => {
-        vue.prototype.$apollo.resetStore().then(() => {
-          context.dispatch('loadCarteira', idCarteira)
-          context.dispatch('loadLancamentos', idCarteira)
-          resolve(true)
-        })
+      //  vue.prototype.$apollo.resetStore().then(() => {
+        context.dispatch('loadCarteira', idCarteira)
+        context.dispatch('loadLancamentos', idCarteira)
+        resolve(true)
+        // })
       })
       .catch(error => {
         console.log(error)

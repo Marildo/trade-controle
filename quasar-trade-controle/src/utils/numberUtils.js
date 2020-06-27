@@ -15,7 +15,10 @@ const formaterPercent = (value) => {
   return value.toLocaleString('pt-BR', { style: 'decimal' }) + ' %'
 }
 
-const stringToFloat = (value) => parseFloat(value.replace(',', '.'))
+const stringToFloat = (value) => {
+  value = value.replace(/\./g, '').replace(',', '.')
+  return parseFloat(value)
+}
 
 export {
   formaterReal,

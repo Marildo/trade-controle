@@ -6,7 +6,12 @@ const carteira = gql`
       id
       nome
       saldoCaixa
-      saldoAcoes
+      saldoAtivos
+      resultadoTotal
+      resultadoAnual
+      resultadoMensal
+      resultadoSemanal
+      resultadoDiario
       portifolio {
         quantidade
         precoMedio
@@ -31,7 +36,12 @@ const carteiras = gql`
       id
       nome
       saldoCaixa
-      saldoAcoes
+      saldoAtivos
+      resultadoTotal
+      resultadoAnual
+      resultadoMensal
+      resultadoSemanal
+      resultadoDiario
     }
   }
 `

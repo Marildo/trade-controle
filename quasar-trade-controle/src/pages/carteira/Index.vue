@@ -22,10 +22,10 @@
             Caixa: {{ carteira.saldoCaixa }}
           </div>
           <div class="text-teal-5 text-h6">
-            Ações: {{ carteira.saldoAcoes }}
+            Ações: {{ carteira.saldoAtivos }}
           </div>
           <div class="text-teal-5 text-h6">
-            Total: {{ carteira.saldoCaixa + carteira.saldoAcoes }}
+            Total: {{ carteira.saldoCaixa + carteira.saldoAtivos }}
           </div>
           <div><hr /></div>
           <div class="actions">

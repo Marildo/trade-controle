@@ -2,11 +2,11 @@
   <div>
     <div class="row flex flex-center">
       <tCard title="Saldo em caixa" :content="header.saldoCaixa" />
-      <tCard title="Total ações" :content="header.saldoAcoes" />
-      <tCard title="Total" :content="header.saldoCaixa + header.saldoAcoes" />
-      <tCard title="Último mensal" :content="header.resultadoMensal" />
-      <tCard title="Último semanal" :content="header.resultadoSemanal" />
-      <tCard title="Último resultado" :content="header.ultimoResultado" />
+      <tCard title="Total ações" :content="header.saldoAtivos" />
+      <tCard title="Total" :content="header.saldoCaixa + header.saldoAtivos" />
+      <tCard title="Resultado mensal" :content="header.resultadoMensal" />
+      <tCard title="Resultado semanal" :content="header.resultadoSemanal" />
+      <tCard title="Último resultado" :content="header.resultadoDiario" />
     </div>
   </div>
 </template>
