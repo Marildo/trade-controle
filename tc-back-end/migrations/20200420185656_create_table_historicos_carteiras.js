@@ -7,7 +7,7 @@ exports.up = function (knex) {
     table.decimal('saldo_caixa', 10, 2).defaultTo(0)
     table.integer('carteira_id').unsigned()
     table.foreign('carteira_id').references('id').inTable('carteiras')
-    table.unique(['data','carteira_id'])
+    table.unique(['data_historico','carteira_id'])
   })
 };
 

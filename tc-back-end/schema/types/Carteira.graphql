@@ -3,5 +3,10 @@ type Carteira{
     nome: String!
     saldoCaixa:Float!
     saldoAtivos:Float!
+    resultadoDiario:Float!
+    resultadoSemanal:Float!
+    resultadoMensal:Float!
+    resultadoAnual:Float!
+    resultadoTotal:Float!
     portifolio:[SummaryAcoes]!  
 }

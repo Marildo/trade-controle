@@ -24,9 +24,14 @@ const updateCarteira = async (id) => {
 }
 
 const updateHistorico = (id) => {
-  const script = `DELETE FROM historicos_carteiras WHERE data_historico = CURRENT_DATE AND carteira_id = ${id};
-  INSERT INTO historicos_carteiras(data_historico, saldo_ativos,saldo_caixa, carteira_id)  
-    SELECT CURRENT_DATE, saldo_ativos sa, saldo_caixa, ${id} FROM carteiras WHERE id = ${id};`
+  const script = 
+    `INSERT INTO historicos_carteiras (data_historico, saldo_ativos,saldo_caixa, carteira_id) 
+     SELECT CURRENT_DATE, saldo_ativos , saldo_caixa, id FROM carteiras WHERE id = ${id}
+    ON CONFLICT (data_historico,carteira_id) DO
+    UPDATE SET
+      saldo_ativos = (SELECT saldo_caixa FROM carteiras WHERE id = ${id}),
+      saldo_caixa = (SELECT saldo_ativos FROM carteiras WHERE id = ${id}) 
+    WHERE historicos_carteiras.carteira_id = ${id}`
 
   return db.raw(script)
 }

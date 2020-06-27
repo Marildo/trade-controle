@@ -45,7 +45,7 @@ const findByCodigo = (codigo) => {
   })
 }
 
-const updatePrice = (id, price) => {
+const updatePrice = async (id, price) => {
   if (isNaN(price)) {
     return
   }

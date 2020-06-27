@@ -39,8 +39,33 @@ function saldoAtivos(carteira) {
     return carteira.saldo_ativos
 }
 
+function resultadoDiario(carteira) {  
+    return carteira.resultado_diario || 0
+}
+
+function resultadoSemanal(carteira) {  
+    return carteira.resultado_semanal || 0
+}
+
+function resultadoMensal(carteira) {  
+    return carteira.resultado_mensal || 0
+}
+
+function resultadoAnual(carteira) {  
+    return carteira.resultado_anual || 0
+}
+
+function resultadoTotal(carteira) {  
+    return carteira.resultado_total || 0
+}
+
 module.exports = {
     portifolio,
     saldoCaixa,
-    saldoAtivos
+    saldoAtivos,
+    resultadoDiario,
+    resultadoSemanal,
+    resultadoMensal,
+    resultadoAnual,
+    resultadoTotal
 }

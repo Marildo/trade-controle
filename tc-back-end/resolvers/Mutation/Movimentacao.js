@@ -2,7 +2,7 @@ const {
   movimentacaoModel,
   tradeAcaoModel,
   summaryAcoesModel,
-  carteiraModel
+  carteiraModel,
 } = require('../../model/')
 
 // TODO padronizar retorno de erros pelos codigos
@@ -10,13 +10,20 @@ const {
 
 const deleteMovimentacao = async (_, { id }) => {
   try {
-    const trade = await tradeAcaoModel.findByMovimentacaoId(id)
-    const deleted = await movimentacaoModel.deleteById(id)
-    if (trade != undefined) {
-      await summaryAcoesModel.updateSummary(trade)
-    }
+    const mov = await movimentacaoModel.findById(id)
 
-    return deleted
+    if (mov) {
+      const trade = await tradeAcaoModel.findByMovimentacaoId(id)
+      const deleted = await movimentacaoModel.deleteById(id)
+     
+      if (trade != undefined) {
+        await summaryAcoesModel.updateSummary(trade)
+      }
+
+      carteiraModel.updateCarteira(mov.carteira_id)
+
+      return deleted
+    }
   } catch (error) {
     console.log(error)
     return new Error('Error: ' + error.code)
