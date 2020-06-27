@@ -1,14 +1,22 @@
 <template>
   <div class="box col-md-3 col-12">
     <div class="text-subtitle1 text-blue-grey-9"> {{ title }} </div>
-    <div class="text-body2 text-blue-grey-6"> {{ content }} </div>
+    <div class="text-body2 text-blue-grey-6"> {{ content | formaterReal }} </div>
   </div>
 </template>
 
 <script>
+// import * as numberUtils from '../utils/numberUtils'
+
 export default {
   name: 'TCard',
   props: ['title', 'content']
+  /* filters: {
+    formaterReal (value) {
+      return numberUtils.formaterReal(value)
+    }
+  }
+  */
 }
 </script>
 

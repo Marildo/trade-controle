@@ -19,13 +19,13 @@
             class="text-blue-8 text-h5 "
           />
           <div class="text-teal-5 text-h6">
-            Caixa: {{ carteira.saldoCaixa }}
+            Caixa: {{ carteira.saldoCaixa | formaterReal}}
           </div>
           <div class="text-teal-5 text-h6">
-            Ações: {{ carteira.saldoAtivos }}
+            Ações: {{ carteira.saldoAtivos | formaterReal}}
           </div>
           <div class="text-teal-5 text-h6">
-            Total: {{ carteira.saldoCaixa + carteira.saldoAtivos }}
+            Total: {{ carteira.saldoCaixa + carteira.saldoAtivos | formaterReal}}
           </div>
           <div><hr /></div>
           <div class="actions">
