@@ -41,7 +41,7 @@ const sumCarteiras = (context, carteiras) => {
     saldoCaixa: carteiras.map((c) => c.saldoCaixa).reduce((c, n) => c + n),
     resultadoMensal: carteiras.map((c) => c.resultadoMensal).reduce((c, n) => c + n),
     resultadoSemanal: carteiras.map((c) => c.resultadoSemanal).reduce((c, n) => c + n),
-    ultimoResultado: carteiras.map((c) => c.ultimoResultado).reduce((c, n) => c + n)
+    resultadoDiario: carteiras.map((c) => c.resultadoDiario).reduce((c, n) => c + n)
   }
   context.commit('SET_SUM', sum)
 }
