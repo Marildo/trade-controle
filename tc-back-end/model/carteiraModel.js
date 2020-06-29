@@ -55,7 +55,11 @@ const updateSaldos = (id) => {
       					WHERE data_historico = CURRENT_DATE AND carteira_id= ${id}) a,
       					(SELECT saldo_ativos + saldo_caixa l
       					FROM historicos_carteiras
-      					WHERE data_historico = CURRENT_DATE - 1 AND carteira_id = ${id}) b),
+      					WHERE data_historico = (
+												(SELECT MAX(data_historico) 
+														FROM historicos_carteiras WHERE data_historico < CURRENT_DATE AND carteira_id = ${id}
+												)	
+											) AND carteira_id = ${id}) b),
                 
       resultado_semanal = (SELECT t-l AS rs FROM
       					(SELECT saldo_ativos + saldo_caixa t
