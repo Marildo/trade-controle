@@ -1,28 +1,28 @@
 type TradeAcoes {
-      id:ID!
-      dataCompra: String
-      dataVenda: String
-      quantidade: Int!
-      precoCompra: Float
-      precoVenda: Float
-      corretagem: Float
-      impostos: Float
-      acao:Acao
+  id: ID!
+  dataCompra: String
+  dataVenda: String
+  quantidade: Int!
+  precoCompra: Float
+  precoVenda: Float
+  corretagem: Float
+  impostos: Float
+  acao: Acao
 }
 
 input AcaoInput {
-      id: ID!
-      codigo: String!      
+  id: ID!
+  codigo: String!
 }
 
 input TradeAcoesInput {
-      dataCompra: String
-      dataVenda: String
-      quantidade: Int!
-      precoCompra: Float
-      precoVenda: Float
-      corretagem: Float
-      impostos: Float
-      idCarteira:ID!
-      acao:AcaoInput!
+  dataCompra: String
+  dataVenda: String
+  quantidade: Int!
+  precoCompra: Float
+  precoVenda: Float
+  corretagem: Float
+  impostos: Float
+  idCarteira: ID!
+  acao: AcaoInput!
 }

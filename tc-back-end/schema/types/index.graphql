@@ -7,3 +7,4 @@
 # import TipoLancamento from 'TipoLancamento.graphql'
 # import TradeAcoes from 'TradeAcoes.graphql'
 # import SummaryAcoes from 'SummaryAcoes.graphql'
+# import Historico from 'Historico.graphql'

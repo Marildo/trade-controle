@@ -56,8 +56,8 @@ const updateSaldos = (id) => {
       					(SELECT saldo_ativos + saldo_caixa l
       					FROM historicos_carteiras
       					WHERE data_historico = (
-												(SELECT MAX(data_historico) 
-														FROM historicos_carteiras WHERE data_historico < CURRENT_DATE AND carteira_id = ${id}
+												(SELECT MAX(data_historico) FROM historicos_carteiras 
+												 WHERE data_historico < CURRENT_DATE AND carteira_id = ${id}
 												)	
 											) AND carteira_id = ${id}) b),
                 

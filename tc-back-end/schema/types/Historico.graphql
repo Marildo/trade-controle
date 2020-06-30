@@ -1,0 +1,6 @@
+type Historico {
+  title: String!
+  dataHistorico: String!
+  saldoAtivos: Float!
+  saldoCaixa: Float!
+}

@@ -3,6 +3,7 @@ const Carteira = require('./Carteira')
 const Movimentacao = require('./Movimentacao')
 const TipoLancamento = require('./TipoLancamento')
 const TradeAcoes = require('./TradeAcoes')
+const Historico = require('./Historico')
 
 module.exports = {
     helo() {
@@ -12,5 +13,6 @@ module.exports = {
     ...Carteira,
     ...Movimentacao,
     ...TipoLancamento,
-    ...TradeAcoes
+    ...TradeAcoes,
+    ...Historico
 }

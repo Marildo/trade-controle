@@ -5,6 +5,7 @@ const Acao = require('./Acao')
 const Carteira = require('./Carteira')
 const Movimentacao = require('./Movimentacao')
 const TradeAcoes = require('./TradeAcoes')
+const Hitoricos = require('./')
 
 module.exports = {
     Query,
