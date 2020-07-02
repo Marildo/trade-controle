@@ -11,7 +11,8 @@ const lastMonthGroupByData = () => {
       'historicos_carteiras.saldo_caixa as saldoCaixa',
       'carteiras.nome as title'])
       .innerJoin('carteiras', 'carteira_id', 'carteiras.id')
-      .where('data_historico','>=',dateUtils.startOfMonth(new Date()))
+      .where('data_historico','<=',dateUtils.startOfMonth(new Date()))
+      .orderBy('data_historico')
       .then((resp) => resolve(resp))
       .catch((error) => {
         console.log(error)

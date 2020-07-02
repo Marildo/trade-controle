@@ -8,7 +8,7 @@ const SET_CARTEIRA = (state, payload) => {
 
 const UPDATE_CARTEIRAS = (state, payload) => {
   const carteiras = state.carteiras
-  const index = carteiras.findIndex(i => i.id === payload.id)
+  const index = carteiras.findIndex((i) => i.id === payload.id)
   carteiras.splice(index, 1, payload)
 }
 
@@ -26,17 +26,21 @@ const ADD_LANCAMENTO = (state, payload) => {
 
 const REMOVE_LANCAMENTO = (state, payload) => {
   const lancamentos = state.lancamentos
-  const index = lancamentos.findIndex(i => i.id === payload.id)
+  const index = lancamentos.findIndex((i) => i.id === payload.id)
   lancamentos.splice(index, 1)
+}
+
+const SET_HISTORICO_MENSAL = (state, payload) => {
+  state.historicoMensal = payload
 }
 
 export {
   SET_CARTEIRAS,
   SET_CARTEIRA,
   SET_SUM,
-
   SET_LANCAMENTOS,
   ADD_LANCAMENTO,
   REMOVE_LANCAMENTO,
-  UPDATE_CARTEIRAS
+  UPDATE_CARTEIRAS,
+  SET_HISTORICO_MENSAL
 }

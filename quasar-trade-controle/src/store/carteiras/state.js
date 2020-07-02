@@ -3,6 +3,7 @@ export default function () {
     all: [],
     lancamentos: [],
     current: {},
-    sum: {}
+    sum: {},
+    historicoMensal: []
   }
 }

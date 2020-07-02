@@ -44,7 +44,8 @@
       </div>
     </div>
     <div>
-        <ve-line :data="chartData"></ve-line>
+      {{historicoMensal}}
+        <ve-line :data="historicoMensal"></ve-line>
     </div>
   </div>
 </template>
@@ -71,6 +72,7 @@ export default {
 
   mounted () {
     this.$store.dispatch('carteiras/loadCarteiras')
+    this.$store.dispatch('carteiras/loadHistoricoMensal')
     this.$store.dispatch('acoes/loadAcoes')
   },
 
@@ -78,8 +80,13 @@ export default {
     carteiras () {
       return this.$store.state.carteiras.all
     },
+
     sum () {
       return this.$store.state.carteiras.sum
+    },
+
+    historicoMensal () {
+      return this.$store.state.carteiras.historicoMensal
     }
   },
 
@@ -94,17 +101,6 @@ export default {
 
   data () {
     return {
-      chartData: {
-        columns: ['date', 'cost', 'profit', 'growthRate', 'people'],
-        rows: [
-          { cost: 1523, date: '01/01', profit: 1523, growthRate: 0.12, people: 100 },
-          { cost: 1223, date: '01/02', profit: 1523, growthRate: 0.345, people: 20 },
-          { cost: 2123, date: '01/03', profit: 1523, growthRate: 0.7, people: 50 },
-          { cost: 4123, date: '01/04', profit: 1523, growthRate: 0.31, people: 85 },
-          { cost: 3123, date: '01/05', profit: 1523, growthRate: 0.12, people: 90 },
-          { cost: 7123, date: '01/06', profit: 1523, growthRate: 0.65, people: 100 }
-        ]
-      }
     }
   }
 }

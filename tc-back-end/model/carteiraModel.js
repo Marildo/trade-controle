@@ -32,7 +32,6 @@ const updateHistorico = (id) => {
       saldo_ativos = (SELECT saldo_caixa FROM carteiras WHERE id = ${id}),
       saldo_caixa = (SELECT saldo_ativos FROM carteiras WHERE id = ${id}) 
     WHERE historicos_carteiras.carteira_id = ${id}`
-
   return db.raw(script)
 }
 

@@ -1,7 +1,9 @@
 import vue from 'vue'
+import { stringToFloat } from '../../utils/numberUtils'
+import { build } from '../../utils/factory_chart_historico'
 import { carteira, carteiras, saveCarteira } from '../../graphql/carteiras'
 import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao, saveMovimentacao } from '../../graphql/lancamentos'
-import { stringToFloat } from '../../utils/numberUtils'
+import { historicoLastMonthGroupByData } from '../../graphql/historicos'
 
 // TODO centralizar tratamentos de erros
 
@@ -196,6 +198,22 @@ const deleteLancamento = (context, lancamento) => {
     })
 }
 
+const loadHistoricoMensal = (context) => {
+  vue.prototype.$apollo
+    .query({
+      query: historicoLastMonthGroupByData
+    })
+    .then((resp) => resp.data.historicoLastMonthGroupByData)
+    .then((historicos) => buildHistoricoSemanal(context, historicos))
+    .catch((error) => console.log(error))
+}
+
+const buildHistoricoSemanal = (context, historico) => {
+  const chart = build(historico)
+  console.log(chart)
+  context.commit('SET_HISTORICO_MENSAL', chart)
+}
+
 export {
   loadCarteiras,
   loadCarteira,
@@ -203,5 +221,6 @@ export {
   saveTrade,
   loadLancamentos,
   addLancamento,
-  deleteLancamento
+  deleteLancamento,
+  loadHistoricoMensal
 }
