@@ -44,19 +44,31 @@
       </div>
     </div>
     <div>
-      {{historicoMensal}}
-        <ve-line :data="historicoMensal"></ve-line>
+        <ve-line :data="chartHistoricoMensal"></ve-line>
     </div>
+     <div class="q-pa-md">
+    <q-table
+      class="table-header-grey"
+      :data="historicoGroupData"
+      :columns="columns"
+      :pagination.sync="pagination"
+      row-key="id"
+      flat
+      bordered >
+    </q-table>
+  </div>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import VeLine from 'v-charts/lib/line.common'
 import tTrade from '../../components/lancamentos/Trade.vue'
 import tNovaCarteira from '../../components/carteiras/NovaCarteira'
 import tHeaderCarteira from '../../components/carteiras/HeaderCarteira.vue'
 import tNovoLancamento from '../../components/lancamentos/NovoLancamento'
-import VeLine from 'v-charts/lib/line.common'
-import Vue from 'vue'
+import { buildChartHistorico, groupTotalByData } from '../../utils/factory_chart_historico'
+import { formaterReal } from '../../utils/numberUtils'
 
 Vue.component(VeLine.name, VeLine)
 
@@ -68,12 +80,6 @@ export default {
     tTrade,
     tNovaCarteira,
     tNovoLancamento
-  },
-
-  mounted () {
-    this.$store.dispatch('carteiras/loadCarteiras')
-    this.$store.dispatch('carteiras/loadHistoricoMensal')
-    this.$store.dispatch('acoes/loadAcoes')
   },
 
   computed: {
@@ -90,6 +96,13 @@ export default {
     }
   },
 
+  watch: {
+    historicoMensal (newValue, oldValue) {
+      this.chartHistoricoMensal = buildChartHistorico(newValue)
+      this.historicoGroupData = groupTotalByData(newValue)
+    }
+  },
+
   methods: {
     getLink (id) {
       return {
@@ -101,6 +114,29 @@ export default {
 
   data () {
     return {
+      chartHistoricoMensal: {},
+      historicoGroupData: [],
+      columns: [
+        {
+          name: 'data',
+          required: true,
+          label: 'Data',
+          align: 'left',
+          field: 'data',
+          sortable: true
+        },
+        {
+          name: 'total',
+          align: 'left',
+          label: 'Total',
+          field: 'total',
+          format: val => formaterReal(val),
+          sortable: true
+        }
+      ],
+      pagination: {
+        rowsPerPage: 35
+      }
     }
   }
 }

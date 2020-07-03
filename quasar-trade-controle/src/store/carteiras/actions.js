@@ -1,6 +1,5 @@
 import vue from 'vue'
 import { stringToFloat } from '../../utils/numberUtils'
-import { build } from '../../utils/factory_chart_historico'
 import { carteira, carteiras, saveCarteira } from '../../graphql/carteiras'
 import { saveTradeAcao, movimentacoesByIdCarteira, deleteMovimentacao, saveMovimentacao } from '../../graphql/lancamentos'
 import { historicoLastMonthGroupByData } from '../../graphql/historicos'
@@ -204,14 +203,8 @@ const loadHistoricoMensal = (context) => {
       query: historicoLastMonthGroupByData
     })
     .then((resp) => resp.data.historicoLastMonthGroupByData)
-    .then((historicos) => buildHistoricoSemanal(context, historicos))
+    .then((historicos) => context.commit('SET_HISTORICO_MENSAL', historicos))
     .catch((error) => console.log(error))
-}
-
-const buildHistoricoSemanal = (context, historico) => {
-  const chart = build(historico)
-  console.log(chart)
-  context.commit('SET_HISTORICO_MENSAL', chart)
 }
 
 export {
