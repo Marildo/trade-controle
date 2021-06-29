@@ -7,6 +7,7 @@
 
  ### Tecnologias
   - Node
+  - Javascript
   - Vue
   - Quasar
   - GraphQl
