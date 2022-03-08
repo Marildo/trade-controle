@@ -6,29 +6,22 @@
  ----------------------------------------------------------------------------------------------------------------
 
  ### Tecnologias
+ ## V1
   - Node
   - Javascript
   - Vue
   - Quasar
   - GraphQl
 
+ ## v2
+  - Python
+  - Django
+  - Angular 
 
-------------------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------
 
-### Requisitos Não Funcionais
-
-- RNF01 -> Teconlogias: Sistema deve ser desenvolvido em linguagem Javascript utilizando NodeJs, ExpressJS, Knex, Apollo, GraphGL, VueJS,  HTML e CSS.
-
-- RNF02 -> Bando de dados: O banco de dados deve ser desenvolvido no PostgreSQL.
-
-- RNF03 -> Interface: A interface deve ser agradável e de fácil utilização.
-
-- RNF04 -> Responsividade: Interface deve ser ajustar a qualquer tamanho de tela.
-
-------------------------------------------------------------------------------------------------------------------
 
 ### Requisitos Funcionais
-
 - RF01 -> Cadastrar ações: Este requisito deve prover  o cadastro de ações, possibilitando inserção, edição e exclusão de ações sem movimentação e o cadastro compras, vendas, dividendos, juros sob capital e taxas.
 - RF02 -> Cadastro de carteira: Este requisito deve prover o cadastro carteiras  e relacioná-las com ações, títulos do tesouro direto, renda fixas e fundos de investimentos,  além de fornecer gráficos de pizza mostrando a proporção de cada ação na respectiva carteira.
 - RF03 -> Gerenciamento de risco: Este requisito deve prover o gerenciamento de risco das ações em carteiras, calculando  o gain/stop  e fornecendo alertas.
@@ -42,34 +35,6 @@
 - RF11 -> Cadastro de setores: Este requisito deve prover o cadastro de setores e subsetores e relacioná-los entre sim e com o cadastro de ações.
 - RF12 -> Cadastro de Corretoras: Este requisito deve prover o cadastro de corretoras e relacioná-las aos ativos cadastrado.
 - RF13 -> Busca de informação no CEI: Este requisito deve possibilitar a busca de informação diretamente no Canal Eletrônico do Investidor.
+- RF14 -> Importar notas de corretagem para atualuzar ativos sem a necessidade de esperar a atualição do CEI e tambem calcular o imposto de renda.
+- RF15 -> Calcular imposto de renda sobre transações.
 
-
-# trade-controle-front-end
-
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
