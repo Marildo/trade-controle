@@ -10,3 +10,7 @@ quasar-trade-controle/.quasar
 tc-back-end/node_modules
 tc-back-end/dist
 tc-back-end/.env
+
+*.pyc
+trade_controler_django/.idea/
+tc-django/.idea/
