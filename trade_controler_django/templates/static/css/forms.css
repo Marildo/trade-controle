@@ -1,0 +1,7 @@
+.form-flex-column {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #454696;
+    gap: 0.3em;
+}

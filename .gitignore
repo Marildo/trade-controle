@@ -14,3 +14,4 @@ tc-back-end/.env
 *.pyc
 trade_controler_django/.idea/
 tc-django/.idea/
+trade_controler_django/media/

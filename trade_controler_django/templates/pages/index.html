@@ -1,7 +1,17 @@
 {% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %} {%
 {% block 'content' %}
-<form>
-  <input name="file" type="file" />
-  <button type="submit">Enviar</button>
-</form>
+
+<div>
+  <form
+    action="{% url 'upload_notas_corretagem' %}"
+    method="post"
+    class="form-flex-column"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <label for="file"> Nota de corretagem </label>
+    <input type="file" name="corretagem" accept=".pdf" id="file" />
+    <button type="submit">Enviar</button>
+  </form>
+</div>
 {% endblock %}
