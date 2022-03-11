@@ -4,6 +4,10 @@ from django.db import models
 # Create your models here.
 
 class Segmento(models.Model):
+
+    class Meta:
+        db_table = "segmentos"
+
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=127)
 
@@ -11,6 +15,10 @@ class Segmento(models.Model):
         return f'{self.id} - {self.nome}'
 
 class SubSetor(models.Model):
+
+    class Meta:
+        db_table = "subsetores"
+
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=127)
 
@@ -19,6 +27,9 @@ class SubSetor(models.Model):
 
 
 class Setor(models.Model):
+    class Meta:
+        db_table = "setores"
+
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=127)
 
@@ -27,6 +38,9 @@ class Setor(models.Model):
 
 
 class Acao(models.Model):
+    class Meta:
+        db_table = "acoes"
+
     id = models.IntegerField(primary_key=True)
     codigo = models.CharField(max_length=6)
     nome = models.CharField(max_length=60)
