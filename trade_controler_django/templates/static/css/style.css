@@ -33,6 +33,7 @@
  #template>main {
      grid-area: m;
      min-height: 87vh;
+     padding: 0.5em;
  }
 
  #template>footer {
