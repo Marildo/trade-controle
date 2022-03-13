@@ -45,6 +45,7 @@ class Acao(models.Model):
     codigo = models.CharField(max_length=6)
     nome = models.CharField(max_length=60)
     cotacao = models.DecimalField(decimal_places=2, max_digits=10)
+    variacao = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     setor = models.ForeignKey(Setor, on_delete=models.DO_NOTHING)
     subsetor = models.ForeignKey(SubSetor, on_delete=models.DO_NOTHING)
     segmento = models.ForeignKey(Segmento, on_delete=models.DO_NOTHING)
@@ -52,3 +53,4 @@ class Acao(models.Model):
 
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
+    

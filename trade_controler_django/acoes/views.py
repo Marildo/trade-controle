@@ -1,23 +1,23 @@
 from django.core.handlers.wsgi import WSGIRequest
-from django.http import HttpResponse
 from django.shortcuts import render
+
+from services.status_invest import StatusInvest
+from .models import Acao
 
 
 def index(request: WSGIRequest):
-    return render(request, 'pages/acoes.html')
+    return render(request, 'pages/acoes/acoes.html')
 
 
 def search(request: WSGIRequest):
-    codigo = request.GET.get('nome')
-    df = locate_cotacao(codigo)
-    result = f"{df['Adj Close']} "
-    return HttpResponse(result)
+    nome: str = request.GET.get('nome')
+    acao = Acao.objects.filter(nome=nome.upper()).first()
+    if not acao:
+        service = StatusInvest()
+        acao = service.find_by_name(nome)
+        acao.setor.save()
+        acao.subsetor.save()
+        acao.segmento.save()
+        acao.save()
 
-
-def locate_cotacao(codigo:str):
-    import yfinance as yf
-    import pandas as pd
-
-    precos = pd.DataFrame()
-    precos[0]= yf.download('VALE3.SA', start='2022-03-09', end='2022-03-10')
-    return precos
+    return render(request, 'pages/acoes/acao.html', context={'acao': acao})
