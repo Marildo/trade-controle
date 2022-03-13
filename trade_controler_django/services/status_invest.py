@@ -1,10 +1,13 @@
+from pathlib import Path
 from typing import Tuple
 
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
+from django.conf import settings
 
 from acoes.models import Acao, Setor, SubSetor, Segmento
 from utils.str_util import StrUtil
+
 
 class StatusInvest:
     def __init__(self) -> None:
@@ -53,3 +56,16 @@ class StatusInvest:
         _id = numbers[-1]
 
         return a_class(id=_id, nome=name)
+
+    def download_images(self, acao: Acao):
+        self._download_image(acao.id, 'avatar')
+        self._download_image(acao.id, 'cover')
+
+    @staticmethod
+    def _download_image(_id: int, _type: str):
+        image_name = Path().joinpath(
+            settings.STATICFILES_DIRS[0], 'img', 'acoes', _type, f'{_id}.jpg'
+        )
+        image_data = requests.get(f'https://statusinvest.com.br/img/company/{_type}/{_id}.jpg').content
+        with open(image_name, 'wb') as handler:
+            handler.write(image_data)

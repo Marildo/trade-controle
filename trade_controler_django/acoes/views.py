@@ -16,9 +16,14 @@ def search(request: WSGIRequest):
     if not acao:
         service = StatusInvest()
         acao = service.find_by_name(nome)
-        acao.setor.save()
-        acao.subsetor.save()
-        acao.segmento.save()
-        acao.save()
+        if acao:
+            acao.setor.save()
+            acao.subsetor.save()
+            acao.segmento.save()
+            acao.save()
+            service.download_images(acao)
+
+    service = StatusInvest()
+    service.download_images(acao)
 
     return render(request, 'pages/acoes/acao.html', context={'acao': acao})
