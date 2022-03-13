@@ -1,13 +1,31 @@
 {% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %} {%
 {% block 'content' %}
+
 <h1>Ações</h1>
 <form method="get" action="{% url 'search' %}">
   <input type="search" name="nome" />
   <button type="submit">Buscar</button>
 </form>
-
+<br>
 <div>
-   <h4>{{ acao.nome }}</h4>
+   <table class="striped-blue-header">
+     <thead>
+       <tr>
+         <td>Codigo</td>
+         <td>Cotação</td>
+         <td>Variação</td>
+       </tr>
+     </thead>
+     <tbody>
+       {% for item in acoes %}
+        <tr>
+          <td>{{item.codigo}}</td>
+          <td>{{item.cotacao }}</td>
+          <td>{{item.variacao}}</td>
+        </tr>
+       {% endfor %}
+     </tbody>
+   </table>
 </div>
 
 {% endblock %}

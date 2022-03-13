@@ -112,3 +112,44 @@
      }
      
  }
+
+ table.striped-blue-header {
+    font-family: "Times New Roman", Times, serif;
+    border: 1px solid #FFFFFF;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    border-collapse: collapse;
+  }
+
+  table.striped-blue-header thead {
+    background: #0B6FA4;
+    border-bottom: 5px solid #FFFFFF;
+    color: #FFFFFF;
+  }
+
+  table.striped-blue-header td, table.striped-blue-header th {
+    border: 1px solid #FFFFFF;
+    padding: 3px 2px;
+  }
+  table.striped-blue-header tbody td {
+    font-size: 13px;
+  }
+  table.striped-blue-header tr:nth-child(even) {
+    background: #D0E4F5;
+  }
+
+  table.striped-blue-header thead th {
+    font-size: 17px;
+    font-weight: bold;
+  
+    text-align: center;
+    border-left: 2px solid #FFFFFF;
+  }
+  table.striped-blue-header thead th:first-child {
+    border-left: none;
+  }
+  
+  table.striped-blue-header tfoot td {
+    font-size: 14px;
+  }

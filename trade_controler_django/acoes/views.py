@@ -6,7 +6,8 @@ from .models import Acao
 
 
 def index(request: WSGIRequest):
-    return render(request, 'pages/acoes/acoes.html')
+    acoes = Acao.objects.all()
+    return render(request, 'pages/acoes/acoes.html', context= {'acoes': acoes})
 
 
 def search(request: WSGIRequest):
