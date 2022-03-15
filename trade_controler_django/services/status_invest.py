@@ -20,7 +20,8 @@ class StatusInvest:
         result = []
         for item in data:
             acao = Acao(
-                id=item['parentId'],
+                id=item['id'],
+                parent_id=item['parentId'],
                 nome=item['name'],
                 codigo=item['code'],
                 cotacao=StrUtil.str_to_float(item['price']),
@@ -61,8 +62,8 @@ class StatusInvest:
         return a_class(id=_id, nome=name)
 
     def download_images(self, acao: Acao):
-        self._download_image(acao.id, 'avatar')
-        self._download_image(acao.id, 'cover')
+        self._download_image(acao.parent_id, 'avatar')
+        self._download_image(acao.parent_id, 'cover')
 
     @staticmethod
     def _download_image(_id: int, _type: str):

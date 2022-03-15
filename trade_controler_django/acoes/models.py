@@ -6,8 +6,6 @@ from django.db import models
 from django.db.models import Q
 
 
-# Create your models here.
-
 class Segmento(models.Model):
     class Meta:
         db_table = "segmentos"
@@ -44,8 +42,10 @@ class Setor(models.Model):
 class Acao(models.Model):
     class Meta:
         db_table = "acoes"
+        indexes = [models.Index(fields=['codigo', ])]
 
     id = models.IntegerField(primary_key=True)
+    parent_id = models.IntegerField(default=0)
     codigo = models.CharField(max_length=6)
     nome = models.CharField(max_length=60)
     cotacao = models.DecimalField(decimal_places=2, max_digits=10)
@@ -65,13 +65,12 @@ class Acao(models.Model):
     @property
     def avatar_img(self):
         return self._get_image('avatar')
- 
-    def _get_image(self, _type:str):
+
+    def _get_image(self, _type: str):
         image_name = Path().joinpath(
-            settings.STATIC_URL, 'img', 'acoes', _type, f'{self.id}.jpg'
+            settings.STATIC_URL, 'img', 'acoes', _type, f'{self.parent_id}.jpg'
         )
         return image_name
-
 
     @staticmethod
     def search(value: str) -> List:

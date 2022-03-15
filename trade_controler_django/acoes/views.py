@@ -12,8 +12,8 @@ def index(request: WSGIRequest):
 
 
 def acao(request: WSGIRequest, codigo: str):
-    _acao = Acao.objects.filter(codigo=codigo.upper()).first()
-    return render(request, "pages/acoes/acao.html", context={"acao": _acao})
+    acoes = Acao.objects.filter(codigo=codigo.upper()).all()
+    return render(request, "pages/acoes/acao.html", context={"acoes": acoes})
 
 
 def search(request: WSGIRequest):
