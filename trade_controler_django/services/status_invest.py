@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, List
 
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
@@ -13,19 +13,22 @@ class StatusInvest:
     def __init__(self) -> None:
         pass
 
-    def find_by_name(self, name) -> Acao:
+    def find_by_name(self, name) -> List[Acao]:
         resp = requests.get(f'https://statusinvest.com.br/home/mainsearchquery?q={name}')
-        data = resp.json()[0]
-        acao = Acao(
-            id=data['parentId'],
-            nome=data['name'],
-            codigo=data['code'],
-            cotacao=StrUtil.str_to_float(data['price']),
-            variacao=StrUtil.str_to_float(data['variation'])
-        )
-        acao = self._set_properties(acao)
-
-        return acao
+        data = resp.json()
+        data = [i for i in data if i['type'] == 1]
+        result = []
+        for item in data:
+            acao = Acao(
+                id=item['parentId'],
+                nome=item['name'],
+                codigo=item['code'],
+                cotacao=StrUtil.str_to_float(item['price']),
+                variacao=StrUtil.str_to_float(item['variation'])
+            )
+            acao = self._set_properties(acao)
+            result.append(acao)
+        return result
 
     def _set_properties(self, acao: Acao) -> Acao:
         url = f'https://statusinvest.com.br/acoes/{acao.codigo}'

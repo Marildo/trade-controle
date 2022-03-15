@@ -1,10 +1,14 @@
+from pathlib import Path
+from typing import List
+
+from django.conf import settings
 from django.db import models
+from django.db.models import Q
 
 
 # Create your models here.
 
 class Segmento(models.Model):
-
     class Meta:
         db_table = "segmentos"
 
@@ -14,8 +18,8 @@ class Segmento(models.Model):
     def __str__(self):
         return f'{self.id} - {self.nome}'
 
-class SubSetor(models.Model):
 
+class SubSetor(models.Model):
     class Meta:
         db_table = "subsetores"
 
@@ -53,4 +57,23 @@ class Acao(models.Model):
 
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
-    
+
+    @property
+    def cover_img(self):
+        return self._get_image('cover')
+
+    @property
+    def avatar_img(self):
+        return self._get_image('avatar')
+ 
+    def _get_image(self, _type:str):
+        image_name = Path().joinpath(
+            settings.STATIC_URL, 'img', 'acoes', _type, f'{self.id}.jpg'
+        )
+        return image_name
+
+
+    @staticmethod
+    def search(value: str) -> List:
+        data = Acao.objects.all().filter(Q(codigo__icontains=value) | Q(nome__icontains=value))
+        return data

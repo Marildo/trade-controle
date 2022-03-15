@@ -3,25 +3,44 @@
 
 <h1>Ações</h1>
 <form method="get" action="{% url 'search' %}">
-  <input type="search" name="nome" />
+  <input type="search" name="ativo" />
   <button type="submit">Buscar</button>
+  {% if messages %}
+    {% for message in messages %}
+    <span class="alert-{{ message.tags }}"> {{ message }}</span>
+    {% endfor %}
+  {% endif %}
+
+
 </form>
 <br>
 <div>
    <table class="striped-blue-header">
      <thead>
        <tr>
-         <td>Codigo</td>
+         <td>Ativo</td>
+         <td class="text-center">Codigo</td>
          <td>Cotação</td>
          <td>Variação</td>
+         <td>Setor</td>
+         <td>Subsetor</td>
+         <td>Segmento</td>
        </tr>
      </thead>
      <tbody>
        {% for item in acoes %}
-        <tr>
-          <td>{{item.codigo}}</td>
-          <td>{{item.cotacao }}</td>
+        <tr > 
+          <td class="text-center"> 
+            <a class="link" href="{% url 'acao' item.codigo %}">
+              <img src="{{ item.avatar_img }}" style="width: 30px;">
+           </a>
+          </td>
+          <td class="text-center">{{item.codigo}}</td>
+          <td >{{item.cotacao }}</td>
           <td>{{item.variacao}}</td>
+          <td>{{item.setor.nome}}</td>
+          <td>{{item.subsetor.nome}}</td>
+          <td>{{item.segmento.nome}}</td>
         </tr>
        {% endfor %}
      </tbody>

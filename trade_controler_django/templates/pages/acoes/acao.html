@@ -2,13 +2,15 @@
 {% block 'content' %}
 {% load static %}
 
-<div>
-  <img src="{% static 'img/acoes/cover/246.jpg' %}">
-   <h1>{{ acao.nome }} - {{ acao.codigo }}</h1>
-   <h4>Cotação: {{ acao.cotacao }} Variação: {{ acao.variacao }} </h4>
-   <h5>Setor: {{acao.setor}} </h5>
-   <h5>Subsetor: {{acao.subsetor}} </h5>
-   <h5>Segmento: {{acao.segmento}} </h5>
-</div>
+{% for acao in acoes %}
+  <div>
+    <img src="{{ acao.cover_img }}">
+     <h1>{{ acao.nome }} - {{ acao.codigo }}</h1>
+     <h4>Cotação: {{ acao.cotacao }} Variação: {{ acao.variacao }} </h4>
+     <h5>Setor: {{acao.setor}} </h5>
+     <h5>Subsetor: {{acao.subsetor}} </h5>
+     <h5>Segmento: {{acao.segmento}} </h5>
+  </div>
+{% endfor %}
 
 {% endblock %}
