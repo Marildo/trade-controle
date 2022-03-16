@@ -11,8 +11,9 @@ https://hgbrasil.com/apis/cotacao-acao/b3-brasil-bolsa-balcao-b3sa3
 
 def test():
     import yfinance as yf
+    # https://analyzingalpha.com/blog/yfinance-python
 
-    x = yf.download('WEGE3.SA', start='2022-03-08', end='2022-03-10')
+    x = yf.download(['WEGE3.SA', 'VALE3.SA'], period='1d')
 
     keys = x.keys().values
 
@@ -26,8 +27,27 @@ def test():
 
     print(days)
 
+    """
+    {
+        Timestamp('2022-03-15 00:00:00'): {
+                ('Adj Close', 'VALE3.SA'): 88.97000122070312, 
+                ('Close', 'VALE3.SA'): 88.97000122070312,
+                ('Volume', 'VALE3.SA'): 47128500.0, 
+                ('High', 'VALE3.SA'): 89.58000183105469,
+                ('Open', 'VALE3.SA'): 88.98999786376953, 
+                ('Low', 'VALE3.SA'): 87.27999877929688,
+                ('High', 'WEGE3.SA'): 31.959999084472656,
+                ('Low', 'WEGE3.SA'): 30.100000381469727, 
+                ('Close', 'WEGE3.SA'): 30.200000762939453, 
+                ('Open', 'WEGE3.SA'): 30.899999618530273,
+                ('Volume', 'WEGE3.SA'): 9976300.0,
+                ('Adj Close', 'WEGE3.SA'): 30.200000762939453,
+        }
+}
+    """
 
-# test()
+
+test()
 
 
 def test2():
@@ -123,5 +143,6 @@ def locate_cotacao(codigo: str):
     precos = pd.DataFrame()
     precos[0] = yf.download('VALE3.SA', start='2022-03-09', end='2022-03-10')
     return precos
+# down_image()
 
-down_image()
+

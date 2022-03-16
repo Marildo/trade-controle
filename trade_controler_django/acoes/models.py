@@ -1,9 +1,11 @@
+
 from pathlib import Path
 from typing import List
 
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+from utils.tc_enums import TipoAtivo
 
 
 class Segmento(models.Model):
@@ -38,7 +40,6 @@ class Setor(models.Model):
     def __str__(self):
         return f'{self.id} - {self.nome}'
 
-
 class Acao(models.Model):
     class Meta:
         db_table = "acoes"
@@ -46,6 +47,7 @@ class Acao(models.Model):
 
     id = models.IntegerField(primary_key=True)
     parent_id = models.IntegerField(default=0)
+    tipo = models.IntegerField(choices=TipoAtivo.choices(), default=TipoAtivo.ACOES)
     codigo = models.CharField(max_length=6)
     nome = models.CharField(max_length=60)
     cotacao = models.DecimalField(decimal_places=2, max_digits=10)
@@ -58,6 +60,10 @@ class Acao(models.Model):
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
 
+    @property
+    def label_tipo(self):
+         return TipoAtivo(self.tipo).name
+  
     @property
     def cover_img(self):
         return self._get_image('cover')
