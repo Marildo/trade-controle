@@ -5,7 +5,7 @@ from typing import List
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
-from utils.tc_enums import TipoAtivo
+from utils.enums import TipoAtivo
 
 
 class Segmento(models.Model):

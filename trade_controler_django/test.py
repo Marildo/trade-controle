@@ -47,7 +47,7 @@ def test():
     """
 
 
-test()
+# test()
 
 
 def test2():
@@ -143,6 +143,17 @@ def locate_cotacao(codigo: str):
     precos = pd.DataFrame()
     precos[0] = yf.download('VALE3.SA', start='2022-03-09', end='2022-03-10')
     return precos
+
+
 # down_image()
 
 
+from utils.enums import TipoAtivo
+
+
+def test_enum():
+    print(TipoAtivo.choices())
+    print(TipoAtivo.values())
+
+
+test_enum()

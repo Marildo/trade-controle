@@ -6,6 +6,7 @@ from bs4 import BeautifulSoup, ResultSet, Tag
 from django.conf import settings
 
 from acoes.models import Acao, Setor, SubSetor, Segmento
+from utils.enums import TipoAtivo
 from utils.str_util import StrUtil
 
 
@@ -16,12 +17,13 @@ class StatusInvest:
     def find_by_name(self, name) -> List[Acao]:
         resp = requests.get(f'https://statusinvest.com.br/home/mainsearchquery?q={name}')
         data = resp.json()
-        data = [i for i in data if i['type'] == 1]
+        data = [i for i in data if i['type'] in TipoAtivo.values()]
         result = []
         for item in data:
             acao = Acao(
                 id=item['id'],
                 parent_id=item['parentId'],
+                tipo=item['type'],
                 nome=item['name'],
                 codigo=item['code'],
                 cotacao=StrUtil.str_to_float(item['price']),
@@ -31,35 +33,64 @@ class StatusInvest:
             result.append(acao)
         return result
 
-    def _set_properties(self, acao: Acao) -> Acao:
-        url = f'https://statusinvest.com.br/acoes/{acao.codigo}'
+    def _set_properties(self, ativo: Acao) -> Acao:
+        map_type = {
+            1: 'acoes',
+            2: 'fundos-imobiliarios'
+        }
+        url = f'https://statusinvest.com.br/{map_type[ativo.tipo]}/{ativo.codigo}'
         response = requests.get(url)
         html = BeautifulSoup(response.text, 'html.parser')
 
-        acao.setor = self._get_propertie(html, Setor)
-        acao.subsetor = self._get_propertie(html, SubSetor)
-        acao.segmento = self._get_propertie(html, Segmento)
-        return acao
+        if ativo.tipo == 1:
+            ativo.setor = self._get_propertie(ativo, html, Setor)
+            ativo.subsetor = self._get_propertie(ativo, html, SubSetor)
+            ativo.segmento = self._get_propertie(ativo, html, Segmento)
+        else:
+            self._get_propertie(ativo, html, Setor)
 
-    @staticmethod
-    def _get_propertie(html: BeautifulSoup, a_class) -> Tuple[Setor, SubSetor, Segmento]:
+        return ativo
+
+    def _get_propertie(self, ativo, html: BeautifulSoup, a_class) -> Tuple[Setor, SubSetor, Segmento]:
         path_map = {
             'setor': 'div.top-info-md-n:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)',
             'subsetor': 'div.pl-md-2:nth-child(2) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)',
             'segmento': 'div.pl-md-2:nth-child(3) > div:nth-child(1) > div:nth-child(1) > div:nth-child(2)',
         }
+        _id = 0
+        name = 'N/A'
 
         class_name = a_class.__name__.lower()
         result: ResultSet = html.select(path_map[class_name])
-        _tag: Tag = result.pop()
-        a = _tag.find('a')
-        name = a.find('strong', attrs={'class': 'value'}).text
+        for row in result:
+            _tag: Tag = row
+            a = _tag.find('a')
+            if a:
+                href = a.get('href').split('/')
+                numbers = [i for i in href if str(i).isnumeric()]
+                _id = numbers[-1]
+                name = a.find('strong', attrs={'class': 'value'}).text
 
-        href = a.get('href').split('/')
-        numbers = [i for i in href if str(i).isnumeric()]
-        _id = numbers[-1]
+                if ativo.tipo == 2:
+                    ativo.segmento = Segmento(_id, name)
+
+                    names = [i for i in href if not str(i).isnumeric()]
+
+                    name = name if names[-1] == names[-2] else self._normalize_name(names[-2])
+                    _id = numbers[-2]
+                    ativo.subsetor = SubSetor(_id, name)
+
+                    name = self._normalize_name(names[-3])
+                    _id = numbers[-3]
+                    ativo.setor = Setor(_id, name)
 
         return a_class(id=_id, nome=name)
+
+    @staticmethod
+    def _normalize_name(value: str) -> str:
+        words = value.split('-')
+        words = [str(i).title() if len(i) > 2 else i for i in words]
+        return " ".join(words)
 
     def download_images(self, acao: Acao):
         self._download_image(acao.parent_id, 'avatar')
