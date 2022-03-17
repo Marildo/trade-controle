@@ -1,10 +1,10 @@
-
 from pathlib import Path
 from typing import List
 
 from django.conf import settings
 from django.db import models
 from django.db.models import Q
+
 from utils.enums import TipoAtivo
 
 
@@ -40,10 +40,11 @@ class Setor(models.Model):
     def __str__(self):
         return f'{self.id} - {self.nome}'
 
-class Acao(models.Model):
+
+class Ativo(models.Model):
     class Meta:
-        db_table = "acoes"
-        indexes = [models.Index(fields=['codigo', ])]
+        db_table = "ativos"
+        indexes = [models.Index(fields=['codigo', ], name='idx_codigo')]
 
     id = models.IntegerField(primary_key=True)
     parent_id = models.IntegerField(default=0)
@@ -62,8 +63,8 @@ class Acao(models.Model):
 
     @property
     def label_tipo(self):
-         return TipoAtivo(self.tipo).name
-  
+        return TipoAtivo(self.tipo).name
+
     @property
     def cover_img(self):
         return self._get_image('cover')
@@ -74,11 +75,11 @@ class Acao(models.Model):
 
     def _get_image(self, _type: str):
         image_name = Path().joinpath(
-            settings.STATIC_URL, 'img', 'acoes', _type, f'{self.parent_id}.jpg'
+            settings.STATIC_URL, 'img', 'ativos', _type, f'{self.parent_id}.jpg'
         )
         return image_name
 
-    @staticmethod
-    def search(value: str) -> List:
-        data = Acao.objects.all().filter(Q(codigo__icontains=value) | Q(nome__icontains=value))
+    @classmethod
+    def search(cls, value: str) -> List:
+        data = cls.objects.all().filter(Q(codigo__icontains=value) | Q(nome__icontains=value))
         return data

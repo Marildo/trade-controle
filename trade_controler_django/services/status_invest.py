@@ -5,7 +5,7 @@ import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 from django.conf import settings
 
-from acoes.models import Acao, Setor, SubSetor, Segmento
+from ativos.models import Ativo, Setor, SubSetor, Segmento
 from utils.enums import TipoAtivo
 from utils.str_util import StrUtil
 
@@ -14,13 +14,13 @@ class StatusInvest:
     def __init__(self) -> None:
         pass
 
-    def find_by_name(self, name) -> List[Acao]:
+    def find_by_name(self, name) -> List[Ativo]:
         resp = requests.get(f'https://statusinvest.com.br/home/mainsearchquery?q={name}')
         data = resp.json()
         data = [i for i in data if i['type'] in TipoAtivo.values()]
         result = []
         for item in data:
-            acao = Acao(
+            ativo = Ativo(
                 id=item['id'],
                 parent_id=item['parentId'],
                 tipo=item['type'],
@@ -29,11 +29,11 @@ class StatusInvest:
                 cotacao=StrUtil.str_to_float(item['price']),
                 variacao=StrUtil.str_to_float(item['variation'])
             )
-            acao = self._set_properties(acao)
-            result.append(acao)
+            ativo = self._set_properties(ativo)
+            result.append(ativo)
         return result
 
-    def _set_properties(self, ativo: Acao) -> Acao:
+    def _set_properties(self, ativo: Ativo) -> Ativo:
         map_type = {
             1: 'acoes',
             2: 'fundos-imobiliarios'
@@ -90,16 +90,18 @@ class StatusInvest:
     def _normalize_name(value: str) -> str:
         words = value.split('-')
         words = [str(i).title() if len(i) > 2 else i for i in words]
-        return " ".join(words)
+        result = " ".join(words) \
+            .replace('Imoveis', 'Imóveis')
+        return result
 
-    def download_images(self, acao: Acao):
-        self._download_image(acao.parent_id, 'avatar')
-        self._download_image(acao.parent_id, 'cover')
+    def download_images(self, ativo: Ativo):
+        self._download_image(ativo.parent_id, 'avatar')
+        self._download_image(ativo.parent_id, 'cover')
 
     @staticmethod
     def _download_image(_id: int, _type: str):
         image_name = Path().joinpath(
-            settings.STATICFILES_DIRS[0], 'img', 'acoes', _type, f'{_id}.jpg'
+            settings.STATICFILES_DIRS[0], 'img', 'ativos', _type, f'{_id}.jpg'
         )
         image_data = requests.get(f'https://statusinvest.com.br/img/company/{_type}/{_id}.jpg').content
         with open(image_name, 'wb') as handler:

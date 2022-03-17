@@ -1,7 +1,7 @@
 {% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %} {%
 {% block 'content' %}
 
-<h1>Ações</h1>
+<h1>Ativos</h1>
 <form method="get" action="{% url 'search' %}">
   <input type="search" name="ativo" />
   <button type="submit">Buscar</button>
@@ -28,10 +28,10 @@
        </tr>
      </thead>
      <tbody>
-       {% for item in acoes %}
+       {% for item in ativos %}
         <tr > 
           <td class="text-center"> 
-            <a class="link" href="{% url 'acao' item.codigo %}">
+            <a class="link" href="{% url 'ativo' item.codigo %}">
               <img src="{{ item.avatar_img }}" style="width: 30px;">
            </a>
           </td>

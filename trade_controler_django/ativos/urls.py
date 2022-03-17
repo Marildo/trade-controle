@@ -8,7 +8,7 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.index, name='acoes'),
+    path('', views.index, name='ativos'),
     path('busca/', views.search, name='search'),
-    path('<slug:codigo>/', views.acao, name='acao'),
+    path('<slug:codigo>/', views.ativo, name='ativo'),
 ]

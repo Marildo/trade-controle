@@ -1,0 +1,17 @@
+{% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %}
+{% block 'content' %}
+{% load static %}
+
+{% for ativo in ativos %}
+  <div>
+    <img src="{{ ativo.cover_img }}">
+     <h1>{{ ativo.nome }} - {{ ativo.codigo }}</h1>
+     <h4>Cotação: {{ ativo.cotativo }} Variação: {{ ativo.variacao }} </h4>
+     <h5>Setor: {{ativo.setor}} </h5>
+     <h5>Subsetor: {{ativo.subsetor}} </h5>
+     <h5>Segmento: {{ativo.segmento}} </h5>
+     <h5>Tipo: {{ ativo.tipo }} - {{ ativo.label_tipo | title }}</h5>
+  </div>
+{% endfor %}
+
+{% endblock %}

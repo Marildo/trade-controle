@@ -1,9 +1,9 @@
 from django.contrib import admin
 
-from .models import Acao, Setor, SubSetor, Segmento
+from .models import Ativo, Setor, SubSetor, Segmento
 
 # Register your models here.
-admin.site.register(Acao)
+admin.site.register(Ativo)
 admin.site.register(Setor)
 admin.site.register(SubSetor)
 admin.site.register(Segmento)
