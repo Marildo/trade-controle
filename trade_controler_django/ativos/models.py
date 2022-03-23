@@ -37,7 +37,7 @@ class Setor(models.Model):
     id = models.IntegerField(primary_key=True)
     nome = models.CharField(max_length=127)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f'{self.id} - {self.nome}'
 
 

@@ -20,7 +20,7 @@
 
 #template > main {
   grid-area: m;
-  min-height: 87vh;
+  min-height: 85vh;
   padding: 0.5em;
 }
 

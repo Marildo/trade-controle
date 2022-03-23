@@ -1,0 +1,9 @@
+{% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %} {%
+{% block 'content' %}
+
+<h1>Carteiras</h1>
+{% for carteira in carteiras %}
+<div>
+  <p>{{ carteira.nome }}</p>
+</div>
+{% endfor %} {% endblock %}
