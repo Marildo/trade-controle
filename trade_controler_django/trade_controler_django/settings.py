@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'dashboard.apps.DashboardConfig',
     'ativos.apps.AtivosConfig',
-    'carteiras.apps.CarteirasConfig'
+    'carteiras.apps.CarteirasConfig',
+    'operacoes.apps.OperacoesConfig',
 ]
 
 MIDDLEWARE = [
