@@ -13,3 +13,8 @@ class TipoAtivo(IntEnum):
     @classmethod
     def values(cls) -> List:
         return [key.value for key in cls]
+
+
+class TipoCarteira(IntEnum):
+    VARIAVEL = 1
+    FIXA = 2
