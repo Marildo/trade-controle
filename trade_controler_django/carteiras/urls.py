@@ -9,4 +9,6 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='carteiras'),
+    path('update/<slug:id>', views.update_carteira, name='update_carteira'),
+    path('<slug:nome_carteira>/', views.carteira, name='carteira'),
 ]

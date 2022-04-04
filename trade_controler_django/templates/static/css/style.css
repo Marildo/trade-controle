@@ -160,3 +160,15 @@ table.striped-blue-header thead th:first-child {
    color: rgb(204, 101, 101);
    background-color: #e6dadd;
 }
+
+.card-flex-row{
+  margin: 2em;
+  display: flex;
+  flex-direction: row;
+}
+
+.card {
+  padding: 0.5em;
+  margin: 1em;
+  border: 1px solid #23232e;
+}

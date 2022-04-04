@@ -4,6 +4,7 @@
 <h1>Carteiras</h1>
 {% for carteira in carteiras %}
 <div>
-  <p>{{ carteira.nome }}</p>
+  <p> <a href="{% url 'carteira' carteira.nome %}"> {{ carteira.nome }}</p>
+  </a>
 </div>
 {% endfor %} {% endblock %}

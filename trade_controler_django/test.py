@@ -47,7 +47,7 @@ def test():
     """
 
 
-# test()
+test()
 
 
 def test2():
@@ -156,4 +156,4 @@ def test_enum():
     print(TipoAtivo.values())
 
 
-test_enum()
+#test_enum()

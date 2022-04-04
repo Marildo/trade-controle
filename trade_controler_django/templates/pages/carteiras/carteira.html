@@ -1,0 +1,58 @@
+{% extends 'main.html' %} {% block 'title' %} Trade Controle {% endblock %} {%
+{% block 'content' %}
+
+<h2>{{ carteira.nome }}</h2>
+<hr> 
+<div class="card-flex-row">
+    <span class="card">
+        Total em ativos: {{carteira.saldo_ativos }}
+    </span>
+    <span class="card">
+        Caixa: {{carteira.saldo_caixa }}
+    </span>
+    <span class="card">
+        Resultado do Ano: {{carteira.resultado_anual }}
+    </span>
+    <span class="card">
+        Resultado do Mês: {{carteira.resultado_mensal }}
+    </span>
+    <span class="card">
+        Resultado da Semana: {{carteira.resultado_semanal }}
+    </span>
+    <button onclick="update_carteira({{carteira.id}})">Atualizar</button>
+</div>
+<h3>Ativos</h3>
+<div>
+    <table class="striped-blue-header">
+        <thead>
+            <tr>
+                <td>Ativo</td>
+                <td>Preço Médio</td>
+                <td>Quantidade</td>
+                <td>Cotação</td>
+                <td>Valor posição</td>
+                <td>Resultado</td>
+                <td>Resultado (%)</td>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in operacoes %}
+            <tr>
+                <td>{{item.ativo.codigo}}</td>
+                <td>{{item.pm_compra}}   </td>
+                <td>{{item.quantidade}}  </td>
+                <td>{{item.ativo.cotacao}}  </td>
+                <td>{{item.total}}  </td>
+                <td>{{item.resultado}}</td>
+                <td>{{item.resultado_percentual}}</td>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div>
+</div>
+
+ 
+{% endblock %}

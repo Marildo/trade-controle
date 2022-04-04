@@ -8,7 +8,10 @@ from .models import Ativo
 
 def index(request: WSGIRequest):
     tipo: str = request.GET.get("tipo")
-    ativos = Ativo.objects.filter(tipo=tipo).all()
+    if tipo:
+        ativos = Ativo.objects.filter(tipo=tipo).all()
+    else:
+        ativos = Ativo.objects.filter().all()
     return render(request, "pages/ativos/index.html", context={"ativos": ativos})
 
 
