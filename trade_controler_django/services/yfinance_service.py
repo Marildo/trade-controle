@@ -4,11 +4,10 @@ by MarildoCesar
 """
 
 from typing import List
-
+import math
 import yfinance as yf
 
 
-# https://analyzingalpha.com/blog/yfinance-python
 class YFinanceService:
 
     @staticmethod
@@ -17,7 +16,10 @@ class YFinanceService:
         response = yf.download(codigos, period='1d')['Adj Close']
         for i in range(len(ativos)):
             values = response[codigos[i]]
-            ativos[i].cotacao = values[0]
-            ativos[0].save()
+            value = values[0]
+            if not math.isnan(value):
+                ativo = ativos[i]
+                ativo.cotacao = value
+                ativo.save()
 
         return ativos

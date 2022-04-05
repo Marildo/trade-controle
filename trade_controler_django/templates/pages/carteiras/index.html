@@ -2,9 +2,42 @@
 {% block 'content' %}
 
 <h1>Carteiras</h1>
-{% for carteira in carteiras %}
+
 <div>
-  <p> <a href="{% url 'carteira' carteira.nome %}"> {{ carteira.nome }}</p>
+  <p> </p>
   </a>
+
+  <table class="striped-blue-header">
+    <thead>
+    <tr>
+        <td>Carteira</td>
+        <td>Total</td>
+        <td>Resultado do Ano</td>
+        <td>Resultado do Mês</td>
+        <td>Resultado da Semana</td>
+    </tr>
+    </thead>
+    <tbody>
+      {% for carteira in carteiras %}
+    <tr>
+        <td> <a href="{% url 'carteira' carteira.nome %}"> {{ carteira.nome }}  </td>
+        <td class="text-right">{{ carteira.saldo_ativos }}</td>
+        <td class="text-right">{{ carteira.resultado_anual }}</td>
+        <td class="text-right">{{ carteira.resultado_mensal }} </td>
+        <td class="text-right">{{ carteira.resultado_semanal }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+    <tfoot>
+      <tr>
+        <td>Total</td>
+        <td class="text-right">{{totais.ativos}}</td>
+        <td class="text-right">{{totais.ano}}</td>
+        <td class="text-right">{{totais.mes}}</td>
+        <td class="text-right">{{totais.Semana}}</td>
+    </tr>
+    </tfoot>
+</table>
+
 </div>
-{% endfor %} {% endblock %}
+{% endblock %}

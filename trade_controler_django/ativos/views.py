@@ -1,8 +1,10 @@
 from django.contrib import messages
 from django.core.handlers.wsgi import WSGIRequest
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
 from services.status_invest import StatusInvest
+from services.yfinance_service import YFinanceService
 from .models import Ativo
 
 
@@ -38,3 +40,9 @@ def search(request: WSGIRequest):
             service.download_images(ativo)
 
     return render(request, "pages/ativos/view.html", context={"ativos": ativos})
+
+
+def update_prices(request: WSGIRequest):
+    ativos = Ativo.objects.filter().all()
+    YFinanceService.update_price(ativos)
+    return JsonResponse({"res": "ok"})

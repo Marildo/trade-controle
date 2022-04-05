@@ -2,49 +2,52 @@
 {% block 'content' %}
 
 <h1>Ativos</h1>
-<form method="get" action="{% url 'search' %}">
-  <input type="search" name="ativo" />
-  <button type="submit">Buscar</button>
-  {% if messages %}
+<div class="card-flex-row">
+    <form method="get" action="{% url 'search' %}">
+        <input type="search" name="ativo"/>
+        <button type="submit">Buscar</button>
+    </form>
+
+    <button onclick="update_ativos()"> Atualizar </button>
+
+    {% if messages %}
     {% for message in messages %}
     <span class="alert-{{ message.tags }}"> {{ message }}</span>
     {% endfor %}
-  {% endif %}
-
-
-</form>
+    {% endif %}
+</div>
 <br>
 <div>
-   <table class="striped-blue-header">
-     <thead>
-       <tr>
-         <td>Ativo</td>
-         <td class="text-center">Codigo</td>
-         <td>Cotação</td>
-         <td>Variação</td>
-         <td>Setor</td>
-         <td>Subsetor</td>
-         <td>Segmento</td>
-       </tr>
-     </thead>
-     <tbody>
-       {% for item in ativos %}
-        <tr > 
-          <td class="text-center"> 
-            <a class="link" href="{% url 'ativo' item.codigo %}">
-              <img src="{{ item.avatar_img }}" style="width: 30px;">
-           </a>
-          </td>
-          <td class="text-center">{{item.codigo}}</td>
-          <td >{{item.cotacao }}</td>
-          <td>{{item.variacao}}</td>
-          <td>{{item.setor.nome}}</td>
-          <td>{{item.subsetor.nome}}</td>
-          <td>{{item.segmento.nome}}</td>
+    <table class="striped-blue-header">
+        <thead>
+        <tr>
+            <td>Ativo</td>
+            <td class="text-center">Codigo</td>
+            <td>Cotação</td>
+            <td>Variação</td>
+            <td>Setor</td>
+            <td>Subsetor</td>
+            <td>Segmento</td>
         </tr>
-       {% endfor %}
-     </tbody>
-   </table>
+        </thead>
+        <tbody>
+        {% for item in ativos %}
+        <tr>
+            <td class="text-center">
+                <a class="link" href="{% url 'ativo' item.codigo %}">
+                    <img src="{{ item.avatar_img }}" style="width: 30px;">
+                </a>
+            </td>
+            <td class="text-center">{{item.codigo}}</td>
+            <td>{{item.cotacao }}</td>
+            <td>{{item.variacao}}</td>
+            <td>{{item.setor.nome}}</td>
+            <td>{{item.subsetor.nome}}</td>
+            <td>{{item.segmento.nome}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
 </div>
 
 {% endblock %}
