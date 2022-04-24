@@ -19,6 +19,8 @@ class StatusInvest:
         data = resp.json()
         data = [i for i in data if i['type'] in TipoAtivo.values()]
         result = []
+        if 1 == name:
+            pass
         for item in data:
             ativo = Ativo(
                 id=item['id'],
@@ -90,8 +92,7 @@ class StatusInvest:
     def _normalize_name(value: str) -> str:
         words = value.split('-')
         words = [str(i).title() if len(i) > 2 else i for i in words]
-        result = " ".join(words) \
-            .replace('Imoveis', 'Imóveis')
+        result = " ".join(words) .replace('Imoveis', 'Imóveis')
         return result
 
     def download_images(self, ativo: Ativo):

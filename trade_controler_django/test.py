@@ -47,7 +47,8 @@ def test():
     """
 
 
-test()
+#
+#test()
 
 
 def test2():
@@ -157,3 +158,16 @@ def test_enum():
 
 
 #test_enum()
+
+
+def test_import_corretagem():
+    from services.read_pdf_corretagem import ReadPDFCorretagem
+    import fitz
+    data_pregrao = 4
+    file_name: str = "C:/Users/Cesar/Downloads/nota-acoes-2022_04_08.pdf"
+
+    ready = ReadPDFCorretagem()
+    op = ready.read(file_name)
+    print(ready.data_operacao)
+
+test_import_corretagem()
