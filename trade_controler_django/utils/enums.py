@@ -5,6 +5,7 @@ from typing import List, Tuple
 class TipoAtivo(IntEnum):
     ACOES = 1
     FIIS = 2
+    INDICE = 3
 
     @classmethod
     def choices(cls) -> List[Tuple]:

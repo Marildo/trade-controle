@@ -18,6 +18,7 @@ class Operacao(models.Model):
     pm_venda = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     quantidade = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     custos = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    irpf = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     daytrade = models.BooleanField(default=False)
     encerrada = models.BooleanField(default=False)
     carteira = models.ForeignKey(Carteira, on_delete=models.DO_NOTHING)

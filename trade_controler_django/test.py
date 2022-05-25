@@ -162,12 +162,14 @@ def test_enum():
 
 def test_import_corretagem():
     from services.read_pdf_corretagem import ReadPDFCorretagem
-    import fitz
-    data_pregrao = 4
+
     file_name: str = "C:/Users/Cesar/Downloads/nota-acoes-2022_04_08.pdf"
+    file_name = 'C:/Users/Cesar/Downloads/nota-futuro-2022_05_23.pdf'
+   # file_name ='C:/Users/Cesar/Downloads/nota-futuro-2022_05_19.pdf'
 
     ready = ReadPDFCorretagem()
     op = ready.read(file_name)
-    print(ready.data_operacao)
+   # print(ready.data_operacao)
+   # print(ready.operacoes)
 
 test_import_corretagem()
