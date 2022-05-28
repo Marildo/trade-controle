@@ -169,7 +169,6 @@ def test_import_corretagem():
 
     ready = ReadPDFCorretagem()
     op = ready.read(file_name)
-   # print(ready.data_operacao)
-   # print(ready.operacoes)
+    print(ready.operacoes())
 
 test_import_corretagem()
