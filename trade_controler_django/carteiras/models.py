@@ -9,6 +9,7 @@ class Carteira(models.Model):
     nome = models.CharField(max_length=80)
     saldo_ativos = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     saldo_caixa = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    daytrade = models.BooleanField(default=False)
 
     @property
     def resultado_anual(self):

@@ -8,7 +8,7 @@ from typing import List, Dict
 class ReadPDFCorretagem:
 
     def __init__(self):
-        self._base: AtivoBase
+        self._base_item: AtivoBase
 
     def read(self, file_name: str):
         with fitz.open(file_name) as doc:
@@ -16,8 +16,8 @@ class ReadPDFCorretagem:
             for page in doc:
                 lines += page.get_text().split('\n')
 
-        self._base = MiniIndice(lines)
-        self._base.calcule()
+        self._base_item = MiniIndice(lines)
+        self._base_item.calcule()
 
     def operacoes(self) -> List[Dict]:
         return self._base.operacoes
