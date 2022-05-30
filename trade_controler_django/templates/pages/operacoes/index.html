@@ -3,4 +3,53 @@
 
 <h1>Operações</h1>
 
+<div>
+  <form
+    action="{% url 'upload_notas_corretagem' %}"
+    method="post"
+    class="form-flex-column"
+    enctype="multipart/form-data"
+  >
+    {% csrf_token %}
+    <label for="file"> Nota de corretagem </label>
+    <input type="file" name="corretagem" accept=".pdf" id="file" />
+    <button type="submit">Enviar</button>
+  </form>
+</div>
+
+<div>
+    <table class="striped-blue-header">
+        <thead>
+        <tr>
+            <td>Ativo</td>
+            <td>Preço Compra</td>
+            <td>Preço Venda</td>
+            <td>Quantidade</td>
+            <td>Cotação</td>
+            <td>Valor posição</td>
+            <td>Resultado</td>
+            <td>Resultado (%)</td>
+            <td>Carteira</td>
+        </tr>
+        </thead>
+        <tbody>
+        {% for item in operacoes %}
+        <tr>
+            <td>{{item.ativo.codigo}}</td>
+            <td>{{item.pm_compra}}</td>
+            <td>{{item.pm_venda}}</td>
+            <td>{{item.quantidade}}</td>
+            <td>{{item.ativo.cotacao}}</td>
+            <td>{{item.total}}</td>
+            <td>{{item.resultado}}</td>
+            <td>{{item.resultado_percentual}}</td>
+            <td>{{item.carteira}}</td>
+        </tr>
+        {% endfor %}
+
+        </tbody>
+    </table>
+</div>
+
+
 {% endblock %}

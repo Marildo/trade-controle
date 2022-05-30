@@ -20,4 +20,4 @@ class ReadPDFCorretagem:
         self._base_item.calcule()
 
     def operacoes(self) -> List[Dict]:
-        return self._base.operacoes
+        return self._base_item.operacoes

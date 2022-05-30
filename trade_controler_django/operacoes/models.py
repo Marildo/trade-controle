@@ -1,5 +1,6 @@
 from decimal import Decimal
 from typing import List
+from datetime import datetime
 
 from django.db import models
 
@@ -21,6 +22,7 @@ class Operacao(models.Model):
     irpf = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     daytrade = models.BooleanField(default=False)
     encerrada = models.BooleanField(default=False)
+    data_encerramento = models.DateField(default=datetime.now)
     carteira = models.ForeignKey(Carteira, on_delete=models.DO_NOTHING)
     ativo = models.ForeignKey(Ativo, on_delete=models.DO_NOTHING)
 
@@ -29,17 +31,29 @@ class Operacao(models.Model):
 
     @property
     def total(self) -> Decimal:
-        return round(self.ativo.cotacao * self.quantidade, 2)
+        return 0 if self.encerrada else round(self.ativo.cotacao * self.quantidade, 2)
 
     @property
     def resultado(self) -> Decimal:
-        return round((self.ativo.cotacao * self.quantidade) - (self.pm_compra * self.quantidade), 2)
+        if self.encerrada:
+            return round((self.pm_venda - self.pm_compra) * self.quantidade, 2)
+        else:
+            return round((self.ativo.cotacao * self.quantidade) - (self.pm_compra * self.quantidade), 2)
 
     @property
     def resultado_percentual(self) -> Decimal:
-        return round(self.ativo.cotacao / self.pm_compra * 100 - 100, 2)
+        if self.encerrada:
+            return round((self.pm_venda * self.quantidade) / (self.pm_compra * self.quantidade) * 100 - 100, 2)
+        else:
+            return round(self.ativo.cotacao / self.pm_compra * 100 - 100, 2)
 
     @classmethod
     def filter_by_carteira(cls, carteira_id: int) -> List:
-        data = cls.objects.all().filter(carteira_id=carteira_id, encerrada=False)
-        return list(data)
+        first_day = datetime.today().replace(day=1)
+        data = list(cls.objects.all().filter(carteira_id=carteira_id, encerrada=False))
+        data += list(cls.objects
+                     .all()
+                     .filter(carteira_id=carteira_id, data_encerramento__gte=first_day, encerrada=True)
+                     )
+
+        return data

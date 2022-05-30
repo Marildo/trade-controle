@@ -33,6 +33,10 @@ class Carteira(models.Model):
     def find_by_name(cls, nome: str):
         return cls.objects.filter(nome__iexact=nome).first()
 
+    @classmethod
+    def find_of_daytrade(cls):
+        return cls.objects.filter(daytrade=True).first()
+
 
 class HistoricoAnual(models.Model):
     class Meta:
