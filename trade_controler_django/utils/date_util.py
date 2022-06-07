@@ -8,4 +8,4 @@ def str_datetime(value: str) -> datetime.datetime:
 
 
 def str_date(value: str) -> datetime.date:
-    return parse_date(value).date()
+    return parse_date(value, dayfirst=True).date()

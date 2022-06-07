@@ -5,8 +5,8 @@ from utils import StrUtil, str_date
 class MiniIndice(AtivoBase):
 
     def calcule(self):
-        # for i in self.lines:
-        #     print(i)
+        for i in self.lines:
+            print(i)
 
         operacao = {}
 
@@ -30,6 +30,9 @@ class MiniIndice(AtivoBase):
         index = self.lines.index('Data de referência')
         operacao['data_compra'] = str_date(self.lines[index - 1])
         operacao['data_venda'] = operacao['data_compra']
+
+        index = self.lines.index('Comprovante')
+        operacao['comprovante'] = self.lines[index + 1]
 
         operacao['ativo'] = 'WINFUT'
 

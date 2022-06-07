@@ -4,17 +4,17 @@
 <h1>Operações</h1>
 
 <div>
-  <form
-    action="{% url 'upload_notas_corretagem' %}"
-    method="post"
-    class="form-flex-column"
-    enctype="multipart/form-data"
-  >
-    {% csrf_token %}
-    <label for="file"> Nota de corretagem </label>
-    <input type="file" name="corretagem" accept=".pdf" id="file" />
-    <button type="submit">Enviar</button>
-  </form>
+    <form
+            action="{% url 'upload_notas_corretagem' %}"
+            method="post"
+            class="form-flex-column"
+            enctype="multipart/form-data"
+    >
+        {% csrf_token %}
+        <label for="file"> Nota de corretagem </label>
+        <input type="file" name="corretagem" accept=".pdf" id="file"/>
+        <button type="submit">Enviar</button>
+    </form>
 </div>
 
 <div>
@@ -43,10 +43,9 @@
             <td>{{item.total}}</td>
             <td>{{item.resultado}}</td>
             <td>{{item.resultado_percentual}}</td>
-            <td>{{item.carteira}}</td>
+            <td> <a href="{% url 'carteira' item.carteira.nome %}"> {{ item.carteira.nome }}</a></td>
         </tr>
         {% endfor %}
-
         </tbody>
     </table>
 </div>

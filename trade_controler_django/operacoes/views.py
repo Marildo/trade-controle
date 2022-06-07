@@ -45,6 +45,11 @@ def upload_notas_corretagem(request: WSGIRequest):
             operacao.data_encerramento = operacao.data_compra
 
         operacao.save()
+
+        if operacao.encerrada:
+            operacao.carteira.saldo_ativos = operacao.carteira.saldo_ativos + operacao.resultado
+            operacao.carteira.save()
+
         operacoes.append(operacao)
 
     return render(request, "pages/operacoes/index.html", context={'operacoes': operacoes})
