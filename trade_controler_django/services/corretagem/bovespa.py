@@ -77,12 +77,21 @@ class Bovespa(AtivoBase):
                     for op in ops:
                         rs = (op['pm_venda'] - op['pm_compra']) * op['qtd_compra']
                         percentual = rs * 100 / resultado_total
-                        op['irpf'] = irrf_total * (percentual * 0.01)
+                        op['irpf'] = round(irrf_total * (percentual * 0.01), 2)
 
     def __rateia_custos(self) -> None:
         index = self.__locate_index('Custos', self.lines)
         if index:
             value = self.lines[index + 1]
+            value = StrUtil.onnly_numbers(value)
+            custos_total = round(StrUtil.str_to_float(value) / 100, 2)
+            if custos_total > 0:
+                ops = [item for item in self.operacoes if item['qtd_venda'] > 0]
+                total_vendas = sum((item['pm_venda'] * item['qtd_venda'] for item in ops))
+                for op in ops:
+                    rs = op['pm_venda'] * op['qtd_venda']
+                    percentual = rs * 100 / total_vendas
+                    op['custos'] = round(custos_total * (percentual * 0.01), 2)
 
     def __find_nome_ativo(self, cutting: List) -> str:
         value = cutting[0]

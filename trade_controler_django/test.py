@@ -168,7 +168,8 @@ def test_import_corretagem():
    # file_name ='C:/Users/Cesar/Downloads/nota-futuro-2022_05_19.pdf'
 
     ready = ReadPDFCorretagem()
-    op = ready.read(file_name)
-    print(ready.operacoes())
+    ready.read(file_name)
+    for i in ready.operacoes():
+        print(i)
 
 test_import_corretagem()
