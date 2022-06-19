@@ -6,27 +6,39 @@ from django.db import models
 
 from ativos.models import Ativo
 from carteiras.models import Carteira
+from utils.enums import TipoNota
+
+
+class NotasCorretagem(models.Model):
+    db_table = 'notas'
+
+    id = models.AutoField(primary_key=True)
+    comprovante = models.IntegerField(default=0)
+    data_refrencia = models.DateTimeField(null=True, default=None)
+    tipo = models.IntegerField(choices=TipoNota.choices(), default=TipoNota.ACOES)
+    data_upload = models.DateTimeField(null=True, default=datetime.now)
 
 
 class Operacao(models.Model):
     class Meta:
         db_table = 'operacoes'
-        unique_together = (('ativo', 'pm_compra', 'data_encerramento', 'comprovante'),)
+        unique_together = (('ativo', 'pm_compra', 'data_encerramento','quantidade', 'nota'),)
 
     id = models.AutoField(primary_key=True)
     data_compra = models.DateTimeField(null=True, default=None)
     data_venda = models.DateTimeField(null=True, default=None, blank=True)
     pm_compra = models.DecimalField(decimal_places=2, max_digits=10, default=0)
     pm_venda = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    quantidade = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    custos = models.DecimalField(decimal_places=2, max_digits=10, default=0)
-    irpf = models.DecimalField(decimal_places=2, max_digits=10, default=0)
+    quantidade = models.FloatField(default=0)
+    custos = models.FloatField(default=0)
+    irpf = models.FloatField(default=0)
     daytrade = models.BooleanField(default=False)
     encerrada = models.BooleanField(default=False)
-    comprovante = models.IntegerField(default=0)
     data_encerramento = models.DateField(default=datetime.now)
     carteira = models.ForeignKey(Carteira, on_delete=models.DO_NOTHING)
     ativo = models.ForeignKey(Ativo, on_delete=models.DO_NOTHING)
+    ativo = models.ForeignKey(Ativo, on_delete=models.DO_NOTHING)
+    nota = models.ForeignKey(NotasCorretagem, on_delete=models.DO_NOTHING, default=1)
 
     def __str__(self):
         return self.ativo.codigo
