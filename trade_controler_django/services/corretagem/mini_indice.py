@@ -5,8 +5,8 @@ from utils import StrUtil, str_date
 class MiniIndice(AtivoBase):
 
     def calcule(self):
-        for i in self.lines:
-            print(i)
+        # for i in self.lines:
+        #     print(i)
 
         operacao = {}
 

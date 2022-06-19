@@ -2,6 +2,7 @@ import fitz
 
 from services.corretagem.base_ativo import AtivoBase
 from services.corretagem.mini_indice import MiniIndice
+from services.corretagem.bovespa import Bovespa
 from typing import List, Dict
 
 
@@ -16,7 +17,13 @@ class ReadPDFCorretagem:
             for page in doc:
                 lines += page.get_text().split('\n')
 
-        self._base_item = MiniIndice(lines)
+        map_class = {
+            'COMPROVANTE BOVESPA AÇÕES': Bovespa,
+            'COMPROVANTE BM&F': MiniIndice
+        }
+
+        aclass = map_class[lines[0]]
+        self._base_item = aclass(lines)
         self._base_item.calcule()
 
     def operacoes(self) -> List[Dict]:

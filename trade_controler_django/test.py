@@ -163,8 +163,8 @@ def test_enum():
 def test_import_corretagem():
     from services.corretagem.read_pdf_corretagem import ReadPDFCorretagem
 
-    file_name: str = "C:/Users/Cesar/Downloads/nota-acoes-2022_04_08.pdf"
-    file_name = 'C:/Users/Cesar/Downloads/nota-futuro-2022_06_03.pdf'
+    file_name: str = "C:/Users/Cesar/Downloads/nota-acoes-2022_03_07.pdf"
+    #file_name = 'C:/Users/Cesar/Downloads/nota-futuro-2022_06_03.pdf'
    # file_name ='C:/Users/Cesar/Downloads/nota-futuro-2022_05_19.pdf'
 
     ready = ReadPDFCorretagem()
