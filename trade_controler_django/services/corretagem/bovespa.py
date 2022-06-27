@@ -7,8 +7,9 @@ class Bovespa(AtivoBase):
     DATA_OPERACAO = -5
 
     def calcule(self):
-        for i in self.lines:
-            print(i)
+        self.load_lines()
+        # for i in self.lines:
+        #     print(i)
 
         begin = self.__locate_index('C/V', self.lines)
         end = self.__locate_index('PREÇO DE EXERCÍCIO', self.lines)
@@ -16,12 +17,12 @@ class Bovespa(AtivoBase):
         data_operacao = self.__data_operacao()
         comprovante = self.__find_comprovante()
 
-        operacao = dict(ativo='ativo', comprovante=comprovante,
-                        qtd_compra=100, qtd_venda=100,
-                        pm_compra=126, pm_venda=139,
-                        data_compra=data_operacao, data_venda=data_operacao,
-                        irpf=0, custos=0)
-        self._add_operacao(operacao)
+        # operacao = dict(ativo='ativo', comprovante=comprovante,
+        #                 qtd_compra=100, qtd_venda=100,
+        #                 pm_compra=126, pm_venda=139,
+        #                 data_compra=data_operacao, data_venda=data_operacao,
+        #                 irpf=0, custos=0)
+        # self._add_operacao(operacao)
 
         while begin > 0:
             cutting = self.lines[begin - 1: end]
