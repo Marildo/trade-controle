@@ -5,6 +5,7 @@
 
 def test_import_corretagem():
     from services.corretagem.read_pdf_file import ReadPDFCorretagem
+    from src.model import Operacoes
 
     file_name: str = "nota-de-corretagem-2020.pdf"
     # file_name = 'C:/Users/Cesar/Downloads/nota-futuro-2022_06_03.pdf'
@@ -14,6 +15,8 @@ def test_import_corretagem():
     ready.read(file_name)
     for i in ready.operacoes():
         print(i)
+
+
 
 
 test_import_corretagem()

@@ -17,8 +17,13 @@ class BovespaAnual(Investiment):
         page_count = 0
         for page in self.document.pages:
             page_count += 1
-            print('page ', page_count, '#' * 80)
+            print('page', page_count, '#' * 80)
             self._lines = page.extract_text().split('\n')
+
+            j = 0
+            for i in self.lines:
+                print(j, i)
+                j += 1
 
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
