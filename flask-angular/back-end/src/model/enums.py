@@ -12,7 +12,7 @@ class BaseIntEnum(IntEnum):
         return [key.value for key in cls]
 
 
-class TipoAtivo(BaseIntEnum):
+class TipoInvestimento(BaseIntEnum):
     ACOES = 1
     FIIS = 2
     INDICE = 3

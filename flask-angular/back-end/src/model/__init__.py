@@ -1,9 +1,10 @@
 """
  @author Marildo Cesar 22/04/2023
 """
-
-from .tables import Base, Operacoes
 from .sqllite_connection import SqlLiteConnection
 
-db_connection = SqlLiteConnection()
-Base.metadata.create_all(db_connection.engine)
+from .tables import Operacoes, Carteira, Ativo, Setor, SubSetor, Segmento
+from .enums import TipoAtivo
+
+from .init_db import create_base
+create_base()
