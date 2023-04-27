@@ -61,9 +61,9 @@ class Ativo(BaseTable):
         return f'{self.codigo} - {self.nome}'
 
     @staticmethod
-    def find_by_name(nome: str):
+    def find_like_name(nome: str):
         with db_connection as conn:
-            query = conn.session.query(Ativo).filter(Ativo.nome == nome)
+            query = conn.session.query(Ativo).filter(Ativo.nome.ilike(f'%{nome.strip()}%'))
             return query.all()
 
 
