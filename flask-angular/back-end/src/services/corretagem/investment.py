@@ -5,13 +5,13 @@
 from typing import List, Dict
 from abc import ABC, abstractmethod
 
-from PyPDF2 import PdfReader
+from fitz import Document
 from src.utils.str_util import str_to_float, onnly_numbers
 
 
 class Investiment(ABC):
 
-    def __init__(self, document: PdfReader):
+    def __init__(self, document: Document):
         self.__document = document
         self._lines = []
         self.__operacaoes = []
@@ -28,8 +28,8 @@ class Investiment(ABC):
     def lines(self):
         return self._lines
 
-    def _add_operacao(self, operacao: Dict):
-        self.__operacaoes.append(operacao)
+    def _add_operacao(self, operacaos: List[Dict]):
+        self.__operacaoes += operacaos
 
     @property
     def operacoes(self) -> List[Dict]:

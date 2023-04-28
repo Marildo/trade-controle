@@ -45,12 +45,16 @@ class AtivoController:
     @staticmethod
     def map_nome(full_name: str) -> Tuple[str, Optional[str]]:
         _map = {
-            'VIAVAREJO': 'VIA S.A',
             'FII CSHG LOG': 'CGHG Logística',
+            'FII VALOR HE': 'VALORA HEDGE',
+            'VIAVAREJO': 'VIA S.A',
             'IRBBRASIL RE': 'IRBR',
             'CYRELA REALT': 'CYRELA',
             'SID NACIONAL': 'CSN',
             'MAGAZ LUIZA': 'MAGAZINE LUIZA',
+            'P.ACUCAR-CBD': 'CIA BRASILEIRA DE DISTRIBUIÇÃO',
+            'PETRORIO': 'PETRO RIO',
+            'DEXCO': 'DURATEX'
         }
         nome, tipo = (full_name
                       .replace('S/A', '')

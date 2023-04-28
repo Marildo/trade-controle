@@ -16,7 +16,8 @@ class StatusInvest:
 
         pass
 
-    def find_by_name(self, name) -> List[Dict]:
+    def find_by_name(self, name:str) -> List[Dict]:
+        print('Search by', name)
         url = f'https://statusinvest.com.br/home/mainsearchquery?q={name}&country='
         data = self._request(url).json()
         data = [i for i in data if i['type'] in (1, 2)]
@@ -55,8 +56,11 @@ class StatusInvest:
 
     def get_tipo(self, html: BeautifulSoup) -> str:
         select = '#main-2 > div:nth-child(4) > div > div:nth-child(5) > div > div > div:nth-child(1) > div > div > strong'
-        _tag: Tag = html.select(select)[0]
-        return _tag.text
+        _tag: Tag = html.select(select)
+        if _tag:
+            return _tag[0].text
+
+        return None
 
     def _get_propertie(self, ativo: Dict, name_item: str, html: BeautifulSoup) -> Dict:
         path_map = {

@@ -14,19 +14,20 @@ class BovespaAnual(Investiment):
     COMPROVANTE = 6
 
     def load(self):
-        page_count = 0
-        for page in self.document.pages:
-            page_count += 1
-            print('page', page_count, '#' * 80)
-            self._lines = page.extract_text().split('\n')
 
-            j = 0
-            for i in self.lines:
-                print(j, i)
-                j += 1
+        for page in self.document:
+            self._lines = page.get_text().split('\n')
+            operacoes = []
+
+            # j = 0
+            # for i in self.lines:
+            #     print(j, i)
+            #     j += 1
 
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
+
+            print(page.number, data_operacao, comprovante)
 
             end = self.__locate_index('BOVESPA 1', self.lines)
             begin = end - 7
@@ -37,28 +38,28 @@ class BovespaAnual(Investiment):
                 ativo = self.__find_nome_ativo(cutting)
                 qtd = self.__find_qtd(cutting)
                 pm = self.__find_preco_medio(cutting)
+                tipo = cutting[7][0]
 
-                its_buy = cutting[- 1] == 'C'
+                operacao = dict(ativo=ativo, tipo=tipo, qtd=qtd, preco=pm,
+                                data_operacao=data_operacao, comprovante=comprovante, irpf=0, custos=0)
 
-                operacao = dict(ativo=ativo, tipo=cutting[- 1], qtd=qtd, preco=pm,
-                                data_operacao=data_operacao, comprovante=comprovante, irpf=0,
-                                custos=0)
-
-                self._add_operacao(operacao)
+                operacoes.append(operacao)
 
                 end = self.__locate_index('BOVESPA 1', self.lines, end + 1)
                 begin = end - 7
+                print(operacao)
 
-            self.__rateia_custos()
-            self.__rateia_irrf()
+            self.__rateia_custos(operacoes)
+            self.__rateia_irrf(operacoes)
+            self._add_operacao(operacoes)
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:
         try:
-            items = [item for item in cutting if item.startswith(value)]
+            items = [item for item in cutting if str(item).__contains__(value)]
             return cutting.index(items[0], start)
         except:
-            return 0
+            return -1
 
     def __data_operacao(self):
         return str_date(self.lines[self.DATA_OPERACAO])
@@ -66,31 +67,50 @@ class BovespaAnual(Investiment):
     def __find_comprovante(self) -> int:
         return int(self.lines[self.COMPROVANTE])
 
-    def __rateia_irrf(self) -> None:
+    def __rateia_irrf(self, operacoes: List) -> None:
+        irrf_total = 0
         index = self.__locate_index('IRRF Day Trade', self.lines)
-        if index:
+        if index > 0:
             value = self.lines[index + 1]
-            value = onnly_numbers(value)
-            irrf_total = round(str_to_float(value) * 0.0001, 2)
-            if irrf_total > 0:
-                has_irrf = lambda item: item['qtd_compra'] == item['qtd_venda'] and item['pm_compra'] < item['pm_venda']
-                ops = [item for item in self.operacoes if has_irrf(item)]
-                if ops:
-                    resultado_total = sum(((item['pm_venda'] - item['pm_compra']) * item['qtd_compra'] for item in ops))
-                    for op in ops:
-                        rs = (op['pm_venda'] - op['pm_compra']) * op['qtd_compra']
-                        percentual = rs * 100 / resultado_total
-                        op['irpf'] = round(irrf_total * (percentual * 0.01), 2)
+            irrf_total = self.parse_float(value)
+
+        index = self.__locate_index('IRRF Day-Trade', self.lines)
+        if index > 0:
+            value = self.lines[index]
+            key = 'Projeção R$'
+            value = value[value.find(key) + len(key): len(value)]
+            irrf_total = self.parse_float(value)
+
+        self.__rateia_daytrade_irrf(operacoes, irrf_total)
 
         index = self.__locate_index('I.R.R.F. s/ operações', self.lines)
-        if index:
+        if index > 0:
             value = self.parse_float(self.lines[index + 1])
-            op = [i for i in self.operacoes if [i['qtd'] * i['preco'] == value]][0]
+            op = [i for i in operacoes if [i['qtd'] * i['preco'] == value]][0]
             if op:
                 value = self.parse_float(self.lines[index - 1])
                 op['irpf'] = value
 
-    def __rateia_custos(self) -> None:
+    @staticmethod
+    def __rateia_daytrade_irrf(operacoes: List, irrf: float):
+        if irrf <= 0:
+            return
+
+        compras = {i['ativo'] for i in operacoes if i['tipo'] == 'C'}
+        vendas = {i['ativo'] for i in operacoes if i['tipo'] == 'V'}
+        intersection = compras.intersection(vendas)
+        ativos = set([i['ativo'] for i in operacoes if i['ativo'] in intersection])
+        for item in ativos:
+            ops = [i for i in operacoes if i['ativo'] == item]
+            qtd_venda = sum([i['qtd'] for i in ops if i['tipo'] == 'V'])
+            qtd_compra = sum([i['qtd'] for i in ops if i['tipo'] == 'C'])
+            ops = [i for i in ops if i['tipo'] == 'V']
+            if qtd_venda == qtd_compra:
+                for op in ops:
+                    percentual = (op['qtd'] * 100) / qtd_venda
+                    op['irpf'] = round(irrf * (percentual * 0.01), 4)
+
+    def __rateia_custos(self, operacoes: List) -> None:
         emulomentos = self.__find_emulumentos(self.lines)
         taxa_liquidacao = self.__find_taxa_liquidacao(self.lines)
         clearing = self.__find_clearing(self.lines)
@@ -98,7 +118,7 @@ class BovespaAnual(Investiment):
         outras = self.__find_outras_despesas(self.lines)
         custos_total = emulomentos + taxa_liquidacao + clearing + iss + outras
         if custos_total > 0:
-            ops = [item for item in self.operacoes if item['tipo'] == 'V']
+            ops = [item for item in operacoes if item['tipo'] == 'V']
             total_compras = sum((item['preco'] * item['qtd'] for item in ops))
             for op in ops:
                 rs = op['preco'] * op['qtd']
@@ -107,25 +127,27 @@ class BovespaAnual(Investiment):
 
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
-        tipo = cutting[4].replace('N1', '').replace('NM', '').strip(' ')
-        codigo = cutting[5].strip('')
+        tipo = cutting[5].replace('N1', '').replace('NM', '').strip(' ')
+        codigo = cutting[6].strip('')
         value = f'{codigo}/{tipo}'
         return value
 
     @staticmethod
     def __find_qtd(cutting: List) -> int:
-        value = cutting[3]
+        value = cutting[4]
         return int(value.strip(''))
 
     @staticmethod
     def __find_preco_medio(cutting: List) -> float:
-        value = cutting[0]
+        value = cutting[2]
         value = onnly_numbers(value)
         value = round(str_to_float(value) * 0.01, 2)
         return value
 
     def __find_taxa_liquidacao(self, cutting: List) -> float:
         index = self.__locate_index('Taxa de liquidação', cutting)
+        if index < 0:
+            return 0
         value = cutting[index - 1]
         return self.parse_float(value)
 
@@ -137,7 +159,9 @@ class BovespaAnual(Investiment):
     def __find_clearing(self, cutting: List) -> float:
         index = cutting.index('Clearing')
         sub = cutting[index + 1: len(cutting)]
-        index = sub.index('Clearing')
+        index = self.__locate_index('Clearing', sub)
+        if index < 0:
+            return 0
         value = sub[index + 2]
         return self.parse_float(value)
 
