@@ -5,7 +5,7 @@
 from services.corretagem.read_pdf_file import ReadPDFCorretagem
 from src.controller import OperacaoController, AtivoController
 
-files = ("279757-BOV.pdf", "nota-de-corretagem-2021.pdf", "nota-de-corretagem-2020.pdf")
+files = ("nota-de-corretagem-2020.pdf",) #, "nota-de-corretagem-2021.pdf", "nota-de-corretagem-2022.pdf", "279757-BOV.pdf")
 
 # AtivoController.find_by_or_save('LOCAMERICA/ON')
 
@@ -13,7 +13,7 @@ files = ("279757-BOV.pdf", "nota-de-corretagem-2021.pdf", "nota-de-corretagem-20
 for i in files:
     ready = ReadPDFCorretagem()
     ready.read(i)
-    operacoes = ready.operacoes()
-    # print(operacoes)
+    notas = ready.notas()
+    # print(operacoes)git
 
-    OperacaoController.save_operacoes(operacoes)
+    OperacaoController.save_operacoes(notas)

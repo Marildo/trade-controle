@@ -2,10 +2,13 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from sqlalchemy import Column, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum, text, ForeignKey
+from typing import List
+
+from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
+                        text, ForeignKey)
 from sqlalchemy.orm import relationship
 from .init_db import db_connection, Base
-from .enums import TipoInvestimento, TipoNota, TipoCarteira
+from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda
 from .fields import primary_key
 
 
@@ -15,7 +18,9 @@ class BaseTable(Base):
     def save(self):
         with db_connection as conn:
             conn.session.merge(self)
+            conn.session.flush()
             conn.session.commit()
+
 
 
 class Setor(BaseTable):
@@ -84,26 +89,62 @@ class NotaCorretagem(BaseTable):
     data_referencia = Column(DATE, nullable=False)
     data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
     tipo = Column(Enum(TipoNota))
+    __table_args__ = (Index('idx_comprovante_tipo', 'comprovante', 'tipo', unique=True),)
+
+    def __str__(self):
+        return f'Comprovante: {self.comprovante} - Tipo: {self.tipo}'
+
+    def is_exists(self) -> bool:
+        with db_connection as conn:
+            query = (conn.session.query(NotaCorretagem)
+                     .filter(NotaCorretagem.comprovante == self.comprovante,
+                             NotaCorretagem.tipo == self.tipo))
+            return query.count() > 0
 
 
-class Operacoes(BaseTable):
+class Operacao(BaseTable):
     __tablename__ = 'operacoes'
 
     id = primary_key
-    data_compra = Column(DATETIME, nullable=True)
-    data_venda = Column(DATETIME, nullable=True)
+    data_compra = Column(DATE, nullable=True)
+    data_venda = Column(DATE, nullable=True)
     pm_compra = Column(FLOAT(precision=2), default=0)
     pm_venda = Column(FLOAT(precision=2), default=0)
-    quantidade = Column(FLOAT(precision=2), default=0)
+    qtd_compra = Column(FLOAT(precision=2), default=0)
+    qtd_venda = Column(FLOAT(precision=2), default=0)
     custos = Column(FLOAT(precision=4), default=0)
     irpf = Column(FLOAT(precision=4), default=0)
-    outros = Column(FLOAT, default=0)
     daytrade = Column(BOOLEAN, default=False, nullable=False)
     encerrada = Column(BOOLEAN, default=False, nullable=False)
     data_encerramento = Column(DATE, nullable=True)
+    compra_venda = Column(Enum(CompraVenda))
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
-    # ativo = relationship("Ativo", back_populates='operacoes')
+    ativo = relationship("Ativo")
     carteira_id = Column(INTEGER, ForeignKey('carteiras.id'))
-    # carteira = relationship("Carteira", back_populates='operacoes')
-    nota_id = Column(INTEGER, ForeignKey('notas_corretagem.id'))
-    # nota = relationship("Nota", back_populates='operacoes')
+    carteira = relationship("Carteira")
+    nota_compra_id = Column(INTEGER, ForeignKey('notas_corretagem.id'))
+    nota_compra = relationship("NotaCorretagem", foreign_keys=[nota_compra_id], lazy=True)
+    nota_venda_id = Column(INTEGER, ForeignKey('notas_corretagem.id'))
+    nota_venda = relationship("NotaCorretagem", foreign_keys=[nota_venda_id], lazy=True)
+
+    def __init__(self):
+        self.qtd_compra = 0.0
+        self.qtd_venda = 0.0
+        self.pm_venda = 0.0
+        self.pm_compra = 0.0
+        self.custos = 0.0
+        self.irpf = 0.0
+
+    @property
+    def qtd_aberta(self):
+        return self.qtd_compra - self.qtd_venda
+
+    @staticmethod
+    def find_not_closed(ativo: Ativo, compra_venda: CompraVenda) -> List:
+        with db_connection as conn:
+            filters = [Operacao.encerrada == False, Operacao.compra_venda == compra_venda]
+            query = (conn.session.query(Operacao)
+                     .join(Ativo, Operacao.ativo_id == ativo.id)
+                     .filter(*filters)).all()
+
+            return query

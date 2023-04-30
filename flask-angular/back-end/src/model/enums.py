@@ -2,7 +2,7 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from enum import IntEnum
+from enum import IntEnum, Enum
 from typing import List, Tuple
 
 
@@ -27,3 +27,9 @@ class TipoNota(BaseIntEnum):
     NA = 0
     ACOES = 1
     FUTURO = 2
+
+
+class CompraVenda(Enum):
+    COMPRA = 'C'
+    VENDA = 'V'
+

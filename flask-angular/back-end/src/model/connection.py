@@ -5,6 +5,7 @@ from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import SessionTransaction
 
 
 class BaseConnection(ABC):
@@ -12,7 +13,7 @@ class BaseConnection(ABC):
     def __init__(self):
         self._engine = create_engine(self._get_url(), echo=False)
         maker = sessionmaker(expire_on_commit=False)
-        self._session = maker(bind=self._engine)
+        self._session = maker(bind=self._engine, autocommit=False)
 
     def __enter__(self):
         return self
@@ -23,6 +24,9 @@ class BaseConnection(ABC):
     def close(self):
         self.session.close()
         self.engine.dispose()
+
+    def begin_transaction(self) -> SessionTransaction:
+        return self.session.begin()
 
     @abstractmethod
     def _get_url(self) -> str:

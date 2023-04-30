@@ -18,7 +18,6 @@ class AtivoController:
         if not ativos:
             st_invent = StatusInvest()
             data = st_invent.find_by_name(nome)
-            print(nome)
             st_invent.download_images(data[0]['parent_id'])
             for item in data:
                 setor = item['setor']
@@ -36,11 +35,19 @@ class AtivoController:
                 segmento = Segmento(**item['segmento'])
                 segmento.save()
 
+                if 'tipo_ativo' not in item:
+                    item['tipo_ativo'] = tipo
+
                 ativo = Ativo(**item)
                 ativo.nome = nome
                 ativo.setor = setor
                 ativo.segmento = segmento
                 ativo.save()
+
+        ativo = [i for i in ativos if i.tipo_ativo == tipo]
+        if ativo:
+            return ativo[0]
+        return None
 
     @staticmethod
     def map_nome(full_name: str) -> Tuple[str, Optional[str]]:
@@ -63,7 +70,8 @@ class AtivoController:
                       .replace(' PART', '')
                       .replace(' METZ', '')
                       .replace(' MET', '')
+                      .replace(' N2', '')
                       ).split('/')
         if nome in _map:
             nome = _map[nome]
-        return nome, tipo
+        return nome.strip(), tipo.strip()

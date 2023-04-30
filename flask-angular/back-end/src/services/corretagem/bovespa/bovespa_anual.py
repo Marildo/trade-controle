@@ -4,9 +4,11 @@
 
 from typing import List
 
-from ..investment import Investiment
 from src.utils.date_util import str_date
 from src.utils.str_util import str_to_float, onnly_numbers
+from src.model import TipoNota
+
+from ..investment import Investiment
 
 
 class BovespaAnual(Investiment):
@@ -26,6 +28,7 @@ class BovespaAnual(Investiment):
 
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
+            tipo_nota = TipoNota.ACOES
 
             print(page.number, data_operacao, comprovante)
 
@@ -40,18 +43,16 @@ class BovespaAnual(Investiment):
                 pm = self.__find_preco_medio(cutting)
                 tipo = cutting[7][0]
 
-                operacao = dict(ativo=ativo, tipo=tipo, qtd=qtd, preco=pm,
-                                data_operacao=data_operacao, comprovante=comprovante, irpf=0, custos=0)
-
+                operacao = dict(ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
+                print(operacao)
                 operacoes.append(operacao)
 
                 end = self.__locate_index('BOVESPA 1', self.lines, end + 1)
                 begin = end - 7
-                print(operacao)
 
             self.__rateia_custos(operacoes)
             self.__rateia_irrf(operacoes)
-            self._add_operacao(operacoes)
+            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes)
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:

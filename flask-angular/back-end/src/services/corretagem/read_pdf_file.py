@@ -34,5 +34,5 @@ class ReadPDFCorretagem:
             self._base_item = aclass(doc)
             self._base_item.load()
 
-    def operacoes(self) -> List[Dict]:
-        return self._base_item.operacoes
+    def notas(self) -> List:
+        return self._base_item.notas

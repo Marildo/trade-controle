@@ -3,3 +3,4 @@
 """
 
 from .settings import config
+from .log import logger
