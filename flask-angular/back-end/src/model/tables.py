@@ -22,7 +22,6 @@ class BaseTable(Base):
             conn.session.commit()
 
 
-
 class Setor(BaseTable):
     __tablename__ = 'setores'
     id = Column(INTEGER, primary_key=True)
@@ -92,7 +91,7 @@ class NotaCorretagem(BaseTable):
     __table_args__ = (Index('idx_comprovante_tipo', 'comprovante', 'tipo', unique=True),)
 
     def __str__(self):
-        return f'Comprovante: {self.comprovante} - Tipo: {self.tipo}'
+        return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} - Tipo: {self.tipo}'
 
     def is_exists(self) -> bool:
         with db_connection as conn:
@@ -140,9 +139,11 @@ class Operacao(BaseTable):
         return self.qtd_compra - self.qtd_venda
 
     @staticmethod
-    def find_not_closed(ativo: Ativo, compra_venda: CompraVenda) -> List:
+    def find_not_closed(ativo: Ativo, compra_venda: CompraVenda, daytrade: bool) -> List:
         with db_connection as conn:
-            filters = [Operacao.encerrada == False, Operacao.compra_venda == compra_venda]
+            filters = [Operacao.compra_venda == compra_venda,
+                       Operacao.encerrada == False,
+                       Operacao.daytrade == daytrade]
             query = (conn.session.query(Operacao)
                      .join(Ativo, Operacao.ativo_id == ativo.id)
                      .filter(*filters)).all()

@@ -1,7 +1,7 @@
 """
  @author Marildo Cesar 23/04/2023
 """
-
+import uuid
 from typing import List
 
 from src.utils.date_util import str_date
@@ -35,15 +35,16 @@ class BovespaAnual(Investiment):
             end = self.__locate_index('BOVESPA 1', self.lines)
             begin = end - 7
 
+            _id = 0
             while begin > 0:
                 cutting = self.lines[begin - 1: end]
-
+                _id += 1
                 ativo = self.__find_nome_ativo(cutting)
                 qtd = self.__find_qtd(cutting)
                 pm = self.__find_preco_medio(cutting)
                 tipo = cutting[7][0]
 
-                operacao = dict(ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
+                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
                 print(operacao)
                 operacoes.append(operacao)
 

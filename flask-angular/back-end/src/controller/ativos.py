@@ -71,6 +71,8 @@ class AtivoController:
                       .replace(' METZ', '')
                       .replace(' MET', '')
                       .replace(' N2', '')
+                      .replace(' ED', '')
+                      .replace(' EJ', '')
                       ).split('/')
         if nome in _map:
             nome = _map[nome]
