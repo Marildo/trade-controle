@@ -19,6 +19,9 @@ class BovespaAnual(Investiment):
 
         for page in self.document:
             self._lines = page.get_text().split('\n')
+            if len(self._lines) == 1:
+                continue
+
             operacoes = []
 
             # j = 0
@@ -30,7 +33,7 @@ class BovespaAnual(Investiment):
             comprovante = self.__find_comprovante()
             tipo_nota = TipoNota.ACOES
 
-            print(page.number, data_operacao, comprovante)
+            # print(page.number, data_operacao, comprovante)
 
             end = self.__locate_index('BOVESPA 1', self.lines)
             begin = end - 7
@@ -45,7 +48,7 @@ class BovespaAnual(Investiment):
                 tipo = cutting[7][0]
 
                 operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
-                print(operacao)
+                # print(operacao)
                 operacoes.append(operacao)
 
                 end = self.__locate_index('BOVESPA 1', self.lines, end + 1)

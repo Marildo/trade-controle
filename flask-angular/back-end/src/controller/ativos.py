@@ -11,9 +11,9 @@ from src.services import StatusInvest
 
 class AtivoController:
 
-    @classmethod
-    def find_by_or_save(cls, nome: str):
-        nome, tipo = cls.map_nome(nome)
+    @classmethod  # Dando BO quando cria e ja tenta utilizar
+    def find_by_or_save(cls, source_nome: str):
+        nome, tipo = cls.map_nome(source_nome)
         ativos = Ativo.find_like_name(nome)
         if not ativos:
             st_invent = StatusInvest()
@@ -40,10 +40,12 @@ class AtivoController:
 
                 ativo = Ativo(**item)
                 ativo.nome = nome
+                ativo.descricao = item['nome']
                 ativo.setor = setor
                 ativo.segmento = segmento
                 ativo.save()
 
+            ativos = Ativo.find_like_name(nome)
         ativo = [i for i in ativos if i.tipo_ativo == tipo]
         if ativo:
             return ativo[0]
@@ -51,9 +53,10 @@ class AtivoController:
 
     @staticmethod
     def map_nome(full_name: str) -> Tuple[str, Optional[str]]:
-        _map = {
+        _map_name = {
             'FII CSHG LOG': 'CGHG Logística',
             'FII VALOR HE': 'VALORA HEDGE',
+            'FII MAXI REN': 'Maxi Renda',
             'VIAVAREJO': 'VIA S.A',
             'IRBBRASIL RE': 'IRBR',
             'CYRELA REALT': 'CYRELA',
@@ -61,19 +64,29 @@ class AtivoController:
             'MAGAZ LUIZA': 'MAGAZINE LUIZA',
             'P.ACUCAR-CBD': 'CIA BRASILEIRA DE DISTRIBUIÇÃO',
             'PETRORIO': 'PETRO RIO',
-            'DEXCO': 'DURATEX'
+            'DEXCO': 'DURATEX',
+            'SANTANDER': 'SANB',
+            'AMERICANAS': 'LAME3',
+            'M.DIASBRANCO': 'M.DIAS BRANCO',
+            'LOG COM PROP': 'LOG COMMERCIAL',
+            'OMEGAENERGIA': 'OMEGA ENERGIA'
+        }
+        _map_type = {
+            'LAME3': 'ON'
         }
         nome, tipo = (full_name
-                      .replace('S/A', '')
-                      .replace('S.A.', '')
-                      .replace('S.A', '')
-                      .replace(' PART', '')
-                      .replace(' METZ', '')
-                      .replace(' MET', '')
+                      .replace('S/A', '').replace('S.A.', '').replace('S.A', '').replace('SA/', '/')
+                      .replace(' PART/', '/')
+                      .replace(' METZ/', '/').replace(' MET/', '/')
+                      .replace(' ATZ', '')
+                      .replace(' BR/', '/')
                       .replace(' N2', '')
-                      .replace(' ED', '')
-                      .replace(' EJ', '')
+                      .replace(' EDJ', '').replace(' EJS', '').replace(' ERS', '')
+                      .replace(' ED', '').replace(' EJ', '').replace(' ER', '').replace(' EC', '')
                       ).split('/')
-        if nome in _map:
-            nome = _map[nome]
+        if nome in _map_name:
+            nome = _map_name[nome]
+        if nome in _map_type:
+            tipo = _map_type[nome]
+
         return nome.strip(), tipo.strip()

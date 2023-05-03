@@ -20,7 +20,6 @@ class OperacaoController:
 
     @classmethod
     def save_operacoes(cls, notas: List[Nota]):
-
         map_order = {
             'C': lambda x: x.data_venda,
             'V': lambda x: x.data_compra,
@@ -36,19 +35,25 @@ class OperacaoController:
                 #     logger.warn(f'Nota já foi importada ({nota_corr})')
                 #     return
 
+                # if nota_corr.comprovante in (45324,):                    print('Sfff')
+
                 session.merge(nota_corr)
                 session.flush()
-
-                print(nota_corr.comprovante)
-                if nota_corr.comprovante == 7615:
-                    print('achou', nota_corr.comprovante)
-
                 operacoes_nota = cls.__appoint_daytrade(item.operacoes)
 
                 for op in operacoes_nota:
                     tipo_operacao = op['tipo']
                     logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
                     ativo = AtivoController.find_by_or_save(op['ativo'])
+
+                    # if ativo.id != 248:
+                    #     continue
+                    #
+                    # logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
+                    # print(f'{op["qtd"] * 1 if op["tipo"] == "C" else -1}')
+
+
+
                     c_v = CompraVenda.VENDA if tipo_operacao == 'C' else CompraVenda.COMPRA
                     operacoes = Operacao.find_not_closed(ativo, c_v, op['daytrade'])
 
@@ -74,87 +79,97 @@ class OperacaoController:
                             fd = []
                             if tipo_operacao == 'V':
                                 fd = [i for i in operacoes if i.qtd_compra == op['qtd']]
+                                if not fd:
+                                    fd = [i for i in operacoes if i.qtd_compra >= op['qtd']]
                             else:
                                 fd = [i for i in operacoes if i.qtd_venda == op['qtd']]
+                                if not fd:
+                                    fd = [i for i in operacoes if i.qtd_venda > op['qtd']]
                             if fd:
                                 operacoes = [fd[0]]
 
-                        computed = 0
                         operacoes.sort(key=map_order[tipo_operacao])
-                        while computed != op['qtd']:
-                            for row in operacoes:
-                                if computed == op['qtd']:
-                                    continue
-                                if tipo_operacao == 'V':
-                                    if row.qtd_compra <= op['qtd']:
-                                        computed += row.qtd_compra
-                                        row.qtd_venda = row.qtd_compra
-                                        row.pm_venda = op['preco']
-                                        row.custos = op['custos']
-                                        row.irpf = op['irpf']
-                                        row.nota_venda = nota_corr
-                                        row.data_venda = nota_corr.data_referencia
-                                        row.encerrada = True
-                                        row.daytrade = row.data_compra == row.data_venda
-                                        row.data_encerramento = today
-                                    elif row.qtd_compra > op['qtd']:
-                                        computed += op['qtd']
-                                        new_op = cls.__copy_operacao(row)
-                                        new_op.qtd_venda = op['qtd']
-                                        new_op.qtd_compra = op['qtd']
-                                        new_op.pm_venda = op['preco']
-                                        new_op.custos = op['custos']
-                                        new_op.irpf = op['irpf']
-                                        new_op.nota_venda = nota_corr
-                                        new_op.data_venda = nota_corr.data_referencia
-                                        new_op.encerrada = True
-                                        new_op.data_encerramento = today
-                                        new_op.daytrade = new_op.data_compra == new_op.data_venda
-                                        row.qtd_compra -= op['qtd']
-                                        session.add(new_op)
+                        computed = 0
+                        for row in operacoes:
+                            if computed == op['qtd']:
+                                continue
+                            if tipo_operacao == 'V':
+                                if row.qtd_compra <= op['qtd']:
+                                    row.qtd_venda = row.qtd_compra
+                                    row.pm_venda = op['preco']
+                                    row.custos = op['custos']
+                                    row.irpf = op['irpf']
+                                    row.nota_venda = nota_corr
+                                    row.data_venda = nota_corr.data_referencia
+                                    row.encerrada = True
+                                    row.daytrade = row.data_compra == row.data_venda
+                                    row.data_encerramento = today
+                                    computed += row.qtd_compra
                                 else:
-                                    if row.qtd_venda <= op['qtd']:
-                                        computed += row.qtd_venda
-                                        row.qtd_compra = row.qtd_venda
-                                        row.pm_compra = op['preco']
-                                        row.custos = op['custos']
-                                        row.irpf = op['irpf']
-                                        row.data_compra = nota_corr.data_referencia
-                                        row.nota_compra = nota_corr
-                                        row.encerrada = True
-                                        row.data_encerramento = today
-                                        row.daytrade = row.data_compra == row.data_venda
-                                    elif row.qtd_venda > op['qtd']:
-                                        computed += op['qtd']
-                                        new_op = cls.__copy_operacao(row)
-                                        new_op.qtd_venda = op['qtd']
-                                        new_op.qtd_compra = op['qtd']
-                                        new_op.pm_compra = op['preco']
-                                        new_op.custos = op['custos']
-                                        new_op.irpf = op['irpf']
-                                        new_op.data_compra = nota_corr.data_referencia
-                                        new_op.nota_compra = nota_corr
-                                        new_op.encerrada = True
-                                        new_op.data_encerramento = today
-                                        new_op.daytrade = new_op.data_compra == new_op.data_venda
-                                        row.qtd_venda -= op['qtd']
-                                        session.add(new_op)
-
-                                session.add(row)
-                                session.flush()
-
-                            if computed > op['qtd']:
-                                operacao = cls.__new_operacao(op, nota_corr)
-                                operacao.ativo = ativo
-                                if tipo_operacao == 'V':
-                                    operacao.qtd_compra = op['qtd'] - computed
+                                    new_op = cls.__copy_operacao(row)
+                                    new_op.qtd_venda = op['qtd']
+                                    new_op.qtd_compra = op['qtd']
+                                    new_op.pm_venda = op['preco']
+                                    new_op.custos = op['custos']
+                                    new_op.irpf = op['irpf']
+                                    new_op.nota_venda = nota_corr
+                                    new_op.data_venda = nota_corr.data_referencia
+                                    new_op.encerrada = True
+                                    new_op.data_encerramento = today
+                                    new_op.daytrade = new_op.data_compra == new_op.data_venda
+                                    row.qtd_compra -= op['qtd']
+                                    computed += op['qtd']
+                                    session.add(new_op)
+                            else:
+                                if row.qtd_venda <= op['qtd']:
+                                    row.qtd_compra = row.qtd_venda
+                                    row.pm_compra = op['preco']
+                                    row.custos = op['custos']
+                                    row.irpf = op['irpf']
+                                    row.data_compra = nota_corr.data_referencia
+                                    row.nota_compra = nota_corr
+                                    row.encerrada = True
+                                    row.data_encerramento = today
+                                    row.daytrade = row.data_compra == row.data_venda
+                                    computed += row.qtd_venda
                                 else:
-                                    operacao.qtd_venda = op['qtd'] - computed
-                                session.add(operacao)
+                                    new_op = cls.__copy_operacao(row)
+                                    new_op.qtd_venda = op['qtd']
+                                    new_op.qtd_compra = op['qtd']
+                                    new_op.pm_compra = op['preco']
+                                    new_op.custos = op['custos']
+                                    new_op.irpf = op['irpf']
+                                    new_op.data_compra = nota_corr.data_referencia
+                                    new_op.nota_compra = nota_corr
+                                    new_op.encerrada = True
+                                    new_op.data_encerramento = today
+                                    new_op.daytrade = new_op.data_compra == new_op.data_venda
+                                    row.qtd_venda -= op['qtd']
+                                    computed += op['qtd']
+                                    session.add(new_op)
+                            session.add(row)
+                            session.flush()
 
-                                computed = op['qtd']
+                        if computed > op['qtd']:
+                            op['tipo'] = 'C'
+                            operacao = cls.__new_operacao(op, nota_corr)
+                            operacao.ativo = ativo
+                            if tipo_operacao == 'V':
+                                operacao.qtd_compra = computed - op['qtd']
+                            else:
+                                operacao.qtd_venda = computed - op['qtd']
+                            session.add(operacao)
+                        elif computed < op['qtd']:
+                            op['tipo'] = 'V'
+                            operacao = cls.__new_operacao(op, nota_corr)
+                            operacao.ativo = ativo
+                            if tipo_operacao == 'C':
+                                operacao.qtd_compra = op['qtd'] - computed
+                            else:
+                                operacao.qtd_venda = op['qtd'] - computed
+                            session.add(operacao)
 
-                        session.commit()
+                    session.commit()
             except SQLAlchemyError as ex:
                 logger.error(ex)
                 raise ex
@@ -202,8 +217,6 @@ class OperacaoController:
         # nada a fazer
         ops = [i for i in operacoes if i['daytrade'] is None]
         if ops:
-            logger.warning('ANALIZAR')
-            logger.warning(ops)
             for op in ops:
                 op['daytrade'] = False
 

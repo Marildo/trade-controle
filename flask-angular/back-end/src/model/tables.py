@@ -51,6 +51,7 @@ class Ativo(BaseTable):
     parent_id = Column(INTEGER, default=0)
     codigo = Column(CHAR(6))
     nome = Column(VARCHAR(60))
+    descricao = Column(VARCHAR(90))
     cotacao = Column(FLOAT(precision=3))
     variacao = Column(FLOAT(precision=3))
     tipo_ativo = Column(VARCHAR(6), nullable=True)

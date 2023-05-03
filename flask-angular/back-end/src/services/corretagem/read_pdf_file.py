@@ -28,8 +28,6 @@ class ReadPDFCorretagem:
                 # 'COMPROVANTE BM&F': MiniIndice
             }
 
-            print(title)
-
             aclass = map_class[title]
             self._base_item = aclass(doc)
             self._base_item.load()
