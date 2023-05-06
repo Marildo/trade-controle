@@ -46,13 +46,11 @@ class OperacaoController:
                     logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
                     ativo = AtivoController.find_by_or_save(op['ativo'])
 
-                    # if ativo.id != 248:
+                    # if ativo.id != 1030:
                     #     continue
                     #
                     # logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
-                    # print(f'{op["qtd"] * 1 if op["tipo"] == "C" else -1}')
-
-
+                    # print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
 
                     c_v = CompraVenda.VENDA if tipo_operacao == 'C' else CompraVenda.COMPRA
                     operacoes = Operacao.find_not_closed(ativo, c_v, op['daytrade'])

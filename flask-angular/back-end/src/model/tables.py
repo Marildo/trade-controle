@@ -8,7 +8,7 @@ from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATE
                         text, ForeignKey)
 from sqlalchemy.orm import relationship
 from .init_db import db_connection, Base
-from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda
+from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
 from .fields import primary_key
 
 
@@ -85,11 +85,14 @@ class Carteira(BaseTable):
 class NotaCorretagem(BaseTable):
     __tablename__ = 'notas_corretagem'
     id = Column(INTEGER, primary_key=True)
-    comprovante = Column(INTEGER, nullable=False)
-    data_referencia = Column(DATE, nullable=False)
+    comprovante = Column(INTEGER)
+    data_referencia = Column(DATE)
     data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
+    data_processamento = Column(DATETIME)
+    pdf_name = Column(VARCHAR(120))
     tipo = Column(Enum(TipoNota))
-    __table_args__ = (Index('idx_comprovante_tipo', 'comprovante', 'tipo', unique=True),)
+    status = Column(Enum(NotaStatusProcess))
+    __table_args__ = (Index('idx_comprovante_tipo', 'comprovante', 'tipo', 'pdf_name', unique=True),)
 
     def __str__(self):
         return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} - Tipo: {self.tipo}'
@@ -97,9 +100,18 @@ class NotaCorretagem(BaseTable):
     def is_exists(self) -> bool:
         with db_connection as conn:
             query = (conn.session.query(NotaCorretagem)
-                     .filter(NotaCorretagem.comprovante == self.comprovante,
-                             NotaCorretagem.tipo == self.tipo))
+                     .filter(NotaCorretagem.pdf_name == self.pdf_name,
+                             NotaCorretagem.tipo == self.tipo,
+                             NotaCorretagem.status != NotaStatusProcess.ERROR)
+                     )
             return query.count() > 0
+
+    @staticmethod
+    def read_by_params(params) -> List:
+        with db_connection as conn:
+            query = (conn.session.query(NotaCorretagem)
+                     )
+            return query.all()
 
 
 class Operacao(BaseTable):

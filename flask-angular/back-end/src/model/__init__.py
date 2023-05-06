@@ -3,7 +3,7 @@
 """
 from .init_db import db_connection
 from .tables import Operacao, NotaCorretagem, Carteira, Ativo, Setor, SubSetor, Segmento
-from .enums import TipoInvestimento, TipoNota, CompraVenda
+from .enums import TipoInvestimento, TipoNota, CompraVenda, NotaStatusProcess
 
 from .init_db import create_base
 

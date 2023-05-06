@@ -4,3 +4,4 @@
 
 from .ativos import AtivoController
 from .operacoes import OperacaoController
+from .nota_controller import NotaController

@@ -33,3 +33,9 @@ class CompraVenda(Enum):
     COMPRA = 'C'
     VENDA = 'V'
 
+
+class NotaStatusProcess(BaseIntEnum):
+    ARGUARDANDO = 0
+    PROCESSANDO = 1
+    FINALIZAD0 = 2
+    ERROR = -1
