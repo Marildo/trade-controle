@@ -29,8 +29,8 @@ class OperacaoController:
         for item in notas:
             session = db_connection.session
             try:
-                nota_corr = NotaCorretagem(comprovante=item.comprovante, data_referencia=item.data_operacao,
-                                           tipo=item.tipo_nota, data_upload=today)
+                nota_corr = NotaCorretagem(comprovante=item.comprovante,
+                                           data_referencia=item.data_operacao, file=item.file)
                 # if nota_corr.is_exists():
                 #     logger.warn(f'Nota já foi importada ({nota_corr})')
                 #     return

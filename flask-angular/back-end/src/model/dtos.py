@@ -12,3 +12,4 @@ class Nota:
         self.data_operacao = data_operacao
         self.tipo_nota = tipo_nota
         self.operacoes = operacoes
+        self.file = None

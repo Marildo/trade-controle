@@ -21,6 +21,14 @@ class BaseTable(Base):
             conn.session.flush()
             conn.session.commit()
 
+    def read_by_id(self, _id: int):
+        with db_connection as conn:
+            _class = type(self)
+            query = (conn.session.query(_class)
+                     .filter(_class.id == _id)
+                     )
+            return query.first()
+
 
 class Setor(BaseTable):
     __tablename__ = 'setores'
@@ -82,36 +90,48 @@ class Carteira(BaseTable):
     daytrade = Column(BOOLEAN, default=False, nullable=False)
 
 
-class NotaCorretagem(BaseTable):
-    __tablename__ = 'notas_corretagem'
+class FileCorretagem(BaseTable):
+    __tablename__ = 'arquivos_corretagem'
     id = Column(INTEGER, primary_key=True)
-    comprovante = Column(INTEGER)
-    data_referencia = Column(DATE)
-    data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
-    data_processamento = Column(DATETIME)
-    pdf_name = Column(VARCHAR(120))
+    name = Column(VARCHAR(120))
     tipo = Column(Enum(TipoNota))
     status = Column(Enum(NotaStatusProcess))
-    __table_args__ = (Index('idx_comprovante_tipo', 'comprovante', 'tipo', 'pdf_name', unique=True),)
-
-    def __str__(self):
-        return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} - Tipo: {self.tipo}'
+    data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'))
+    data_processamento = Column(DATETIME)
+    __table_args__ = (Index('tipo', 'name', unique=True),)
 
     def is_exists(self) -> bool:
         with db_connection as conn:
-            query = (conn.session.query(NotaCorretagem)
-                     .filter(NotaCorretagem.pdf_name == self.pdf_name,
-                             NotaCorretagem.tipo == self.tipo,
-                             NotaCorretagem.status != NotaStatusProcess.ERROR)
+            query = (conn.session.query(FileCorretagem)
+                     .filter(FileCorretagem.name == self.name,
+                             FileCorretagem.tipo == self.tipo,
+                             FileCorretagem.status != NotaStatusProcess.ERROR)
                      )
             return query.count() > 0
 
     @staticmethod
     def read_by_params(params) -> List:
         with db_connection as conn:
-            query = (conn.session.query(NotaCorretagem)
+            query = (conn.session.query(FileCorretagem)
                      )
             return query.all()
+
+
+class NotaCorretagem(BaseTable):
+    __tablename__ = 'notas_corretagem'
+    id = Column(INTEGER, primary_key=True)
+    comprovante = Column(INTEGER)
+    data_referencia = Column(DATE)
+    file = relationship("FileCorretagem")
+    file_id = Column(INTEGER, ForeignKey('arquivos_corretagem.id'))
+    #__table_args__ = (Index('idx_comprovante', 'comprovante','data_referencia', 'file_id', unique=True),)
+
+    def __str__(self):
+        return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} '
+
+
+
+
 
 
 class Operacao(BaseTable):

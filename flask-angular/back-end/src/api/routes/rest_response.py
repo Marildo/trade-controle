@@ -6,7 +6,7 @@ from collections import OrderedDict
 from functools import wraps
 
 from flask import make_response, jsonify
-from werkzeug.exceptions import BadRequest
+from werkzeug.exceptions import BadRequest, NotFound
 
 from settings import logger
 
@@ -24,10 +24,11 @@ def format_response(func):
                 status_code = 200
                 content['success'] = True
                 data = result
-        except BadRequest as ex:
+        except (BadRequest, NotFound) as ex:
             status_code = ex.code
             data = {'error': __format_badrequest(ex)}
         except Exception as e:
+            print(traceback.format_exc())
             logger.error(traceback.format_exc())
             status_code = 500
             data = {'error': str(e)}

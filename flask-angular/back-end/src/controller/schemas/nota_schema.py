@@ -5,12 +5,12 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 
-from src.model import NotaCorretagem, NotaStatusProcess
+from src.model import FileCorretagem, NotaStatusProcess
 
 
 class NotaSchema(SQLAlchemyAutoSchema):
     class Meta:
-        model = NotaCorretagem
+        model = FileCorretagem
 
     status = fields.Function(lambda obj: str(obj.status.name).capitalize())
     # data_upload = fields.DateTime(format='%d/%m/%Y')
