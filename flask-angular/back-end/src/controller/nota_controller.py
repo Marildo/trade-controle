@@ -16,14 +16,14 @@ from src.model import FileCorretagem, NotaCorretagem
 
 from src.services import ReadPDFCorretagem
 
-from .schemas import NotaSchema
+from .schemas import ArquivoSchema
 from .operacoes import OperacaoController
 
 
 class NotaController:
 
-    @staticmethod
-    def store_pdf(file: FileStorage):
+    @classmethod
+    def store_pdf(cls, file: FileStorage):
         today = datetime.today()
         file_corr = FileCorretagem(name=file.filename, data_upload=today, status=NotaStatusProcess.ARGUARDANDO)
 
@@ -35,16 +35,29 @@ class NotaController:
         path_file = Path(config.get_path_notas()).joinpath(filename)
         file.save(path_file)
         file_corr.save()
+        return cls.process_nota(file_corr.id)
 
-    @staticmethod
-    def process_nota(nota_id: int):
-        filecorr = FileCorretagem().read_by_id(nota_id)
+    @classmethod
+    def process_nota(cls, file_id: int):
+        filecorr = FileCorretagem().read_by_id(file_id)
         if not filecorr:
-            raise BadRequest(f'Id {nota_id} não encontrado')
+            raise BadRequest(f'Id {file_id} não encontrado')
+
+        # if filecorr.status is NotaStatusProcess.PROCESSANDO:
+        #     diff = (datetime.today() - filecorr.data_processamento).seconds / 60
+        #     if diff < 3:
+        #         raise BadRequest(
+        #             'Arquivo já está processando, aguarde o final do processamento ou tente novamente' +
+        #             f'em  {3 - int(diff)} minutos'
+        #         )
+
+        if filecorr.status is NotaStatusProcess.FINALIZADO:
+            return NotaController.load_notas(file_id)
 
         try:
             filecorr.status = NotaStatusProcess.PROCESSANDO
-            filecorr.save()
+            filecorr.data_processamento = datetime.today()
+            filecorr.update()
 
             sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M_%S')
             filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
@@ -56,17 +69,29 @@ class NotaController:
                 n.file = filecorr
 
             OperacaoController.save_operacoes(notas)
+
+            filecorr.status = NotaStatusProcess.FINALIZADO
             filecorr.tipo = notas[0].tipo_nota
-            filecorr.status = NotaStatusProcess.FINALIZAD0
             filecorr.data_processamento = datetime.today()
-            filecorr.save()
+            filecorr.update()
+
+            return cls.load_notas(file_id)
         except Exception as ex:
             filecorr.status = NotaStatusProcess.ERROR
-            filecorr.save()
+            filecorr.update()
             raise ex
 
     @staticmethod
     def read_by_params(params) -> List:
         data = FileCorretagem.read_by_params(params)
-        response = NotaSchema().dump(data, many=True)
+        response = ArquivoSchema().dump(data, many=True)
+        return response
+
+    @staticmethod
+    def load_notas(file_id):
+        data = FileCorretagem().read_by_id(file_id)
+        if not data:
+            raise BadRequest(f'Id {file_id} não encontrado')
+
+        response = ArquivoSchema().dump(data)
         return response

@@ -10,6 +10,7 @@ from werkzeug.exceptions import BadRequest, NotFound
 
 from settings import logger
 
+
 def format_response(func):
     @wraps(func)
     def wrapper(*args, **kwargs):

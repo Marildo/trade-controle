@@ -6,9 +6,10 @@ from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 
 from src.model import FileCorretagem, NotaStatusProcess
+from .notas_schema import NotaSchema
 
 
-class NotaSchema(SQLAlchemyAutoSchema):
+class ArquivoSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = FileCorretagem
 

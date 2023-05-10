@@ -16,8 +16,8 @@ class StatusInvest:
 
         pass
 
-    def find_by_name(self, name:str) -> List[Dict]:
-        print('Search by', name)
+    def find_by_name(self, name: str) -> List[Dict]:
+        print()
         url = f'https://statusinvest.com.br/home/mainsearchquery?q={name}&country='
         data = self._request(url).json()
         data = [i for i in data if i['type'] in (1, 2)]
@@ -45,6 +45,7 @@ class StatusInvest:
         response = self._request(url)
         html = BeautifulSoup(response.text, 'html.parser')
 
+        ativo['descricao'] = self._get_descricao(html, ativo['tipo_investimento'])
         if ativo['tipo_investimento'] == 1:
             ativo['tipo_ativo'] = self.get_tipo(html)
 
@@ -92,6 +93,14 @@ class StatusInvest:
                     name = href[map_fiis[name_item] + 1]
 
         return dict(id=_id, nome=self._normalize_name(name))
+
+    @staticmethod
+    def _get_descricao(html: BeautifulSoup, tipo) -> str:
+        if tipo == 1:
+            data = html.select("#company-section")[0].find('span', {'class': 'd-block fw-600 text-main-green-dark'})
+        else:
+            data = html.select("#fund-section")[0].find_all('strong', {'class': 'value'})[1]
+        return data.text
 
     @staticmethod
     def _request(url: str):

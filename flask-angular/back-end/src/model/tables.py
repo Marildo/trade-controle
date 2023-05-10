@@ -7,6 +7,8 @@ from typing import List
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
                         text, ForeignKey)
 from sqlalchemy.orm import relationship
+
+from .dtos import Nota
 from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
 from .fields import primary_key
@@ -17,8 +19,12 @@ class BaseTable(Base):
 
     def save(self):
         with db_connection as conn:
+            conn.session.add(self)
+            conn.session.commit()
+
+    def update(self):
+        with db_connection as conn:
             conn.session.merge(self)
-            conn.session.flush()
             conn.session.commit()
 
     def read_by_id(self, _id: int):
@@ -98,6 +104,7 @@ class FileCorretagem(BaseTable):
     status = Column(Enum(NotaStatusProcess))
     data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'))
     data_processamento = Column(DATETIME)
+    notas = relationship("NotaCorretagem", uselist=True, backref='arquivos_corretagem')
     __table_args__ = (Index('tipo', 'name', unique=True),)
 
     def is_exists(self) -> bool:
@@ -122,16 +129,11 @@ class NotaCorretagem(BaseTable):
     id = Column(INTEGER, primary_key=True)
     comprovante = Column(INTEGER)
     data_referencia = Column(DATE)
-    file = relationship("FileCorretagem")
     file_id = Column(INTEGER, ForeignKey('arquivos_corretagem.id'))
-    #__table_args__ = (Index('idx_comprovante', 'comprovante','data_referencia', 'file_id', unique=True),)
+    # __table_args__ = (Index('idx_comprovante', 'comprovante','data_referencia', 'file_id', unique=True),)
 
     def __str__(self):
         return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} '
-
-
-
-
 
 
 class Operacao(BaseTable):

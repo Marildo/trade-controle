@@ -18,19 +18,26 @@ def file_list():
     return NotaController.read_by_params({})
 
 
+@nota_router.route('/arquivos/<int:_id>', methods=['GET'])
+@format_response
+def load_notas(_id: int):
+    return NotaController.load_notas(_id)
+
+
 @nota_router.route('/arquivos', methods=['POST'])
 @format_response
 def file_upload():
-    if request.method == 'POST':
-        if 'file' not in request.files:
-            raise BadRequest('Nenhum arquivo enviado')
-        file = request.files['file']
-        if file.filename == '':
-            raise BadRequest('Nenhum arquivo selecionado')
-        if not file.mimetype.endswith('/pdf'):
-            raise BadRequest('Apenas arquivos PDF são permitidos')
+    if 'file' not in request.files:
+        raise BadRequest('Nenhum arquivo enviado')
 
-        NotaController.store_pdf(file)
+    file = request.files['file']
+    if file.filename == '':
+        raise BadRequest('Nenhum arquivo selecionado')
+
+    if not file.mimetype.endswith('/pdf'):
+        raise BadRequest('Apenas arquivos PDF são permitidos')
+
+    return NotaController.store_pdf(file)
 
 
 @nota_router.route('/arquivos/<int:_id>', methods=['PUT'])

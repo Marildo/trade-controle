@@ -4,6 +4,7 @@
 
 from typing import Dict, List, Tuple, Optional
 
+from settings import logger
 from src.model import Ativo, Setor, SubSetor, Segmento
 
 from src.services import StatusInvest
@@ -13,10 +14,11 @@ class AtivoController:
 
     @classmethod  # Dando BO quando cria e ja tenta utilizar
     def find_by_or_save(cls, source_nome: str):
-        nome, tipo = cls.map_nome(source_nome)
+        nome, tipo, nome_mapead = cls.map_nome(source_nome)
         ativos = Ativo.find_like_name(nome)
         if not ativos:
             st_invent = StatusInvest()
+            logger.info(f'Search by {nome}')
             data = st_invent.find_by_name(nome)
             st_invent.download_images(data[0]['parent_id'])
             for item in data:
@@ -25,25 +27,28 @@ class AtivoController:
                 if 'subsetor' in setor:
                     subsetor = SubSetor(**setor['subsetor'])
                     subsetor.setor_id = setor['id']
-                    subsetor.save()
+                    subsetor.update()
                     del setor['subsetor']
 
                 setor = Setor(**setor)
                 setor.subsetor = subsetor
-                setor.save()
+                setor.update()
 
                 segmento = Segmento(**item['segmento'])
-                segmento.save()
+                segmento.update()
 
                 if 'tipo_ativo' not in item:
                     item['tipo_ativo'] = tipo
 
+                del item['segmento']
+                del item['setor']
                 ativo = Ativo(**item)
-                ativo.nome = nome
-                ativo.descricao = item['nome']
-                ativo.setor = setor
-                ativo.segmento = segmento
-                ativo.save()
+                ativo.nome = nome if nome_mapead else item['nome']
+                ativo.descricao = item['descricao']
+                ativo.setor_id = setor.id
+                ativo.segmento_id = segmento.id
+                ativo.update()
+                logger.info(f'Saved {ativo}')
 
             ativos = Ativo.find_like_name(nome)
         ativo = [i for i in ativos if i.tipo_ativo == tipo]
@@ -52,14 +57,14 @@ class AtivoController:
         return None
 
     @staticmethod
-    def map_nome(full_name: str) -> Tuple[str, Optional[str]]:
+    def map_nome(full_name: str) -> Tuple[str, Optional[str], bool]:
         _map_name = {
             'FII CSHG LOG': 'CGHG Logística',
             'FII VALOR HE': 'VALORA HEDGE',
             'FII MAXI REN': 'Maxi Renda',
             'VIAVAREJO': 'VIA S.A',
             'IRBBRASIL RE': 'IRBR',
-            'CYRELA REALT': 'CYRELA',
+            'CYRELA REALT': 'CYRE3',
             'SID NACIONAL': 'CSN',
             'MAGAZ LUIZA': 'MAGAZINE LUIZA',
             'P.ACUCAR-CBD': 'CIA BRASILEIRA DE DISTRIBUIÇÃO',
@@ -74,8 +79,9 @@ class AtivoController:
         _map_type = {
             'LAME3': 'ON'
         }
+        mapead = False
         nome, tipo = (full_name
-                      .replace('S/A', '').replace('S.A.', '').replace('S.A', '').replace('SA/', '/')
+                      .replace('S/A', '').replace('S.A.', '').replace('S.A', '').replace(' SA/', '/')
                       .replace(' PART/', '/')
                       .replace(' METZ/', '/').replace(' MET/', '/')
                       .replace(' ATZ', '')
@@ -86,7 +92,8 @@ class AtivoController:
                       ).split('/')
         if nome in _map_name:
             nome = _map_name[nome]
+            mapead = True
         if nome in _map_type:
             tipo = _map_type[nome]
 
-        return nome.strip(), tipo.strip()
+        return nome.strip(), tipo.strip(), mapead
