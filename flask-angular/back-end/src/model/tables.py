@@ -2,7 +2,7 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from typing import List
+from typing import List, Dict
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
                         text, ForeignKey)
@@ -34,6 +34,22 @@ class BaseTable(Base):
                      .filter(_class.id == _id)
                      )
             return query.first()
+
+    def read_by_params(self, params: Dict) -> List:
+        _class = type(self)
+
+        filters = []
+        if params:
+            columns = _class.__table__.columns
+            for k, v in params.items():
+                if k in columns:
+                    filters.append(columns[k] == v)
+
+        with db_connection as conn:
+            query = (conn.session.query(_class)
+                     .filter(*filters)
+                     )
+            return query.all()
 
 
 class Setor(BaseTable):
@@ -116,13 +132,6 @@ class FileCorretagem(BaseTable):
                      )
             return query.count() > 0
 
-    @staticmethod
-    def read_by_params(params) -> List:
-        with db_connection as conn:
-            query = (conn.session.query(FileCorretagem)
-                     )
-            return query.all()
-
 
 class NotaCorretagem(BaseTable):
     __tablename__ = 'notas_corretagem'
@@ -130,6 +139,7 @@ class NotaCorretagem(BaseTable):
     comprovante = Column(INTEGER)
     data_referencia = Column(DATE)
     file_id = Column(INTEGER, ForeignKey('arquivos_corretagem.id'))
+
     # __table_args__ = (Index('idx_comprovante', 'comprovante','data_referencia', 'file_id', unique=True),)
 
     def __str__(self):
@@ -170,14 +180,18 @@ class Operacao(BaseTable):
         self.irpf = 0.0
 
     @property
-    def qtd_aberta(self):
+    def qtd_aberta(self) -> float:
         return self.qtd_compra - self.qtd_venda
+
+    @property
+    def resultado(self) -> float:
+        return (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra) - self.irpf - self.custos
 
     @staticmethod
     def find_not_closed(ativo: Ativo, compra_venda: CompraVenda, daytrade: bool) -> List:
         with db_connection as conn:
             filters = [Operacao.compra_venda == compra_venda,
-                       Operacao.encerrada == False,
+                       Operacao.encerrada == 0,
                        Operacao.daytrade == daytrade]
             query = (conn.session.query(Operacao)
                      .join(Ativo, Operacao.ativo_id == ativo.id)

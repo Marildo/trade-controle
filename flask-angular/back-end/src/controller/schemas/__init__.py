@@ -3,4 +3,4 @@
 """
 
 from .arquivos_schema import ArquivoSchema
-
+from .operacoes_schema import OperacaoSchema

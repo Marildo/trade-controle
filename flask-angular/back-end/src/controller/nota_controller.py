@@ -17,7 +17,7 @@ from src.model import FileCorretagem, NotaCorretagem
 from src.services import ReadPDFCorretagem
 
 from .schemas import ArquivoSchema
-from .operacoes import OperacaoController
+from .operacoes_controller import OperacaoController
 
 
 class NotaController:

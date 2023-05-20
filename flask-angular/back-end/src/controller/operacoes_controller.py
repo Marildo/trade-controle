@@ -6,10 +6,14 @@ from json import dumps
 from typing import Dict, List, Tuple
 from collections import Counter
 
+from flask import request
+from webargs.flaskparser import parser
+from webargs import fields, validate
+
 from src.settings import logger
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda
 from src.model.dtos import Nota
-
+from .schemas import OperacaoSchema
 from .ativos import AtivoController
 
 
@@ -269,3 +273,14 @@ class OperacaoController:
         operacao.nota_compra = old.nota_compra
         operacao.ativo = old.ativo
         return operacao
+
+    @classmethod
+    def read_by_params(cls):
+        input_schema = {
+            'id': fields.Int(),
+            'encerrada': fields.Bool(),
+        }
+        args = parser.parse(input_schema, request, location='querystring')
+        data = Operacao().read_by_params(args)
+        response = OperacaoSchema().dump(data, many=True)
+        return response

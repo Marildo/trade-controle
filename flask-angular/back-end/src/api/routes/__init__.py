@@ -3,3 +3,4 @@
 """
 from .index_route import index_router
 from .notas_route import nota_router
+from .operacoes_route import operacao_router

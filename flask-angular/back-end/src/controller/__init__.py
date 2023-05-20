@@ -3,5 +3,5 @@
 """
 
 from .ativos import AtivoController
-from .operacoes import OperacaoController
+from .operacoes_controller import OperacaoController
 from .nota_controller import NotaController
