@@ -7,9 +7,8 @@ from typing import Dict, List
 import fitz
 from fitz import Document
 
-
 from .investment import Investiment
-from .bovespa import BovespaAnual
+from .bovespa import BovespaAnual, BMF
 
 
 class ReadPDFCorretagem:
@@ -20,15 +19,13 @@ class ReadPDFCorretagem:
     def read(self, file_name: str):
         with Document(file_name) as doc:
             page = doc[0]
-            title = page.get_text().split('\n')[0].strip()
+            lines = page.get_text().split('\n')
 
-            map_class = {
-                # 'COMPROVANTE BOVESPA AÇÕES': Bovespa,
-                'NOTA DE CORRETAGEM': BovespaAnual,
-                # 'COMPROVANTE BM&F': MiniIndice
-            }
+            if 'WIN' in lines:
+                aclass = BMF
+            else:
+                aclass = BovespaAnual
 
-            aclass = map_class[title]
             self._base_item = aclass(doc)
             self._base_item.load()
 

@@ -26,7 +26,7 @@ class TipoCarteira(BaseIntEnum):
 class TipoNota(BaseIntEnum):
     NA = 0
     ACOES = 1
-    FUTURO = 2
+    MERCADO_FUTURO = 2
 
 
 class CompraVenda(Enum):
