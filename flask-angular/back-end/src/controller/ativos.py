@@ -5,7 +5,7 @@
 from typing import Dict, List, Tuple, Optional
 
 from settings import logger
-from src.model import Ativo, Setor, SubSetor, Segmento
+from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
 
 from src.services import StatusInvest
 
@@ -14,8 +14,16 @@ class AtivoController:
 
     @classmethod  # Dando BO quando cria e ja tenta utilizar
     def find_by_or_save(cls, source_nome: str):
-        nome, tipo, nome_mapead = cls.map_nome(source_nome)
-        ativos = Ativo.find_like_name(nome)
+        nome, tipo_id, nome_mapead = cls.map_nome(source_nome)
+        if tipo_id.isnumeric():
+            ativo = Ativo().read_by_id(tipo_id)
+            if not ativo:
+                ativo = Ativo(id=tipo_id, nome=nome, codigo=nome, tipo_investimento=TipoInvestimento.INDICE)
+                ativo.update()
+            return ativo
+        else:
+            ativos = Ativo.find_like_name(nome)
+
         if not ativos:
             st_invent = StatusInvest()
             logger.info(f'Search by {nome}')

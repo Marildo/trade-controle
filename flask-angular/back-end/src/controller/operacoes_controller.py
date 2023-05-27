@@ -117,7 +117,7 @@ class OperacaoController:
                                 row.data_venda = nota_corr.data_referencia
                                 row.encerrada = True
                                 row.daytrade = row.data_compra == row.data_venda
-                                row.data_encerramento = today
+                                row.data_encerramento = row.data_venda
                                 computed += row.qtd_compra
                             else:
                                 new_op = cls.__copy_operacao(row)
@@ -129,7 +129,7 @@ class OperacaoController:
                                 new_op.nota_venda = nota_corr
                                 new_op.data_venda = nota_corr.data_referencia
                                 new_op.encerrada = True
-                                new_op.data_encerramento = today
+                                new_op.data_encerramento = row.data_venda
                                 new_op.daytrade = new_op.data_compra == new_op.data_venda
                                 row.qtd_compra -= op['qtd']
                                 computed += op['qtd']
@@ -143,7 +143,7 @@ class OperacaoController:
                                 row.data_compra = nota_corr.data_referencia
                                 row.nota_compra = nota_corr
                                 row.encerrada = True
-                                row.data_encerramento = today
+                                row.data_encerramento = row.data_compra
                                 row.daytrade = row.data_compra == row.data_venda
                                 computed += row.qtd_venda
                             else:
@@ -156,7 +156,7 @@ class OperacaoController:
                                 new_op.data_compra = nota_corr.data_referencia
                                 new_op.nota_compra = nota_corr
                                 new_op.encerrada = True
-                                new_op.data_encerramento = today
+                                new_op.data_encerramento = row.data_compra
                                 new_op.daytrade = new_op.data_compra == new_op.data_venda
                                 row.qtd_venda -= op['qtd']
                                 computed += op['qtd']

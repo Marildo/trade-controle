@@ -115,7 +115,11 @@ class BMF(Investiment):
 
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
-        return cutting[7]
+        _map = {
+            'WDO': 'WDO/900000',
+            'WIN': 'WIN/800000'
+        }
+        return _map[cutting[7]]
 
     @staticmethod
     def __find_qtd(cutting: List) -> int:
