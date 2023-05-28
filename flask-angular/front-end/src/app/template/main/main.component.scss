@@ -1,0 +1,23 @@
+#main {
+    display: grid;
+    grid-template-rows: 6vh 1fr 4vh;
+    grid-template-areas: "h" "c" "f";
+    min-height: 100vh
+}
+
+
+#main_header {
+    grid-area: h;
+    background-color: rgb(16, 69, 133);
+    
+}
+
+#main_content {
+    grid-area: c; 
+    padding: 3px;
+}
+
+#main_footer {
+    grid-area: f;
+    background-color: rgb(149, 179, 215);
+}

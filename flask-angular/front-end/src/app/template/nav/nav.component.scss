@@ -1,0 +1,33 @@
+header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px;
+}
+nav ul {
+    list-style-type: none;
+    margin: 7px;
+    padding: 0;
+    display: flex;
+  }
+  
+  nav ul li {
+    margin-right: 20px;
+  }
+  
+  nav ul li a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    color: #fff;
+    transition: color 0.3s;
+   
+  }
+  
+  nav ul li a:hover {
+    color: #d4bf23;
+  }
+
+.title {
+    color: #fff;
+    margin-right: 15px;
+}
