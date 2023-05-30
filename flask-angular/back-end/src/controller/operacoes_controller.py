@@ -1,7 +1,7 @@
 """
  @author Marildo Cesar 25/04/2023
 """
-from datetime import datetime
+from datetime import datetime, date
 from json import dumps
 from typing import Dict, List, Tuple
 from collections import Counter
@@ -11,6 +11,7 @@ from webargs.flaskparser import parser
 from webargs import fields, validate
 
 from src.settings import logger
+from src.utils.dict_util import rows_to_dicts
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda
 from src.model.dtos import Nota
 from .schemas import OperacaoSchema
@@ -282,5 +283,5 @@ class OperacaoController:
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao().read_by_params(args)
-        response = OperacaoSchema().dump(data, many=True)
+        response = rows_to_dicts(data)
         return response

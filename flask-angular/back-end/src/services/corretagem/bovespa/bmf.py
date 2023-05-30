@@ -12,7 +12,7 @@ from ..investment import Investiment
 
 
 class BMF(Investiment):
-    DATA_OPERACAO = 4
+    DATA_OPERACAO = 5
     COMPROVANTE = 6
 
     def load(self):

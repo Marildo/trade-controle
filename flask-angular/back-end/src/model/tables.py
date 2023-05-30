@@ -198,3 +198,10 @@ class Operacao(BaseTable):
                      .filter(*filters)).all()
 
             return query
+
+    def read_by_params(self, params: Dict) -> List:
+        sql = text('SELECT * FROM operacoes')
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql, {})
+            return query.fetchall()
+

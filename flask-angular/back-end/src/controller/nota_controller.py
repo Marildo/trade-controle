@@ -30,7 +30,7 @@ class NotaController:
         if file_corr.is_exists():
             raise BadRequest('Arquivo de corretagem ja foi importada, aguarde o final do processamento.')
 
-        sufix = today.strftime('__%Y_%m_%d_%H_%M_%S')
+        sufix = today.strftime('__%Y_%m_%d_%H_%M')
         filename = file.filename.replace('.pdf', f'{sufix}.pdf')
         path_file = Path(config.get_path_notas()).joinpath(filename)
         file.save(path_file)
@@ -59,7 +59,7 @@ class NotaController:
             filecorr.data_processamento = datetime.today()
             filecorr.update()
 
-            sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M_%S')
+            sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M')
             filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
             path_file = str(Path(config.get_path_notas()).joinpath(filename))
             reader = ReadPDFCorretagem()
