@@ -281,7 +281,8 @@ class OperacaoController:
         input_schema = {
             'id': fields.Int(),
             'encerrada': fields.Bool(),
-            'group': fields.String(validate=[validate_group_by_operacoes])
+            'data_encerramento': fields.Date(),
+            'groupby': fields.String(validate=[validate_group_by_operacoes])
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao().read_by_params(args)

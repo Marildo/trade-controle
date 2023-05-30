@@ -202,11 +202,14 @@ class Operacao(BaseTable):
             return query
 
     def read_by_params(self, params: Dict) -> List:
-        params.setdefault('group', 'id')
+        filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
+        fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
+        where = f'WHERE {" AND ".join(fields_filter)}'
 
-        groupby = f' GROUP BY o.{params["group"]}'
+        params.setdefault('groupby', 'id')
+        groupby = f' GROUP BY o.{params["groupby"]}'
 
-        sql = text(OperacoesSql.read_by_param + groupby)
+        sql = text(OperacoesSql.read_by_param + where + groupby)
         with db_connection.engine.begin() as conn:
-            query = conn.execute(sql, {})
+            query = conn.execute(sql, filters_map)
             return query.fetchall()
