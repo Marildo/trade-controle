@@ -16,6 +16,7 @@ from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda
 from src.model.dtos import Nota
 from .schemas import OperacaoSchema
 from .ativos import AtivoController
+from .query_validations import validate_group_by_operacoes
 
 
 class OperacaoController:
@@ -280,6 +281,7 @@ class OperacaoController:
         input_schema = {
             'id': fields.Int(),
             'encerrada': fields.Bool(),
+            'group': fields.String(validate=[validate_group_by_operacoes])
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao().read_by_params(args)

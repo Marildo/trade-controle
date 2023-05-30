@@ -13,6 +13,8 @@ from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
 from .fields import primary_key
 
+from .scripts import OperacoesSql
+
 
 class BaseTable(Base):
     __abstract__ = True
@@ -200,8 +202,11 @@ class Operacao(BaseTable):
             return query
 
     def read_by_params(self, params: Dict) -> List:
-        sql = text('SELECT * FROM operacoes')
+        params.setdefault('group', 'id')
+
+        groupby = f' GROUP BY o.{params["group"]}'
+
+        sql = text(OperacoesSql.read_by_param + groupby)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, {})
             return query.fetchall()
-
