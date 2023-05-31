@@ -282,9 +282,14 @@ class OperacaoController:
             'id': fields.Int(),
             'encerrada': fields.Bool(),
             'data_encerramento': fields.Date(),
-            'groupby': fields.String(validate=[validate_group_by_operacoes])
+            'groupby': fields.String(validate=(validate_group_by_operacoes,))
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao().read_by_params(args)
-        response = rows_to_dicts(data)
+        total = sum([i.resultado for i in data])
+        numero_operacoes = len(data)
+        items = rows_to_dicts(data)
+        total = sum([i.resultado for i in data])
+        numero_operacoes = len(data)
+        response = dict(items=items, summary=dict(resultado=total, numero_operacoes=numero_operacoes))
         return response

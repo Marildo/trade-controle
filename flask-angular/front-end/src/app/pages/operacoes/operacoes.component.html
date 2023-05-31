@@ -1,1 +1,28 @@
-<p>operacoes works!</p>
+<table>
+    <thead>
+        <tr>
+            <th>Ativo</th>
+            <th>Data</th>
+            <th>Carteira</th>
+            <th>Nota de compra</th>
+            <th>Quantidade</th>
+            <th>Resultado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of items">
+            <td>{{ row.ativo }}</td>
+            <td>{{ row.data_encerramento }}</td>
+            <td>{{ row.carteira }}</td>
+            <td>{{ row.nota_compra }}</td>
+            <td>{{ row.qtd_compra }}</td>
+            <td>{{ row.resultado }}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3">Resultado total {{summary.resultado}}</td>
+            <td colspan="3">Número de Operações {{summary.numero_operacoes}}</td>
+        </tr>
+    </tfoot>
+</table>
