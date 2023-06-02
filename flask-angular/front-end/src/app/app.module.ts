@@ -1,8 +1,15 @@
-import { NgModule } from '@angular/core';
+import { NgModule, DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import {MatIconModule} from '@angular/material/icon';
+
+
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +21,11 @@ import { ContentComponent } from './template/content/content.component';
 import { FooterComponent } from './template/footer/footer.component';
 import { OperacoesComponent } from './pages/operacoes/operacoes.component';
 import { CarteirasComponent } from './pages/carteiras/carteiras.component';
+
+
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+registerLocaleData(localePt)
 
 @NgModule({
   declarations: [
@@ -31,10 +43,19 @@ import { CarteirasComponent } from './pages/carteiras/carteiras.component';
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
 
-    MatIconModule
+    MatNativeDateModule,
+    MatIconModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatButtonModule
   ],
-  providers: [],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'pt-BR' },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'BRL' },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

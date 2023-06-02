@@ -1,7 +1,9 @@
 header {
     display: flex;
+    align-items: center;
     flex-direction: row;
-    padding: 5px;
+    padding: 1px;
+    padding-bottom: 2px;
 }
 nav ul {
     list-style-type: none;
@@ -29,5 +31,5 @@ nav ul {
 
 .title {
     color: #fff;
-    margin-right: 15px;
+    margin: 15px;
 }
