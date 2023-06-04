@@ -11,7 +11,7 @@ from src.model import TipoNota
 from ..investment import Investiment
 
 
-class BMF(Investiment):
+class BMFSinacor(Investiment):
     DATA_OPERACAO = 5
     COMPROVANTE = 6
 
@@ -98,8 +98,8 @@ class BMF(Investiment):
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
         _map = {
-            'WDO': 'WDO/900000',
-            'WIN': 'WIN/800000'
+            'WDO': Investiment.DOLAR,
+            'WIN': Investiment.MINI_INDICE
         }
         return _map[cutting[7]]
 

@@ -15,7 +15,7 @@ nota_router = Blueprint(name=name, import_name=name, url_prefix=resource)
 @nota_router.route('/arquivos', methods=['GET'])
 @format_response
 def file_list():
-    return NotaController.read_by_params({})
+    return NotaController.read_by_params()
 
 
 @nota_router.route('/arquivos/<int:_id>', methods=['GET'])

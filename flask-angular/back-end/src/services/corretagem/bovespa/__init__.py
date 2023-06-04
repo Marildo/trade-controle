@@ -3,4 +3,5 @@
 """
 
 from .bovespa_anual import BovespaAnual
-from .bmf import BMF
+from .bmf_sinacor import BMFSinacor
+from .bmf_diaria import BMFDiaria

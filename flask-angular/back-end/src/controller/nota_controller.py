@@ -82,8 +82,8 @@ class NotaController:
             raise ex
 
     @staticmethod
-    def read_by_params(params) -> List:
-        data = FileCorretagem.read_by_params(params)
+    def read_by_params() -> List:
+        data = FileCorretagem().read_by_params({})
         response = ArquivoSchema().dump(data, many=True)
         return response
 

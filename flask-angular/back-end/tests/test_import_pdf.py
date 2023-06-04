@@ -7,9 +7,9 @@ def test_import_corretagem():
     from services.corretagem.read_pdf_file import ReadPDFCorretagem
 
 
-    file_name: str = "nota-de-corretagem-bmf-2021.pdf"
-    # file_name = 'C:/Users/Cesar/Downloads/nota-futuro-2022_06_03.pdf'
-    # file_name ='C:/Users/Cesar/Downloads/nota-futuro-2022_05_19.pdf'
+    file_name: str = "nota-futuro-2023_06_01.pdf"
+    # file_name: str = "nota-futuro-2023_04_26.pdf"
+
 
     ready = ReadPDFCorretagem()
     ready.read(file_name)

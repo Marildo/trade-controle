@@ -8,7 +8,7 @@ import fitz
 from fitz import Document
 
 from .investment import Investiment
-from .bovespa import BovespaAnual, BMF
+from .bovespa import BovespaAnual, BMFSinacor, BMFDiaria
 
 
 class ReadPDFCorretagem:
@@ -22,7 +22,9 @@ class ReadPDFCorretagem:
             lines = page.get_text().split('\n')
 
             if 'WIN' in lines:
-                aclass = BMF
+                aclass = BMFSinacor
+            elif 'COMPROVANTE BM&F' in lines:
+                aclass = BMFDiaria
             else:
                 aclass = BovespaAnual
 
