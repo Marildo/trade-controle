@@ -216,7 +216,23 @@ class Operacao(BaseTable):
 
             return query
 
-    def read_by_params(self, params: Dict) -> List:
+    @staticmethod
+    def fetch_closed(params: Dict) -> List:
+        filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
+        fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
+        where = f'WHERE {" AND ".join(fields_filter)}'
+
+        params.setdefault('groupby', 'id')
+        group_by = f' GROUP BY o.{params["groupby"]}'
+        order_by = ' ORDER BY data_encerramento'
+
+        sql = text(OperacoesSql.read_by_param + where + group_by + order_by)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql, filters_map)
+            return query.fetchall()
+
+    @staticmethod
+    def fetch_not_closed(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
         where = f'WHERE {" AND ".join(fields_filter)}'

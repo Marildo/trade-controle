@@ -305,16 +305,13 @@ class OperacaoController:
         return operacao
 
     @classmethod
-    def read_by_params(cls):
+    def fetch_closed(cls):
         input_schema = {
             'id': fields.Int(),
-            'encerrada': fields.Bool(),
-            'data_encerramento': fields.Date(),
-            'groupby': fields.String(validate=(validate_group_by_operacoes,))
+            'data_encerramento': fields.Date()
         }
         args = parser.parse(input_schema, request, location='querystring')
-        data = Operacao().read_by_params(args)
-        total = sum([i.resultado for i in data])
+        data = Operacao.fetch_closed(args)
         custos = sum([i.custos for i in data])
         irpf = sum([i.irpf for i in data])
         numero_operacoes = len(data)
@@ -324,3 +321,19 @@ class OperacaoController:
                         summary=dict(resultado=total, liquido=total - (custos + irpf), custos=custos, irpf=irpf,
                                      numero_operacoes=numero_operacoes))
         return response
+
+    @classmethod
+    def fetch_not_closed(cls):
+        input_schema = {
+            'id': fields.Int(),
+            'data_compra': fields.Date(required=False),
+            'data_venda': fields.Date(),
+            'groupby': fields.String(validate=(validate_group_by_operacoes,))
+        }
+        args = parser.parse(input_schema, request, location='querystring')
+        data = Operacao.fetch_not_closed(args)
+        numero_operacoes = len(data)
+        items = rows_to_dicts(data)
+        total = sum([i.resultado for i in data])
+        response = dict(items=items,
+                        summary=dict(resultado=total, numero_operacoes=numero_operacoes))
