@@ -55,17 +55,15 @@ class OperacaoController:
             #     logger.warn(f'Nota já foi importada ({nota_corr})')
             #     return
 
-            #if not nota_corr.comprovante in (857120,):
-             #   return
-            #print(nota_corr.comprovante)
+            # if not nota_corr.comprovante in (857120,):
+            #    return
+            # print(nota_corr.comprovante)
 
             session.merge(nota_corr)
             session.flush()
 
             operacoes_nota = (cls.__appoint_daytrade(item.operacoes)
                               if item.tipo_nota != TipoNota.MERCADO_FUTURO else item.operacoes)
-
-            #operacoes_nota.sort(key=lambda x: x['qtd'], reverse=True)
 
             for op in operacoes_nota:
                 tipo_operacao = op['tipo']
@@ -180,9 +178,7 @@ class OperacaoController:
                         session.flush()
 
                     if computed > op['qtd']:
-                        cp = copy.deepcopy(op)
-                        cp['tipo'] = 'C'
-                        operacao = cls.__new_operacao(cp, nota_corr)
+                        operacao = cls.__new_operacao(op, nota_corr)
                         operacao.ativo = ativo
                         if tipo_operacao == 'V':
                             operacao.qtd_compra = computed - op['qtd']
@@ -190,9 +186,7 @@ class OperacaoController:
                             operacao.qtd_venda = computed - op['qtd']
                         session.add(operacao)
                     elif computed < op['qtd']:
-                        cp = copy.deepcopy(op)
-                        cp['tipo'] = 'V'
-                        operacao = cls.__new_operacao(cp, nota_corr)
+                        operacao = cls.__new_operacao(op, nota_corr)
                         operacao.ativo = ativo
                         if tipo_operacao == 'C':
                             operacao.qtd_compra = op['qtd'] - computed

@@ -119,16 +119,18 @@ class BMF(Investiment):
     def __find_taxas(self, cutting: List) -> float:
         index = self.__locate_index('Taxa registro BM&F', cutting)
         value = cutting[index + 5]
-        v0 = self.parse_float(value)
+        v0 = self.parse_float(value)  # taxa registro
         value = cutting[index + 6]
-        v1 = self.parse_float(value)
+        v1 = self.parse_float(value)  # taxas BM&F
         value = cutting[index + 4]
-        v2 = self.parse_float(value)
+        v2 = self.parse_float(value)  # taxa operacional
         return v0 + v1 + v2
 
     def __find_outras_despesas(self, cutting: List) -> float:
         index = self.__locate_index('Total líquido da nota', cutting)
-        v1 = cutting[index + 1]  # outros
+        v1 = self.parse_float(cutting[index + 1])  # outros
         index = self.__locate_index('Ajuste de posição', cutting)
-        v2 = cutting[index + 1]  # iss
-        return self.parse_float(v1) + self.parse_float(v2)
+        v2 = self.parse_float(cutting[index + 1])  # iss
+        index = self.__locate_index('Ajuste de posição', cutting)
+        v3 = self.parse_float(cutting[index])  # iss 2
+        return v1 + v2 + v3
