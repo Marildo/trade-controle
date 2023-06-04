@@ -34,6 +34,10 @@ export class OperacoesComponent implements OnInit {
     console.log(this.formFiltrer.value)
     this.onLoad(this.formFiltrer.value.start)
   }
+  
+  onFilterData(encerramento:string){
+    this.onLoad(encerramento)
+  }
 
   private onLoad(start:string){
     this.service.load(start).subscribe(resp => {   
@@ -41,5 +45,7 @@ export class OperacoesComponent implements OnInit {
       this.summary = resp.data.summary
     })
   }
+
+
 
 }

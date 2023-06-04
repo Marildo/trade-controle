@@ -24,7 +24,7 @@
     <tbody>
         <tr *ngFor="let row of items">
             <td>{{ row.ativo }}</td>
-            <td>{{ row.data_encerramento | date:'dd/MM/yyy' }}</td>
+            <td><a (click)="onFilterData( row.data_encerramento)"> {{ row.data_encerramento | date:'dd/MM/yyy' }}</a></td>
             <td>{{ row.carteira }}</td>
             <td>{{ row.nota_compra }}</td>
             <td>{{ row.qtd_compra }}</td>
