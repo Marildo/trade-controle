@@ -2,13 +2,13 @@
  @author Marildo Cesar 24/04/2023
 """
 
+from datetime import date
 from typing import List, Dict
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
                         text, ForeignKey)
 from sqlalchemy.orm import relationship
 
-from .dtos import Nota
 from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
 from .fields import primary_key
@@ -160,6 +160,7 @@ class Operacao(BaseTable):
     qtd_venda = Column(FLOAT(precision=2), default=0)
     custos = Column(FLOAT(precision=4), default=0)
     irpf = Column(FLOAT(precision=4), default=0)
+    resultado = Column(FLOAT(precision=4), default=0)
     daytrade = Column(BOOLEAN, default=False, nullable=False)
     encerrada = Column(BOOLEAN, default=False, nullable=False)
     data_encerramento = Column(DATE, nullable=True)
@@ -185,9 +186,15 @@ class Operacao(BaseTable):
     def qtd_aberta(self) -> float:
         return self.qtd_compra - self.qtd_venda
 
-    @property
-    def resultado(self) -> float:
-        return (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra) - self.irpf - self.custos
+    def calc_resultado(self) -> float:
+        value = (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra)
+        if self.ativo_id == 800000:
+            value = value / 5
+        elif self.ativo_id == 900000:
+            value = value * 10
+        total_custos = self.irpf + self.custos
+        value = value - total_custos
+        return value
 
     @staticmethod
     def find_not_closed(ativo: Ativo, compra_venda: CompraVenda, daytrade: bool) -> List:
@@ -201,15 +208,24 @@ class Operacao(BaseTable):
 
             return query
 
+    @staticmethod
+    def find_by_nota(id_nota: int) -> List:
+        with db_connection as conn:
+            filters = [Operacao.nota_venda_id == id_nota]
+            query = (conn.session.query(Operacao).filter(*filters)).all()
+
+            return query
+
     def read_by_params(self, params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
         where = f'WHERE {" AND ".join(fields_filter)}'
 
         params.setdefault('groupby', 'id')
-        groupby = f' GROUP BY o.{params["groupby"]}'
+        group_by = f' GROUP BY o.{params["groupby"]}'
+        order_by = ' ORDER BY data_encerramento'
 
-        sql = text(OperacoesSql.read_by_param + where + groupby)
+        sql = text(OperacoesSql.read_by_param + where + group_by + order_by)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()

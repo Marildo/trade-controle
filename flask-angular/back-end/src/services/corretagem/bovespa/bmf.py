@@ -18,7 +18,7 @@ class BMF(Investiment):
     def load(self):
 
         buffer = []
-
+        _id = 0
         for page in self.document:
             self._lines = page.get_text().split('\n')
             if len(self._lines) == 1:
@@ -40,7 +40,6 @@ class BMF(Investiment):
             begin = self.__locate_index('DAY TRADE', self.lines) - 1
             end = begin + 8
 
-            _id = 0
             while begin > 0:
                 cutting = self.lines[begin - 1: end]
                 _id += 1
@@ -49,7 +48,7 @@ class BMF(Investiment):
                 pm = self.__find_preco_medio(cutting)
                 tipo = cutting[8]
 
-                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
+                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0, daytrade=True)
                 # print(operacao)
                 operacoes.append(operacao)
 
@@ -61,10 +60,13 @@ class BMF(Investiment):
                 continue
             else:
                 buffer = []
+                _id = 0
 
-            self.__rateia_custos(operacoes)
-            self.__rateia_irrf(operacoes)
-            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes)
+            custos = self.__get_custos(operacoes)
+            irfp = self.__get_irrf(operacoes)
+            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
+
+        print('finish read')
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:
@@ -80,38 +82,18 @@ class BMF(Investiment):
     def __find_comprovante(self) -> int:
         return int(onnly_numbers(self.lines[self.COMPROVANTE]))
 
-    def __rateia_irrf(self, operacoes: List) -> None:
+    def __get_irrf(self, operacoes: List) -> float:
         irrf_total = 0
         index = self.__locate_index('IRRF Day Trade ( Projeção )', self.lines)
         value = self.lines[index + 5]
         irrf_total = self.parse_float(value)
+        return irrf_total
 
-        self.__rateia_daytrade_irrf(operacoes, irrf_total)
-
-    @staticmethod
-    def __rateia_daytrade_irrf(operacoes: List, irrf: float):
-        if irrf <= 0:
-            return
-
-        ops = [i for i in operacoes if i['tipo'] == 'V']
-        total = sum((item['preco'] * item['qtd'] for item in ops))
-        for item in ops:
-            rs = item['preco'] * item['qtd']
-            percentual = rs * 100 / total
-            item['irpf'] = round(irrf * (percentual * 0.01), 4)
-
-    def __rateia_custos(self, operacoes: List) -> None:
+    def __get_custos(self, operacoes: List) -> float:
         taxa_liquidacao = self.__find_taxas(self.lines)
-        iss = self.__find_iss(self.lines)
         outras = self.__find_outras_despesas(self.lines)
-        custos_total = taxa_liquidacao + iss + outras
-        if custos_total > 0:
-            ops = [i for i in operacoes if i['tipo'] == 'V']
-            total = sum((item['preco'] * item['qtd'] for item in ops))
-            for op in ops:
-                rs = op['preco'] * op['qtd']
-                percentual = rs * 100 / total
-                op['custos'] = round(custos_total * (percentual * 0.01), 2)
+        custos_total = taxa_liquidacao + outras
+        return custos_total
 
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
@@ -128,10 +110,11 @@ class BMF(Investiment):
 
     @staticmethod
     def __find_preco_medio(cutting: List) -> float:
-        value = cutting[1]
+        value = cutting[3]
         value = onnly_numbers(value)
-        value = round(str_to_float(value) * 0.01, 2)
-        return value
+        value = str_to_float(value)
+        value = value * 0.0001
+        return round(value, 4)
 
     def __find_taxas(self, cutting: List) -> float:
         index = self.__locate_index('Taxa registro BM&F', cutting)
@@ -139,14 +122,13 @@ class BMF(Investiment):
         v0 = self.parse_float(value)
         value = cutting[index + 6]
         v1 = self.parse_float(value)
-        return v1 + v0
-
-    def __find_iss(self, cutting: List) -> float:
-        index = self.__locate_index('I.S.S', cutting)
-        value = cutting[index + 17]
-        return self.parse_float(value)
+        value = cutting[index + 4]
+        v2 = self.parse_float(value)
+        return v0 + v1 + v2
 
     def __find_outras_despesas(self, cutting: List) -> float:
-        index = self.__locate_index('Outros', cutting)
-        value = cutting[index + 6]
-        return self.parse_float(value)
+        index = self.__locate_index('Total líquido da nota', cutting)
+        v1 = cutting[index + 1]  # outros
+        index = self.__locate_index('Ajuste de posição', cutting)
+        v2 = cutting[index + 1]  # iss
+        return self.parse_float(v1) + self.parse_float(v2)

@@ -1,6 +1,8 @@
 """
  @author Marildo Cesar 25/04/2023
 """
+import copy
+
 from datetime import datetime, date
 from json import dumps
 from typing import Dict, List, Tuple
@@ -12,7 +14,7 @@ from webargs import fields, validate
 
 from src.settings import logger
 from src.utils.dict_util import rows_to_dicts
-from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda
+from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota
 from src.model.dtos import Nota
 from .schemas import OperacaoSchema
 from .ativos import AtivoController
@@ -53,11 +55,17 @@ class OperacaoController:
             #     logger.warn(f'Nota já foi importada ({nota_corr})')
             #     return
 
-            # if nota_corr.comprovante in (45324,):                    print('Sfff')
+            #if not nota_corr.comprovante in (857120,):
+             #   return
+            #print(nota_corr.comprovante)
 
             session.merge(nota_corr)
             session.flush()
-            operacoes_nota = cls.__appoint_daytrade(item.operacoes)
+
+            operacoes_nota = (cls.__appoint_daytrade(item.operacoes)
+                              if item.tipo_nota != TipoNota.MERCADO_FUTURO else item.operacoes)
+
+            #operacoes_nota.sort(key=lambda x: x['qtd'], reverse=True)
 
             for op in operacoes_nota:
                 tipo_operacao = op['tipo']
@@ -120,6 +128,7 @@ class OperacaoController:
                                 row.encerrada = True
                                 row.daytrade = row.data_compra == row.data_venda
                                 row.data_encerramento = row.data_venda
+                                row.resultado = row.calc_resultado()
                                 computed += row.qtd_compra
                             else:
                                 new_op = cls.__copy_operacao(row)
@@ -133,6 +142,7 @@ class OperacaoController:
                                 new_op.encerrada = True
                                 new_op.data_encerramento = row.data_venda
                                 new_op.daytrade = new_op.data_compra == new_op.data_venda
+                                new_op.resultado = new_op.calc_resultado()
                                 row.qtd_compra -= op['qtd']
                                 computed += op['qtd']
                                 session.add(new_op)
@@ -147,6 +157,7 @@ class OperacaoController:
                                 row.encerrada = True
                                 row.data_encerramento = row.data_compra
                                 row.daytrade = row.data_compra == row.data_venda
+                                row.resultado = row.calc_resultado()
                                 computed += row.qtd_venda
                             else:
                                 new_op = cls.__copy_operacao(row)
@@ -158,17 +169,20 @@ class OperacaoController:
                                 new_op.data_compra = nota_corr.data_referencia
                                 new_op.nota_compra = nota_corr
                                 new_op.encerrada = True
-                                new_op.data_encerramento = row.data_compra
+                                new_op.data_encerramento = item.data_operacao
                                 new_op.daytrade = new_op.data_compra == new_op.data_venda
+                                new_op.resultado = new_op.calc_resultado()
                                 row.qtd_venda -= op['qtd']
                                 computed += op['qtd']
                                 session.add(new_op)
+
                         session.add(row)
                         session.flush()
 
                     if computed > op['qtd']:
-                        op['tipo'] = 'C'
-                        operacao = cls.__new_operacao(op, nota_corr)
+                        cp = copy.deepcopy(op)
+                        cp['tipo'] = 'C'
+                        operacao = cls.__new_operacao(cp, nota_corr)
                         operacao.ativo = ativo
                         if tipo_operacao == 'V':
                             operacao.qtd_compra = computed - op['qtd']
@@ -176,14 +190,33 @@ class OperacaoController:
                             operacao.qtd_venda = computed - op['qtd']
                         session.add(operacao)
                     elif computed < op['qtd']:
-                        op['tipo'] = 'V'
-                        operacao = cls.__new_operacao(op, nota_corr)
+                        cp = copy.deepcopy(op)
+                        cp['tipo'] = 'V'
+                        operacao = cls.__new_operacao(cp, nota_corr)
                         operacao.ativo = ativo
                         if tipo_operacao == 'C':
                             operacao.qtd_compra = op['qtd'] - computed
                         else:
                             operacao.qtd_venda = op['qtd'] - computed
                         session.add(operacao)
+
+                session.commit()
+
+            if item.tipo_nota == TipoNota.MERCADO_FUTURO:
+                operacoes = Operacao.find_by_nota(nota_corr.id)
+                qtd_total = sum([o.qtd_venda for o in operacoes])
+                for op in operacoes:
+                    percentual = op.qtd_venda * 100 / qtd_total
+                    op.custos = item.custos * (percentual * 0.01)
+                    session.add(op)
+
+                if item.irfp > 0:
+                    operacoes = [o for o in operacoes if o.resultado > 0]
+                    result_total = sum([o.resultado for o in operacoes])
+                    for op in operacoes:
+                        percentual = op.resultado * 100 / result_total
+                        op.irpf = item.irfp * (percentual * 0.01)
+                        session.add(op)
 
                 session.commit()
         except Exception as exep:
@@ -269,10 +302,11 @@ class OperacaoController:
         operacao.data_compra = old.data_compra
         operacao.data_venda = old.data_venda
         operacao.compra_venda = old.compra_venda
-        operacao.custos = old.custos
-        operacao.irpf = old.irpf
+        operacao.custos = old.custos / 2 if old.custos > 0 else 0
+        operacao.irpf = old.irpf / 2 if old.irpf > 0 else 0
         operacao.nota_venda = old.nota_venda
         operacao.nota_compra = old.nota_compra
+        operacao.ativo_id = old.ativo_id
         operacao.ativo = old.ativo
         return operacao
 
@@ -287,9 +321,12 @@ class OperacaoController:
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao().read_by_params(args)
         total = sum([i.resultado for i in data])
+        custos = sum([i.custos for i in data])
+        irpf = sum([i.irpf for i in data])
         numero_operacoes = len(data)
         items = rows_to_dicts(data)
         total = sum([i.resultado for i in data])
-        numero_operacoes = len(data)
-        response = dict(items=items, summary=dict(resultado=total, numero_operacoes=numero_operacoes))
+        response = dict(items=items,
+                        summary=dict(resultado=total, liquido=total - (custos + irpf), custos=custos, irpf=irpf,
+                                     numero_operacoes=numero_operacoes))
         return response

@@ -31,8 +31,10 @@ class Investiment(ABC):
     def lines(self):
         return self._lines
 
-    def _add_notas(self, comprovante: int, data_operacao: date, tipo_nota, operacoes: List[Dict]):
-        nota = Nota(comprovante, data_operacao, tipo_nota, operacoes)
+    def _add_notas(self,
+                   comprovante: int, data_operacao: date, tipo_nota, operacoes: List[Dict],
+                   irfp: float = 0, custos: float = 0):
+        nota = Nota(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
         self._notas.append(nota)
 
     @property

@@ -10,18 +10,7 @@ SELECT
     a.nome ativo,
     c.nome carteira,
     nc.comprovante nota_compra,
-    nv.comprovante nota_venda,
-    SUM(
-        IF(
-            o.encerrada,
-            pm_venda * qtd_compra - pm_compra * qtd_compra - custos - irpf,
-            IF(
-                o.compra_venda = 'COMPRA',
-                pm_compra * qtd_compra - a.cotacao * qtd_compra,
-                pm_venda * qtd_venda - a.cotacao * qtd_venda
-            )
-        )
-    ) resultado
+    nv.comprovante nota_venda
 FROM
     operacoes o
     JOIN ativos a ON a.id = o.ativo_id

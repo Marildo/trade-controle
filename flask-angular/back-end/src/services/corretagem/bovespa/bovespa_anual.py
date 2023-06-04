@@ -47,7 +47,7 @@ class BovespaAnual(Investiment):
                 pm = self.__find_preco_medio(cutting)
                 tipo = cutting[7][0]
 
-                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0)
+                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0,  factor=5)
                 # print(operacao)
                 operacoes.append(operacao)
 
