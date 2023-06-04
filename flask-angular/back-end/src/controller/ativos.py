@@ -35,18 +35,20 @@ class AtivoController:
                 if 'subsetor' in setor:
                     subsetor = SubSetor(**setor['subsetor'])
                     subsetor.setor_id = setor['id']
-                    subsetor.update()
                     del setor['subsetor']
 
                 setor = Setor(**setor)
                 setor.subsetor = subsetor
                 setor.update()
 
+                if subsetor:
+                    subsetor.update()
+
                 segmento = Segmento(**item['segmento'])
                 segmento.update()
 
                 if 'tipo_ativo' not in item:
-                    item['tipo_ativo'] = tipo
+                    item['tipo_ativo'] = tipo_id
 
                 del item['segmento']
                 del item['setor']
@@ -59,7 +61,7 @@ class AtivoController:
                 logger.info(f'Saved {ativo}')
 
             ativos = Ativo.find_like_name(nome)
-        ativo = [i for i in ativos if i.tipo_ativo == tipo]
+        ativo = [i for i in ativos if i.tipo_ativo == tipo_id]
         if ativo:
             return ativo[0]
         return None
@@ -82,7 +84,8 @@ class AtivoController:
             'AMERICANAS': 'LAME3',
             'M.DIASBRANCO': 'M.DIAS BRANCO',
             'LOG COM PROP': 'LOG COMMERCIAL',
-            'OMEGAENERGIA': 'OMEGA ENERGIA'
+            'OMEGAENERGIA': 'OMEGA ENERGIA',
+            'B3': 'B3SA3',
         }
         _map_type = {
             'LAME3': 'ON'

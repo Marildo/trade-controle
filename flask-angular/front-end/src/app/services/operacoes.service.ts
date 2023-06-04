@@ -18,7 +18,7 @@ export class OperacoesService {
 
     const periodo = start != '' ? '&data_encerramento='+start : '';
 
-    let url ='http://127.0.0.1:7500/operacoes/?encerrada=1'+periodo
+    let url ='http://127.0.0.1:7500/operacoes/?encerrada=0'+periodo
     return this.http.get<any>(url, {headers})
       .pipe(
         take(1), // apenas um chamada

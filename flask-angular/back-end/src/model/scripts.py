@@ -7,7 +7,7 @@ class OperacoesSql:
     read_by_param = '''
 SELECT
     o.*,
-    a.nome ativo,
+    a.codigo ativo,
     c.nome carteira,
     nc.comprovante nota_compra,
     nv.comprovante nota_venda
