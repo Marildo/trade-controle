@@ -1,0 +1,26 @@
+@import '../../../../styles.scss';
+
+.tabs-nav {
+    display: flex;
+    justify-content: flex-start;
+    gap: 0.1em;
+    margin-bottom: 7px;
+}
+
+.tab-header {
+    cursor: pointer;
+    padding: 6px;
+    background-color: #f1f1f1;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    border-radius: 5px 5px 0 0;
+}
+
+.active {
+    background-color:#FFF;
+    border-bottom: 2px solid $tt-blue-dark;
+}
+
+.tabs-body{
+   padding: 0.2em;
+}

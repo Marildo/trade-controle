@@ -25,6 +25,11 @@ import { CarteirasComponent } from './pages/carteiras/carteiras.component';
 
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
+import { TabHeaderComponent } from './components/tab/tab-header/tab-header.component';
+import { TabItemComponent } from './components/tab/tab-item/tab-item.component';
+import { TabBodyComponent } from './components/tab/tab-body/tab-body.component';
+import { TabComponent } from './components/tab/tab/tab.component';
+import { NaoEncerradasComponent } from './pages/operacoes/nao-encerradas/nao-encerradas.component';
 registerLocaleData(localePt)
 
 @NgModule({
@@ -36,7 +41,12 @@ registerLocaleData(localePt)
     ContentComponent,
     FooterComponent,
     OperacoesComponent,
-    CarteirasComponent
+    CarteirasComponent,
+    TabHeaderComponent,
+    TabItemComponent,
+    TabBodyComponent,
+    TabComponent,
+    NaoEncerradasComponent
   ],
   imports: [
     BrowserModule,
