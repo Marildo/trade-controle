@@ -211,7 +211,7 @@ class Operacao(BaseTable):
     @staticmethod
     def find_by_nota(id_nota: int) -> List:
         with db_connection as conn:
-            filters = [Operacao.nota_venda_id == id_nota]
+            filters = [Operacao.nota_venda_id == id_nota, Operacao.encerrada == 1]
             query = (conn.session.query(Operacao).filter(*filters)).all()
 
             return query
@@ -220,13 +220,11 @@ class Operacao(BaseTable):
     def fetch_closed(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
-        where = f'WHERE {" AND ".join(fields_filter)}'
 
-        params.setdefault('groupby', 'id')
-        group_by = f' GROUP BY o.{params["groupby"]}'
+        where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
         order_by = ' ORDER BY data_encerramento'
 
-        sql = text(OperacoesSql.read_by_param + where + group_by + order_by)
+        sql = text(OperacoesSql.query_closed + where + order_by)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
@@ -235,13 +233,13 @@ class Operacao(BaseTable):
     def fetch_not_closed(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
-        where = f'WHERE {" AND ".join(fields_filter)}'
+        where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
 
-        params.setdefault('groupby', 'id')
+        params.setdefault('groupby', 'ativo_id')
         group_by = f' GROUP BY o.{params["groupby"]}'
         order_by = ' ORDER BY data_encerramento'
 
-        sql = text(OperacoesSql.read_by_param + where + group_by + order_by)
+        sql = text(OperacoesSql.query_opened + where + group_by + order_by)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()

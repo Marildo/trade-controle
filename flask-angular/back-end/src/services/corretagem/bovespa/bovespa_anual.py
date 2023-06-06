@@ -33,7 +33,7 @@ class BovespaAnual(Investiment):
             comprovante = self.__find_comprovante()
             tipo_nota = TipoNota.ACOES
 
-            # print(page.number, data_operacao, comprovante)
+            print(page.number, data_operacao, comprovante)
 
             end = self.__locate_index('BOVESPA 1', self.lines)
             begin = end - 7
@@ -47,16 +47,24 @@ class BovespaAnual(Investiment):
                 pm = self.__find_preco_medio(cutting)
                 tipo = cutting[7][0]
 
-                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0,  factor=5)
-                # print(operacao)
+                operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, daytrade=None)
+
+                find_pair = [item for item in operacoes if
+                             item['ativo'] == ativo and item['qtd'] == qtd
+                             and item['tipo'] != tipo and item['daytrade'] is None]
+
+                if find_pair:
+                    operacao['daytrade'] = True
+                    find_pair[0]['daytrade'] = True
+
                 operacoes.append(operacao)
 
                 end = self.__locate_index('BOVESPA 1', self.lines, end + 1)
                 begin = end - 7
 
-            self.__rateia_custos(operacoes)
-            self.__rateia_irrf(operacoes)
-            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes)
+            custos = self.__get_custos(operacoes)
+            irfp = self.__get_irrf(operacoes)
+            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:
@@ -72,7 +80,7 @@ class BovespaAnual(Investiment):
     def __find_comprovante(self) -> int:
         return int(self.lines[self.COMPROVANTE])
 
-    def __rateia_irrf(self, operacoes: List) -> None:
+    def __get_irrf(self, operacoes: List) -> float:
         irrf_total = 0
         index = self.__locate_index('IRRF Day Trade', self.lines)
         if index > 0:
@@ -86,49 +94,16 @@ class BovespaAnual(Investiment):
             value = value[value.find(key) + len(key): len(value)]
             irrf_total = self.parse_float(value)
 
-        self.__rateia_daytrade_irrf(operacoes, irrf_total)
+        return irrf_total
 
-        index = self.__locate_index('I.R.R.F. s/ operações', self.lines)
-        if index > 0:
-            value = self.parse_float(self.lines[index + 1])
-            op = [i for i in operacoes if [i['qtd'] * i['preco'] == value]][0]
-            if op:
-                value = self.parse_float(self.lines[index - 1])
-                op['irpf'] = value
-
-    @staticmethod
-    def __rateia_daytrade_irrf(operacoes: List, irrf: float):
-        if irrf <= 0:
-            return
-
-        compras = {i['ativo'] for i in operacoes if i['tipo'] == 'C'}
-        vendas = {i['ativo'] for i in operacoes if i['tipo'] == 'V'}
-        intersection = compras.intersection(vendas)
-        ativos = set([i['ativo'] for i in operacoes if i['ativo'] in intersection])
-        for item in ativos:
-            ops = [i for i in operacoes if i['ativo'] == item]
-            qtd_venda = sum([i['qtd'] for i in ops if i['tipo'] == 'V'])
-            qtd_compra = sum([i['qtd'] for i in ops if i['tipo'] == 'C'])
-            ops = [i for i in ops if i['tipo'] == 'V']
-            if qtd_venda == qtd_compra:
-                for op in ops:
-                    percentual = (op['qtd'] * 100) / qtd_venda
-                    op['irpf'] = round(irrf * (percentual * 0.01), 4)
-
-    def __rateia_custos(self, operacoes: List) -> None:
+    def __get_custos(self, operacoes: List) -> float:
         emulomentos = self.__find_emulumentos(self.lines)
         taxa_liquidacao = self.__find_taxa_liquidacao(self.lines)
         clearing = self.__find_clearing(self.lines)
         iss = self.__find_iss(self.lines)
         outras = self.__find_outras_despesas(self.lines)
         custos_total = emulomentos + taxa_liquidacao + clearing + iss + outras
-        if custos_total > 0:
-            ops = [item for item in operacoes if item['tipo'] == 'V']
-            total_compras = sum((item['preco'] * item['qtd'] for item in ops))
-            for op in ops:
-                rs = op['preco'] * op['qtd']
-                percentual = rs * 100 / total_compras
-                op['custos'] = round(custos_total * (percentual * 0.01), 2)
+        return custos_total
 
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
