@@ -67,10 +67,9 @@ class OperacaoController:
                 tipo_operacao = op['tipo']
                 ativo = AtivoController.find_by_or_save(op['ativo'])
 
-                # if ativo.id != 355:
-                #     continue
-                #
-                # print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
+                ##if ativo.id not in (641, 1030):                    continue
+                #print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
+
                 logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
                 c_v = CompraVenda.VENDA if tipo_operacao == 'C' else CompraVenda.COMPRA
                 operacoes = Operacao.find_not_closed(ativo, c_v, op['daytrade'])
@@ -166,7 +165,7 @@ class OperacaoController:
                         session.flush()
 
                     if computed > op['qtd']:
-                        cop = copy.deepcopy(op) #PCAR Nota: 10315
+                        cop = copy.deepcopy(op)  # PCAR Nota: 10315
                         cop['tipo'] = 'C'
                         operacao = cls.__new_operacao(cop, nota_corr)
                         operacao.ativo = ativo

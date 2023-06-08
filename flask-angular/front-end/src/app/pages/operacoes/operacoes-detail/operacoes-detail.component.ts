@@ -1,16 +1,13 @@
 import { Component } from '@angular/core';
-
-import {FormGroup, FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
-
+import { FormControl, FormGroup } from '@angular/forms';
 import { OperacoesService } from 'src/app/services/operacoes.service';
 
-
 @Component({
-  selector: 'app-nao-encerradas',
-  templateUrl: './nao-encerradas.component.html',
-  styleUrls: ['./nao-encerradas.component.scss']
+  selector: 'app-operacoes-detail',
+  templateUrl: './operacoes-detail.component.html',
+  styleUrls: ['./operacoes-detail.component.scss']
 })
-export class NaoEncerradasComponent {
+export class OperacoesDetailComponent {
 
   private default_date = new Date(2020, 8, 10).toISOString().split('T')[0]
 
@@ -29,24 +26,29 @@ export class NaoEncerradasComponent {
   }
 
   ngOnInit(): void {
-   this.onLoad('')
+   this.onLoad('','')
   }
 
   onFilter():void {    
     console.log(this.formFiltrer.value)
-    this.onLoad(this.formFiltrer.value.start)
+    this.onLoad(this.formFiltrer.value.start,'')
   }
   
   onFilterData(encerramento:string){
-    this.onLoad(encerramento)
+    this.onLoad(encerramento, '')
   }
 
-  private onLoad(start:string){
-    this.service.load_opened(start).subscribe(resp => {   
+  onFilterAtivo(ativo:string){
+    this.onLoad('', ativo)
+  }
+
+  private onLoad(start:string, ativo:string){
+    this.service.load_closed(start, ativo).subscribe(resp => {   
       this.items = resp.data.items
       this.summary = resp.data.summary
     })
   }
+
 
 
 }

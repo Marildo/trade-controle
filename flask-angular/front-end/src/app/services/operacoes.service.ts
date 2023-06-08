@@ -31,7 +31,7 @@ export class OperacoesService {
       )
   }
 
-  public load_opened(start: String): Observable<any> {
+  public load_summary(start: String): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     })

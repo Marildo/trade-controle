@@ -1,15 +1,16 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { HomeComponent } from './pages/home/home.component';
-import { OperacoesComponent } from './pages/operacoes/operacoes.component';
+ 
 import { CarteirasComponent } from './pages/carteiras/carteiras.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
+ 
 const routes: Routes = [
-  // {path:'', component:HomeComponent},
-  {path:'', component:OperacoesComponent},
-  {path:'operacoes', component:OperacoesComponent},
+  {path:'', component:DashboardComponent, pathMatch: 'full'},
   {path:'carteiras', component:CarteirasComponent},
+
+ 
 ];
 
 @NgModule({

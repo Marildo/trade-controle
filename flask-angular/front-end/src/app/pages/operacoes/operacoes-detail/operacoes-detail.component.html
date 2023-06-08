@@ -1,0 +1,46 @@
+<div class="filter">
+    <form [formGroup]="formFiltrer">
+        <label>
+            Período:
+            <input type="date" formControlName="start">
+        </label>
+    </form>
+
+    <button mat-flat-button color="primary" (click)="onFilter()">Filtrar</button>
+</div>
+<table>
+    <thead>
+        <tr>
+            <th>Ativo</th>
+            <th>Data</th>
+            <th>Carteira</th>
+            <th>Nota de compra</th>
+            <th>Quantidade</th>
+            <th>Pr. Compra</th>
+            <th>Pr. Venda</th>
+            <th>Resultado</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let row of items">
+            <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
+            <td><a (click)="onFilterData( row.data_encerramento)"> {{ row.data_encerramento |
+                    date:'dd/MM/yyy' }}</a>
+            </td>
+            <td>{{ row.carteira }}</td>
+            <td>{{ row.nota_compra }}</td>
+            <td>{{ row.qtd_compra }}</td>
+            <td>{{ row.pm_compra | number:'1.2-2'}}</td>
+            <td>{{ row.pm_venda | number:'1.2-2'}}</td>
+            <td>{{ row.resultado | currency}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2">Número de Operações {{summary.numero_operacoes}}</td>
+            <td colspan="2">Custos {{summary.custos | currency}}</td>
+            <td colspan="2">IRPF {{summary.irpf | currency}}</td>
+            <td colspan="2">Resultado Liquido {{summary.liquido | currency}}</td>
+        </tr>
+    </tfoot>
+</table>

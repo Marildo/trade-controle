@@ -14,4 +14,4 @@ if __name__ == '__main__':
         pass
 
 
-    app.run(port=config.get_api_port(),  debug=config.get_api_debug())
+    app.run(port=config.get_api_port(), debug=config.get_api_debug())

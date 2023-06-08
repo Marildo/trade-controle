@@ -3,6 +3,12 @@
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
+h3 {
+    margin: 0;
+    padding: 0;
+}
+
 
 $tt-blue-dark: rgb(16, 69, 133);
-$tt-blue-ligth: #C5E6FA;
+$tt-blue-light: #C5E6FA;
+$tt-gray-light: #ced4da;
