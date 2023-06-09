@@ -6,10 +6,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 
 
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
+
 
 
 import { AppComponent } from './app.component';
@@ -59,10 +56,7 @@ registerLocaleData(localePt)
 
     SharedModule,
 
-    MatNativeDateModule,
-    MatDatepickerModule,
-    MatFormFieldModule,
-    MatButtonModule,
+
 
     AppRoutingModule,
 

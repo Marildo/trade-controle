@@ -7,32 +7,45 @@
     </form>
 
     <button mat-flat-button color="primary" (click)="onFilter()">Filtrar</button>
+    <button mat-flat-button color="accent" (click)="clearFilter()">Limpar Filtro</button>
 </div>
 <table>
     <thead>
         <tr>
-            <th>Ativo</th>
-            <th>Data</th>
             <th>Carteira</th>
-            <th>Nota de compra</th>
-            <th>Quantidade</th>
+            <th>Ativo</th>
+            <th>Qtd</th>
+
+            <th>Dt. Compra</th>
             <th>Pr. Compra</th>
+
+            <th>Dt. Venda</th>
             <th>Pr. Venda</th>
+
             <th>Resultado</th>
+            <th>Custos + IRPF</th>
+
+            <th>Nt. Compra</th>
+            <th>Nt. Venda</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let row of items">
-            <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
-            <td><a (click)="onFilterData( row.data_encerramento)"> {{ row.data_encerramento |
-                    date:'dd/MM/yyy' }}</a>
-            </td>
             <td>{{ row.carteira }}</td>
-            <td>{{ row.nota_compra }}</td>
-            <td>{{ row.qtd_compra }}</td>
+            <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
+            <td>{{ row.compre_venda == 'COMPRA' ? row.qtd_compra : row.qtd_venda }}</td>
+
+            <td><a (click)="onFilterDataCompra( row.data_compra)"> {{ row.data_compra | date:'dd/MM/yyy' }}</a> </td>
             <td>{{ row.pm_compra | number:'1.2-2'}}</td>
+
+            <td><a (click)="onFilterDataVenda( row.data_venda)"> {{ row.data_venda | date:'dd/MM/yyy' }}</a> </td>
             <td>{{ row.pm_venda | number:'1.2-2'}}</td>
+
             <td>{{ row.resultado | currency}}</td>
+            <td>{{ row.custos + row.irpf | number:'1.2-2'}}</td>
+
+            <td><a (click)="onFilterNotaCompra( row.nota_compra)"> {{ row.nota_compra }}</a></td>
+            <td><a (click)="onFilterNotaVenda( row.nota_compra)"> {{ row.nota_compra }}</a></td>
         </tr>
     </tbody>
     <tfoot>

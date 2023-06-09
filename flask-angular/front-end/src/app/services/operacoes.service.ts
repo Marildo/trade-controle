@@ -11,18 +11,20 @@ export class OperacoesService {
 
   constructor(private http: HttpClient) { }
 
-  public load_closed(start: string, ativo: string): Observable<any> {
+  public load_closed(filter: Map<string, string>): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     })
 
+    let params = new HttpParams();
+    filter.forEach((k,v) => {
+      params = params.set(v,k);
+    });
 
-    const periodo = start != '' ? '&data_encerramento=' + start : '';
-    const ativo_id = ativo != '' ? '&ativo_id=' + ativo : '';
+    const options = { headers, params }
 
-
-    let url = 'http://127.0.0.1:7500/operacoes/closed/?' + periodo + ativo_id
-    return this.http.get<any>(url, { headers })
+    let url = 'http://127.0.0.1:7500/operacoes/detail/'
+    return this.http.get<any>(url,  options)
       .pipe(
         take(1), // apenas um chamada
         // delay(5000),

@@ -14,7 +14,9 @@ export class OperacoesDetailComponent {
 
   public items: any[];
   public summary: any;
-  public formFiltrer:FormGroup;
+  public formFiltrer: FormGroup;
+
+  private filter = new Map();
 
   constructor(private service: OperacoesService) {
     this.items = [];
@@ -26,24 +28,46 @@ export class OperacoesDetailComponent {
   }
 
   ngOnInit(): void {
-   this.onLoad('','')
+    this.onLoad()
   }
 
-  onFilter():void {    
-    console.log(this.formFiltrer.value)
-    this.onLoad(this.formFiltrer.value.start,'')
-  }
-  
-  onFilterData(encerramento:string){
-    this.onLoad(encerramento, '')
+  onFilter(): void {
+    this.onLoad()
   }
 
-  onFilterAtivo(ativo:string){
-    this.onLoad('', ativo)
+  clearFilter(): void {
+    this.filter.clear()
+    this.onLoad()
   }
 
-  private onLoad(start:string, ativo:string){
-    this.service.load_closed(start, ativo).subscribe(resp => {   
+  onFilterDataCompra(data: string): void {
+    this.filter.set('data_compra', data)
+    this.onLoad()
+  }
+
+  onFilterDataVenda(data: string): void {
+    this.filter.set('data_venda', data)
+    this.onLoad()
+  }
+
+
+  onFilterAtivo(ativo: string): void {
+    this.filter.set('ativo_id', ativo)
+    this.onLoad()
+  }
+
+  onFilterNotaCompra(nota: string): void {
+    this.filter.set('nota_compra', nota)
+    this.onLoad()
+  }
+
+  onFilterNotaVenda(nota: string): void {
+    this.filter.set('nota_venda', nota)
+    this.onLoad()
+  }
+
+  private onLoad(): void {
+    this.service.load_closed(this.filter).subscribe(resp => {
       this.items = resp.data.items
       this.summary = resp.data.summary
     })
