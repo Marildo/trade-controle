@@ -68,7 +68,7 @@ class OperacaoController:
                 ativo = AtivoController.find_by_or_save(op['ativo'])
 
                 ##if ativo.id not in (641, 1030):                    continue
-                #print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
+                # print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
 
                 logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
                 c_v = CompraVenda.VENDA if tipo_operacao == 'C' else CompraVenda.COMPRA
@@ -314,18 +314,12 @@ class OperacaoController:
         return response
 
     @classmethod
-    def fetch_not_closed(cls):
-        input_schema = {
-            'id': fields.Int(),
-            'data_compra': fields.Date(required=False),
-            'data_venda': fields.Date(),
-            'groupby': fields.String(validate=(validate_group_by_operacoes,))
-        }
+    def fetch_summary(cls):
+        input_schema = {'ativo_id': fields.Int()}
         args = parser.parse(input_schema, request, location='querystring')
-        data = Operacao.fetch_not_closed(args)
+        data = Operacao.fetch_summary(args)
         numero_operacoes = len(data)
         items = rows_to_dicts(data)
         total = sum([i.resultado for i in data])
-        response = dict(items=items,
-                        summary=dict(resultado=total, numero_operacoes=numero_operacoes))
+        response = dict(items=items, summary=dict(resultado=total, numero_operacoes=numero_operacoes))
         return response

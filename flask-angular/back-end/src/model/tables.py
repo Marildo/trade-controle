@@ -230,16 +230,12 @@ class Operacao(BaseTable):
             return query.fetchall()
 
     @staticmethod
-    def fetch_not_closed(params: Dict) -> List:
+    def fetch_summary(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
         where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
-
-        params.setdefault('groupby', 'ativo_id')
-        group_by = f' GROUP BY o.{params["groupby"]}'
-        order_by = ' ORDER BY data_encerramento'
-
-        sql = text(OperacoesSql.query_opened + where + group_by + order_by)
+        group = ' GROUP BY o.ativo_id ORDER BY abertura'
+        sql = text(OperacoesSql.query_summary + where + group)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
