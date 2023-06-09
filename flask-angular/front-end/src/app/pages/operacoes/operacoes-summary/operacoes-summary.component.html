@@ -1,38 +1,26 @@
-<div class="filter">
-    <form [formGroup]="formFiltrer">
-        <label>
-            Período:
-            <input type="date" formControlName="start">
-        </label>
-    </form>
-
-    <button mat-flat-button color="primary" (click)="onFilter()">Filtrar</button>
-</div>
 <table>
     <thead>
         <tr>
             <th>Ativo</th>
-            <th>Data</th>
+            <th>Cotação</th>
+            <th>Tipo</th>
+            <th>Abertura</th>
             <th>Carteira</th>
-            <th>Nota de compra</th>
             <th>Quantidade</th>
-            <th>Pr. Compra</th>
-            <th>Pr. Venda</th>
-            <th>Resultado</th>
+            <th>Pr. Médio</th>
+            <th>Resultado</th>          
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let row of items">
-            <td>{{ row.ativo }}</td>
-            <td><a (click)="onFilterData( row.data_encerramento)"> {{ row.data_encerramento |
-                    date:'dd/MM/yyy' }}</a>
-            </td>
+            <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
+            <td>{{ row.cotacao | currency}}</td>    
+            <td>{{ row.tipo }}</td>
+            <td>{{ row.abertura | date:'dd/MM/yyy'}} </td>
             <td>{{ row.carteira }}</td>
-            <td>{{ row.nota_compra }}</td>
-            <td>{{ row.qtd_compra }}</td>
-            <td>{{ row.pm_compra | number:'1.2-2'}}</td>
-            <td>{{ row.pm_venda | number:'1.2-2'}}</td>
-            <td>{{ row.resultado | currency}}</td>
+            <td>{{ row.qtd }}</td>                   
+            <td>{{ row.pm_medio | currency}}</td>
+            <td>{{ row.resultado | currency}}</td>            
         </tr>
     </tbody>
     <tfoot>

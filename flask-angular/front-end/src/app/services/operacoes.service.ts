@@ -31,19 +31,21 @@ export class OperacoesService {
       )
   }
 
-  public load_summary(start: String): Observable<any> {
+  public load_summary(filter: Map<string, string>): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     })
 
-    const periodo = start != '' ? '&data_encerramento=' + start : '';
+    let params = new HttpParams();
+    filter.forEach((k,v) => {
+      params = params.set(v,k);
+    });
 
-    let url = 'http://127.0.0.1:7500/operacoes/opened/?' + periodo
-    return this.http.get<any>(url, { headers })
+    const options = { headers, params }
+    const url = 'http://127.0.0.1:7500/operacoes/summary/'
+    return this.http.get<any>(url, options)
       .pipe(
-        take(1), // apenas um chamada
-        // delay(5000),
-        //map(i => i.data),
+        take(1),
         tap(console.log),
       )
   }

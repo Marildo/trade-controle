@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-
+import {  HttpParams } from '@angular/common/http';
 import { OperacoesService } from 'src/app/services/operacoes.service';
 
 
@@ -13,9 +13,12 @@ export class OperacoesSummaryComponent {
   private default_date = new Date(2020, 8, 10).toISOString().split('T')[0]
 
 
+  
   public items: any[];
   public summary: any;
   public formFiltrer:FormGroup;
+
+  private filter = new Map();
 
   constructor(private service: OperacoesService) {
     this.items = [];
@@ -24,23 +27,21 @@ export class OperacoesSummaryComponent {
       start: new FormControl(this.default_date),
       end: new FormControl(this.default_date),
     });
+
+   
   }
 
   ngOnInit(): void {
-   this.onLoad('')
-  }
-
-  onFilter():void {    
-    console.log(this.formFiltrer.value)
-    this.onLoad(this.formFiltrer.value.start)
+   this.onLoad()
   }
   
-  onFilterData(encerramento:string){
-    this.onLoad(encerramento)
+  onFilterAtivo(ativo:string){
+    this.filter.set('ativo_id',ativo)
+    this.onLoad()
   }
 
-  private onLoad(start:string){
-    this.service.load_summary(start).subscribe(resp => {   
+  private onLoad(){
+    this.service.load_summary(this.filter).subscribe(resp => {   
       this.items = resp.data.items
       this.summary = resp.data.summary
     })
