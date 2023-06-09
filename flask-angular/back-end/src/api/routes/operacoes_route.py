@@ -18,7 +18,7 @@ def load_opened():
     return OperacaoController.fetch_summary()
 
 
-@operacao_router.route('/closed/', methods=['GET'])
+@operacao_router.route('/detail/', methods=['GET'])
 @format_response
 def load_closed():
-    return OperacaoController.fetch_closed()
+    return OperacaoController.fetch_detail()

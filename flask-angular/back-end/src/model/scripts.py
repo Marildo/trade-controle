@@ -4,7 +4,7 @@
 
 
 class OperacoesSql:
-    query_closed = '''
+    query_detail = '''
 SELECT
     o.*,
     a.codigo ativo,

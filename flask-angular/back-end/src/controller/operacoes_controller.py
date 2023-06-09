@@ -295,14 +295,17 @@ class OperacaoController:
         return operacao
 
     @classmethod
-    def fetch_closed(cls):
+    def fetch_detail(cls):
         input_schema = {
             'id': fields.Int(),
-            'data_encerramento': fields.Date(),
+            'data_compra': fields.Date(),
+            'data_venda': fields.Date(),
             'ativo_id': fields.Int(),
+            'nota_compra': fields.Int(),
+            'nota_venda': fields.Int(),
         }
         args = parser.parse(input_schema, request, location='querystring')
-        data = Operacao.fetch_closed(args)
+        data = Operacao.fetch_detail(args)
         custos = sum([i.custos for i in data])
         irpf = sum([i.irpf for i in data])
         numero_operacoes = len(data)

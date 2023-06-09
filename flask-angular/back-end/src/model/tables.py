@@ -217,14 +217,19 @@ class Operacao(BaseTable):
             return query
 
     @staticmethod
-    def fetch_closed(params: Dict) -> List:
+    def fetch_detail(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
-        fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
+        filter_translater = {
+            'nota_compra': 'nc.comprovante',
+            'nota_venda': 'nv.comprovante',
+        }
+        fields_filter = [f'{key if key not in filter_translater else filter_translater[key]} = :{key}'
+                         for key in filters_map.keys()]
 
         where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
         order_by = ' ORDER BY data_encerramento'
 
-        sql = text(OperacoesSql.query_closed + where + order_by)
+        sql = text(OperacoesSql.query_detail + where + order_by)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
