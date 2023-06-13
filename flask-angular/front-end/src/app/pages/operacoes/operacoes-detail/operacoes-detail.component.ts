@@ -15,11 +15,14 @@ export class OperacoesDetailComponent {
   public items: any[];
   public summary: any;
   public formFiltrer: FormGroup;
+  public hiddenFilter: boolean;
 
   private filter = new Map();
 
   constructor(private service: OperacoesService) {
     this.items = [];
+    this.hiddenFilter = true;
+    this.summary = { 'numero_operacoes': 0 }
 
     this.formFiltrer = new FormGroup({
       start: new FormControl(this.default_date),
@@ -35,9 +38,19 @@ export class OperacoesDetailComponent {
     this.onLoad()
   }
 
+  onShowFilter(): void {
+    this.hiddenFilter = false;
+  }
+
+  onHiddeFilter(): void {
+    console.log('fechando')
+    this.hiddenFilter = true;
+  }
+
   clearFilter(): void {
     this.filter.clear()
     this.onLoad()
+    this.onHiddeFilter()
   }
 
   onFilterDataCompra(data: string): void {
@@ -67,12 +80,19 @@ export class OperacoesDetailComponent {
   }
 
   private onLoad(): void {
-    this.service.load_closed(this.filter).subscribe(resp => {
-      this.items = resp.data.items
-      this.summary = resp.data.summary
-    })
-  }
+    this.hiddenFilter = false;
 
+    this.service.load_closed(this.filter)
+      .subscribe({
+        next: (resp) => {
+          this.items = resp.data.items
+          this.summary = resp.data.summary
+        },
+        error: (e) => {
+          console.error(e)
+        }
+      })
+  }
 
 
 }

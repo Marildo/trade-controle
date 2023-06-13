@@ -12,3 +12,22 @@ h3 {
 $tt-blue-dark: rgb(16, 69, 133);
 $tt-blue-light: #C5E6FA;
 $tt-gray-light: #ced4da;
+
+.title {
+    color: $tt-blue-dark;
+    font-size: 1.5em;
+    font-weight: 500;
+}
+
+.form-group-inline {
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid #d3dee6;
+    padding: 0.2rem;
+    margin: 0.3rem;
+}
+
+.form-group-inline label{
+    color: rgb(30, 36, 39);
+}
+ 

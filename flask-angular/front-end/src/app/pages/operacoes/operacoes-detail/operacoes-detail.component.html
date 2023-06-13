@@ -1,59 +1,113 @@
-<div class="filter">
-    <form [formGroup]="formFiltrer">
-        <label>
-            Período:
-            <input type="date" formControlName="start">
-        </label>
-    </form>
+<nav class="filter">
+    <button mat-icon-button matTooltip="Filtrar" color="primary" aria-label="Filtrar" (click)="onShowFilter()">
+        <mat-icon>filter_alt</mat-icon>
+    </button>
+    <button mat-icon-button matTooltip="Limpar filtro" color="accent" aria-label="Filtrar" (click)="clearFilter()">
+        <mat-icon>filter_alt_off</mat-icon>
+    </button>
+</nav>
+<div class="contener">
+    <table>
+        <thead>
+            <tr>
+                <th>Carteira</th>
+                <th>Ativo</th>
+                <th>Qtd</th>
 
-    <button mat-flat-button color="primary" (click)="onFilter()">Filtrar</button>
-    <button mat-flat-button color="accent" (click)="clearFilter()">Limpar Filtro</button>
+                <th>Dt. Compra</th>
+                <th>Pr. Compra</th>
+
+                <th>Dt. Venda</th>
+                <th>Pr. Venda</th>
+
+                <th>Resultado</th>
+                <th>Custos + IRPF</th>
+
+                <th>Nt. Compra</th>
+                <th>Nt. Venda</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of items">
+                <td>{{ row.carteira }}</td>
+                <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
+                <td>{{ row.compre_venda == 'COMPRA' ? row.qtd_compra : row.qtd_venda }}</td>
+
+                <td><a (click)="onFilterDataCompra( row.data_compra)"> {{ row.data_compra | date:'dd/MM/yyy' }}</a>
+                </td>
+                <td>{{ row.pm_compra | number:'1.2-2'}}</td>
+
+                <td><a (click)="onFilterDataVenda( row.data_venda)"> {{ row.data_venda | date:'dd/MM/yyy' }}</a> </td>
+                <td>{{ row.pm_venda | number:'1.2-2'}}</td>
+
+                <td>{{ row.resultado | currency}}</td>
+                <td>{{ row.custos + row.irpf | number:'1.2-2'}}</td>
+
+                <td><a (click)="onFilterNotaCompra( row.nota_compra)"> {{ row.nota_compra }}</a></td>
+                <td><a (click)="onFilterNotaVenda( row.nota_compra)"> {{ row.nota_compra }}</a></td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2">Número de Operações {{summary.numero_operacoes}}</td>
+                <td colspan="2">Custos {{summary.custos | currency}}</td>
+                <td colspan="2">IRPF {{summary.irpf | currency}}</td>
+                <td colspan="2">Resultado Liquido {{summary.liquido | currency}}</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="filtro" [hidden]="hiddenFilter">
+        <form [formGroup]="formFiltrer">
+            <h2 class="title">Filtro de dados</h2>
+            <div class="form-group-inline">
+                <label> Encerramento > ou = </label>
+                <input type="date" formControlName="start">
+            </div>
+            <div class="form-group-inline">
+                <label> Encerramento < ou=</label>
+                        <input type="date" formControlName="end_encerramento">
+            </div>
+            <div class="form-group-inline">
+                <label> Data Compra > ou = </label>
+                <input type="date" formControlName="data_compra_start">
+            </div>
+            <div class="form-group-inline">
+                <label> Data Compra < ou=</label>
+                        <input type="date" formControlName="data_compra_end">
+            </div>
+            <div class="form-group-inline">
+                <label> Data Venda > ou = </label>
+                <input type="date" formControlName="data_compra_start">
+            </div>
+            <div class="form-group-inline">
+                <label> Data Venda < ou=</label>
+                        <input type="date" formControlName="data_compra_end">
+            </div>
+            <div class="form-group-inline">
+                <label for="encerrada">
+                    <input type="checkbox" name="encerrada" id="encerrada"> Operações
+                    Encerradas</label>
+            </div>
+            <div class="form-group-inline">
+                <label for="codigo"> Código do ativo </label>
+                <input type="text" formControlName="codigo" id="" codigo minlength="5" maxlength="5" size="5">
+            </div>
+            <div class="form-group-inline">
+                <label for="nota"> Número da nota </label>
+                <input type="text" formControlName="nota" id="" size="15">
+            </div>
+            <div class="form-group-inline">
+                <label for="carteira_id"> Carteira </label>
+                <select formControlName="carteira_id" id="carteira_id">
+                    <option value="Houpe">Houpe</option>
+                    <option value="Houpe">Bony</option>
+                </select>
+            </div>
+        </form>
+        <hr>
+        <footer>
+            <button mat-raised-button color="accent" (click)="onHiddeFilter()">Cancelar</button>
+            <button mat-raised-button color="primary" (click)="onFilter()">Filtrar</button>
+        </footer>
+    </div>
 </div>
-<table>
-    <thead>
-        <tr>
-            <th>Carteira</th>
-            <th>Ativo</th>
-            <th>Qtd</th>
-
-            <th>Dt. Compra</th>
-            <th>Pr. Compra</th>
-
-            <th>Dt. Venda</th>
-            <th>Pr. Venda</th>
-
-            <th>Resultado</th>
-            <th>Custos + IRPF</th>
-
-            <th>Nt. Compra</th>
-            <th>Nt. Venda</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let row of items">
-            <td>{{ row.carteira }}</td>
-            <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
-            <td>{{ row.compre_venda == 'COMPRA' ? row.qtd_compra : row.qtd_venda }}</td>
-
-            <td><a (click)="onFilterDataCompra( row.data_compra)"> {{ row.data_compra | date:'dd/MM/yyy' }}</a> </td>
-            <td>{{ row.pm_compra | number:'1.2-2'}}</td>
-
-            <td><a (click)="onFilterDataVenda( row.data_venda)"> {{ row.data_venda | date:'dd/MM/yyy' }}</a> </td>
-            <td>{{ row.pm_venda | number:'1.2-2'}}</td>
-
-            <td>{{ row.resultado | currency}}</td>
-            <td>{{ row.custos + row.irpf | number:'1.2-2'}}</td>
-
-            <td><a (click)="onFilterNotaCompra( row.nota_compra)"> {{ row.nota_compra }}</a></td>
-            <td><a (click)="onFilterNotaVenda( row.nota_compra)"> {{ row.nota_compra }}</a></td>
-        </tr>
-    </tbody>
-    <tfoot>
-        <tr>
-            <td colspan="2">Número de Operações {{summary.numero_operacoes}}</td>
-            <td colspan="2">Custos {{summary.custos | currency}}</td>
-            <td colspan="2">IRPF {{summary.irpf | currency}}</td>
-            <td colspan="2">Resultado Liquido {{summary.liquido | currency}}</td>
-        </tr>
-    </tfoot>
-</table>

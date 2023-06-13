@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { take, map, tap } from 'rxjs/operators';
+import { take, map, tap, catchError } from 'rxjs/operators';
 
 
 @Injectable({
@@ -47,8 +47,10 @@ export class OperacoesService {
     const url = 'http://127.0.0.1:7500/operacoes/summary/'
     return this.http.get<any>(url, options)
       .pipe(
+        
         take(1),
         tap(console.log),
-      )
+        
+        )
   }
 }

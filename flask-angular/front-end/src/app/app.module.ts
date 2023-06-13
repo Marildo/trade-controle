@@ -1,16 +1,12 @@
 import { NgModule, DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 
 import { AppRoutingModule } from './app-routing.module';
-
-
-
-
-
 import { AppComponent } from './app.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 
 
 import { MainComponent } from './template/main/main.component';
@@ -18,6 +14,7 @@ import { NavComponent } from './template/nav/nav.component';
 import { ContentComponent } from './template/content/content.component';
 import { FooterComponent } from './template/footer/footer.component';
 import { CarteirasComponent } from './pages/carteiras/carteiras.component';
+import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
 import { registerLocaleData } from '@angular/common';
@@ -29,7 +26,9 @@ import { TabComponent } from './components/tab/tab/tab.component';
 
 import { OperacoesModule } from './pages/operacoes/operacoes.module';
 import { SharedModule } from './shared/shared.module';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
+
+
+
 registerLocaleData(localePt)
 
 @NgModule({
