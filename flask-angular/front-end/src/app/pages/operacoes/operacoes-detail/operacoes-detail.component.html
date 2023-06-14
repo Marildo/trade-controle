@@ -61,7 +61,7 @@
             <h2 class="title">Filtro de dados</h2>
             <div class="form-group-inline">
                 <label> Encerramento > ou = </label>
-                <input type="date" formControlName="start">
+                <input type="date" formControlName="start_encerramento">
             </div>
             <div class="form-group-inline">
                 <label> Encerramento < ou=</label>
@@ -69,23 +69,23 @@
             </div>
             <div class="form-group-inline">
                 <label> Data Compra > ou = </label>
-                <input type="date" formControlName="data_compra_start">
+                <input type="date" formControlName="start_data_compra">
             </div>
             <div class="form-group-inline">
                 <label> Data Compra < ou=</label>
-                        <input type="date" formControlName="data_compra_end">
+                        <input type="date" formControlName="end_data_compra">
             </div>
             <div class="form-group-inline">
                 <label> Data Venda > ou = </label>
-                <input type="date" formControlName="data_compra_start">
+                <input type="date" formControlName="start_data_venda">
             </div>
             <div class="form-group-inline">
                 <label> Data Venda < ou=</label>
-                        <input type="date" formControlName="data_compra_end">
+                        <input type="date" formControlName="end_data_compra">
             </div>
             <div class="form-group-inline">
                 <label for="encerrada">
-                    <input type="checkbox" name="encerrada" id="encerrada"> Operações
+                    <input type="checkbox" formControlName="encerrada" id="encerrada"> Operações
                     Encerradas</label>
             </div>
             <div class="form-group-inline">

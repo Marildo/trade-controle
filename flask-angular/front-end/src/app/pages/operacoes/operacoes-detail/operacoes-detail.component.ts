@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
+
+
 import { OperacoesService } from 'src/app/services/operacoes.service';
 
 @Component({
@@ -19,22 +22,42 @@ export class OperacoesDetailComponent {
 
   private filter = new Map();
 
-  constructor(private service: OperacoesService) {
+  constructor(private route: ActivatedRoute, private service: OperacoesService) {
     this.items = [];
     this.hiddenFilter = true;
     this.summary = { 'numero_operacoes': 0 }
 
     this.formFiltrer = new FormGroup({
-      start: new FormControl(this.default_date),
-      end: new FormControl(this.default_date),
+      start_encerramento: new FormControl(this.default_date),
+      end_encerramento: new FormControl(),
+      start_data_compra: new FormControl(),
+      end_data_compra: new FormControl(),
+      start_data_venda: new FormControl(),
+      end_data_venda: new FormControl(),
+      encerrada: new FormControl(true),
+      nota: new FormControl(),
+      codigo: new FormControl(),
+      carteira_id: new FormControl(),
     });
   }
 
   ngOnInit(): void {
+    const params = this.route.snapshot.queryParams;
+    if ('file_id' in params){
+      this.filter.set('file_id',params['file_id'])
+    }
+     
     this.onLoad()
   }
 
   onFilter(): void {
+    this.filter.clear()
+    const form = this.formFiltrer.value
+    Object.keys(form).forEach((prop) => {
+      if(form[prop]!= null){
+        this.filter.set(prop,form[prop])
+      }
+    })
     this.onLoad()
   }
 
@@ -82,7 +105,7 @@ export class OperacoesDetailComponent {
   private onLoad(): void {
     this.hiddenFilter = false;
 
-    this.service.load_closed(this.filter)
+    this.service.load_detail(this.filter)
       .subscribe({
         next: (resp) => {
           this.items = resp.data.items

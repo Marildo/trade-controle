@@ -9,22 +9,32 @@ import { take, map, tap, catchError } from 'rxjs/operators';
 })
 export class OperacoesService {
 
-  constructor(private http: HttpClient) { }
+  private baseURL = 'http://127.0.0.1:7500';
 
-  public load_closed(filter: Map<string, string>): Observable<any> {
+  private headers: HttpHeaders;
+
+
+  constructor(private http: HttpClient) {
+    this.headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    })
+
+  }
+
+  public load_detail(filter: Map<string, string>): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     })
 
     let params = new HttpParams();
-    filter.forEach((k,v) => {
-      params = params.set(v,k);
+    filter.forEach((k, v) => {
+      params = params.set(v, k);
     });
 
     const options = { headers, params }
 
     let url = 'http://127.0.0.1:7500/operacoes/detail/'
-    return this.http.get<any>(url,  options)
+    return this.http.get<any>(url, options)
       .pipe(
         take(1), // apenas um chamada
         // delay(5000),
@@ -39,18 +49,44 @@ export class OperacoesService {
     })
 
     let params = new HttpParams();
-    filter.forEach((k,v) => {
-      params = params.set(v,k);
+    filter.forEach((k, v) => {
+      params = params.set(v, k);
     });
 
     const options = { headers, params }
     const url = 'http://127.0.0.1:7500/operacoes/summary/'
     return this.http.get<any>(url, options)
       .pipe(
-        
+
         take(1),
         tap(console.log),
-        
-        )
+
+      )
+  }
+
+
+  public load_files(filter: Map<string, string>): Observable<any> {
+    let params = new HttpParams();
+    filter.forEach((k, v) => {
+      params = params.set(v, k);
+    });
+
+    const options = { headers: this.headers, params }
+    const url = this.baseURL + '/notas/arquivos'
+    return this.http.get<any>(url, options)
+      .pipe(
+        take(1),
+        tap(console.log),
+      )
+  }
+
+  public process_file(file_id: string): Observable<any> {
+    const options = { headers: this.headers}
+    const url = this.baseURL + '/notas/arquivos/'+file_id
+    return this.http.put<any>(url, options)
+      .pipe(
+        take(1),
+        tap(console.log),
+      )
   }
 }
