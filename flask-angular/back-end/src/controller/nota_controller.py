@@ -25,7 +25,7 @@ class NotaController:
     @classmethod
     def store_pdf(cls, file: FileStorage):
         today = datetime.today()
-        file_corr = FileCorretagem(name=file.filename, data_upload=today, status=NotaStatusProcess.ARGUARDANDO)
+        file_corr = FileCorretagem(name=file.filename, data_upload=today, status=NotaStatusProcess.AGUARDANDO)
 
         if file_corr.is_exists():
             raise BadRequest('Arquivo de corretagem ja foi importada, aguarde o final do processamento.')

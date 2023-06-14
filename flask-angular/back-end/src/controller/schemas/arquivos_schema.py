@@ -14,4 +14,5 @@ class ArquivoSchema(SQLAlchemyAutoSchema):
         model = FileCorretagem
 
     status = fields.Function(lambda obj: str(obj.status.name).capitalize())
+    tipo = fields.Function(lambda obj: str(obj.tipo.name).capitalize())
     # data_upload = fields.DateTime(format='%d/%m/%Y')

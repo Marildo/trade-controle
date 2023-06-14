@@ -17,7 +17,6 @@ class StatusInvest:
         pass
 
     def find_by_name(self, name: str) -> List[Dict]:
-        print()
         url = f'https://statusinvest.com.br/home/mainsearchquery?q={name}&country='
         data = self._request(url).json()
         data = [i for i in data if i['type'] in (1, 2)]

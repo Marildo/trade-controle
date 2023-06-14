@@ -36,7 +36,7 @@ class CompraVenda(Enum):
 
 # TODO salvar o numeral no banco
 class NotaStatusProcess(BaseIntEnum):
-    ARGUARDANDO = 0
+    AGUARDANDO = 0
     PROCESSANDO = 1
     FINALIZADO = 2
     ERROR = -1

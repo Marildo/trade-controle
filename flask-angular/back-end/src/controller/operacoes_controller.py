@@ -298,11 +298,17 @@ class OperacaoController:
     def fetch_detail(cls):
         input_schema = {
             'id': fields.Int(),
-            'data_compra': fields.Date(),
-            'data_venda': fields.Date(),
+            'start_data_compra': fields.Date(),
+            'end_data_venda': fields.Date(),
+            'start_encerramento': fields.Date(),
+            'end_encerramento': fields.Date(),
             'ativo_id': fields.Int(),
             'nota_compra': fields.Int(),
             'nota_venda': fields.Int(),
+            'file_id': fields.Int(),
+            'encerrada': fields.Bool(),
+            'codigo': fields.Str(),
+            'carteira_id': fields.Int(),
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao.fetch_detail(args)

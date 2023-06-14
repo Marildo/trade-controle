@@ -17,7 +17,7 @@ FROM
     LEFT JOIN notas_corretagem nc ON nc.id = o.nota_compra_id
     LEFT JOIN notas_corretagem nv ON nv.id = o.nota_venda_id
     LEFT JOIN carteiras c ON c.id = o.carteira_id
-    WHERE encerrada=1 
+    WHERE 1=1
 '''
 
     query_summary = '''

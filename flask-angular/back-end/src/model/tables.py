@@ -2,7 +2,7 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from datetime import date
+from collections import namedtuple
 from typing import List, Dict
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
@@ -219,14 +219,27 @@ class Operacao(BaseTable):
     @staticmethod
     def fetch_detail(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
-        filter_translater = {
-            'nota_compra': 'nc.comprovante',
-            'nota_venda': 'nv.comprovante',
-        }
-        fields_filter = [f'{key if key not in filter_translater else filter_translater[key]} = :{key}'
-                         for key in filters_map.keys()]
 
-        where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
+        filter_translater = {
+            'nota_compra': 'nv.comprovante = :nota_compra',
+            'nota_venda': 'nc.comprovante = :nota_venda',
+            'file_id': 'nv.file_id = :file_id OR nc.file_id = :file_id',
+            'start_encerramento': 'data_encerramento >=  :start_encerramento',
+            'end_encerramento': 'data_encerramento <=  :end_encerramento',
+            'start_data_compra': 'data_compra >=  :start_data_compra',
+            'end_data_compra': 'data_compra <=  :end_data_compra',
+            'start_data_venda': 'data_venda >=  :start_data_venda',
+            'end_data_venda': 'data_venda <=  :end_data_venda',
+        }
+
+        key_params = []
+        for key, value in filters_map.items():
+            if key in filter_translater:
+                key_params.append(filter_translater[key])
+            else:
+                key_params.append(f'{key} = :{key}')
+
+        where = f' AND {" AND ".join(key_params)}' if key_params else ''
         order_by = ' ORDER BY data_encerramento'
 
         sql = text(OperacoesSql.query_detail + where + order_by)

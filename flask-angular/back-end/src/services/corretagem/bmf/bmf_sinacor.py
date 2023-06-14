@@ -8,7 +8,7 @@ from src.utils.date_util import str_date
 from src.utils.str_util import str_to_float, onnly_numbers
 from src.model import TipoNota
 
-from ..investment import Investiment
+from services.corretagem.investment import Investiment
 
 
 class BMFSinacor(Investiment):

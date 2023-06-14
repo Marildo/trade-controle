@@ -4,11 +4,11 @@
 
 from typing import Dict, List
 
-import fitz
 from fitz import Document
 
 from .investment import Investiment
-from .bovespa import BovespaAnual, BMFSinacor, BMFDiaria
+from .bovespa import BovespaAnual
+from .bmf import  BMFSinacor, BMFDiaria
 
 
 class ReadPDFCorretagem:
