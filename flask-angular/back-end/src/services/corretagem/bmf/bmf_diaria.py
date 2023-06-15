@@ -33,7 +33,7 @@ class BMFDiaria(Investiment):
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
 
-            print(page.number, data_operacao, comprovante)
+            #print(page.number, data_operacao, comprovante)
 
             if page.number == 0:
                 custos = self.__get_custos(operacoes)
@@ -59,7 +59,7 @@ class BMFDiaria(Investiment):
 
         self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
-        print('finish read')
+        #print('finish read')
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:

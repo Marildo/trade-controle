@@ -299,6 +299,8 @@ class OperacaoController:
         input_schema = {
             'id': fields.Int(),
             'start_data_compra': fields.Date(),
+            'end_data_compra': fields.Date(),
+            'start_data_venda': fields.Date(),
             'end_data_venda': fields.Date(),
             'start_encerramento': fields.Date(),
             'end_encerramento': fields.Date(),

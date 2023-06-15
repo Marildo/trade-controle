@@ -129,10 +129,10 @@ class FileCorretagem(BaseTable):
         with db_connection as conn:
             query = (conn.session.query(FileCorretagem)
                      .filter(FileCorretagem.name == self.name,
-                             FileCorretagem.tipo == self.tipo,
-                             FileCorretagem.status != NotaStatusProcess.ERROR)
+                             #FileCorretagem.status != NotaStatusProcess.ERROR
+                             )
                      )
-            return query.count() > 0
+            return query.first()
 
 
 class NotaCorretagem(BaseTable):
@@ -223,13 +223,14 @@ class Operacao(BaseTable):
         filter_translater = {
             'nota_compra': 'nv.comprovante = :nota_compra',
             'nota_venda': 'nc.comprovante = :nota_venda',
+            'nota': 'nv.comprovante = :nota OR nc.comprovante = :nota',
             'file_id': 'nv.file_id = :file_id OR nc.file_id = :file_id',
-            'start_encerramento': 'data_encerramento >=  :start_encerramento',
-            'end_encerramento': 'data_encerramento <=  :end_encerramento',
-            'start_data_compra': 'data_compra >=  :start_data_compra',
-            'end_data_compra': 'data_compra <=  :end_data_compra',
-            'start_data_venda': 'data_venda >=  :start_data_venda',
-            'end_data_venda': 'data_venda <=  :end_data_venda',
+            'start_encerramento': 'data_encerramento >= :start_encerramento',
+            'end_encerramento': 'data_encerramento <= :end_encerramento',
+            'start_data_compra': 'data_compra >= :start_data_compra',
+            'end_data_compra': 'data_compra <= :end_data_compra',
+            'start_data_venda': 'data_venda >= :start_data_venda',
+            'end_data_venda': 'data_venda <= :end_data_venda',
         }
 
         key_params = []

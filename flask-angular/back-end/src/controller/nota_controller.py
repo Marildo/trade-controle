@@ -11,7 +11,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest, NotFound
 
 from src.settings import config
-from src.model.enums import NotaStatusProcess
+from src.model.enums import NotaStatusProcess, TipoNota
 from src.model import FileCorretagem, NotaCorretagem
 
 from src.services import ReadPDFCorretagem
@@ -25,10 +25,13 @@ class NotaController:
     @classmethod
     def store_pdf(cls, file: FileStorage):
         today = datetime.today()
-        file_corr = FileCorretagem(name=file.filename, data_upload=today, status=NotaStatusProcess.AGUARDANDO)
+        file_corr = FileCorretagem(name=file.filename, data_upload=today, status=NotaStatusProcess.AGUARDANDO,
+                                   tipo=TipoNota.NA)
 
-        if file_corr.is_exists():
-            raise BadRequest('Arquivo de corretagem ja foi importada, aguarde o final do processamento.')
+        stored = file_corr.is_exists()
+        if stored:
+            raise BadRequest(
+                f'Arquivo ja foi importado e possui o id {stored.id}, verifique o status do processamento.')
 
         sufix = today.strftime('__%Y_%m_%d_%H_%M')
         filename = file.filename.replace('.pdf', f'{sufix}.pdf')
@@ -43,13 +46,13 @@ class NotaController:
         if not filecorr:
             raise BadRequest(f'Id {file_id} não encontrado')
 
-        # if filecorr.status is NotaStatusProcess.PROCESSANDO:
-        #     diff = (datetime.today() - filecorr.data_processamento).seconds / 60
-        #     if diff < 3:
-        #         raise BadRequest(
-        #             'Arquivo já está processando, aguarde o final do processamento ou tente novamente' +
-        #             f'em  {3 - int(diff)} minutos'
-        #         )
+        if filecorr.status is NotaStatusProcess.PROCESSANDO:
+            diff = (datetime.today() - filecorr.data_processamento).seconds / 60
+            if diff < 3:
+                raise BadRequest(
+                    'Arquivo já está processando, aguarde o final do processamento ou tente novamente' +
+                    f'em  {3 - int(diff)} minutos'
+                )
 
         if filecorr.status is NotaStatusProcess.FINALIZADO:
             return NotaController.load_notas(file_id)
