@@ -3,32 +3,42 @@
         <mat-icon color="primary">file_upload</mat-icon>
     </button>
 </nav>
-<table>
-    <thead>
-        <tr>
-            <th>Nome</th>
-            <th>Data processamento</th>
-            <th>Status</th>
-            <th>Tipo</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr *ngFor="let row of items">         
-            <td>{{ row.name}}</td>
-            <td>{{ row.data_processamento | date:'dd/MM/yyy HH:mm:ss'}}</td>
-            <td>{{ row.status }} </td>
-            <td>{{ row.tipo }}</td>
-            <td [hidden]=" row.status == 'Finalizado'">
-                <button mat-icon-button matTooltip="Processar arquivo" color="primary" aria-label="Processar arquivo" (click)="onProcessar(row.id)">
-                    <mat-icon>cloud_sync</mat-icon>
-                </button>
-            </td>
-            <td [hidden]=" row.status != 'Finalizado'">
-                <button mat-icon-button matTooltip="Visualizar Transações" color="primary" aria-label="Visualizar Transações" (click)="onView(row.id)">
-                    <mat-icon>preview</mat-icon>
-                </button>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div class="contener">
+    <table>
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>Data processamento</th>
+                <th>Status</th>
+                <th>Tipo</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of items">
+                <td>{{ row.name}}</td>
+                <td>{{ row.data_processamento | date:'dd/MM/yyy HH:mm:ss'}}</td>
+                <td>{{ row.status }} </td>
+                <td>{{ row.tipo }}</td>
+                <td [hidden]=" row.status == 'Finalizado'">
+                    <button mat-icon-button matTooltip="Processar arquivo" color="primary"
+                        aria-label="Processar arquivo" (click)="onProcessFile(row.id)">
+                        <mat-icon>cloud_sync</mat-icon>
+                    </button>
+                </td>
+                <td [hidden]=" row.status != 'Finalizado'">
+                    <button mat-icon-button matTooltip="Visualizar Transações" color="primary"
+                        aria-label="Visualizar Transações" (click)="onView(row.id)">
+                        <mat-icon>preview</mat-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="form-up" [hidden]="hiddenForm">
+        <form enctype="multipart/form-data">
+            <input type="file" (change)="onSelectFile($event)" accept=".pdf" />
+            <button  mat-raised-button color="primary" [disabled]="!selectedFile" (click)="onUploadFile()">Enviar arquivo</button>
+          </form>
+    </div>
+</div>

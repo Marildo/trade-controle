@@ -1,3 +1,15 @@
+.contener {
+  display: flex;
+  justify-content: space-around;
+}
+
+nav{
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 5px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
@@ -26,9 +38,3 @@ a {
   cursor: pointer;
 }
 
-nav{
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 5px;
-}

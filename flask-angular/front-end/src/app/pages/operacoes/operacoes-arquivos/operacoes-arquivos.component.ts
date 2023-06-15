@@ -13,23 +13,27 @@ import { OperacoesService } from 'src/app/services/operacoes.service';
 })
 export class OperacoesArquivosComponent {
 
-  private hiddenForm = true;
-  private filter = new Map();
-
+  public hiddenForm = true;
   public items: any[];
+  public selectedFile!: File | null;
 
-  constructor (private router: Router, private service: OperacoesService) {
+  private filter = new Map();
+ 
+
+
+  constructor(private router: Router, private service: OperacoesService) {
     this.items = [];
   }
 
   ngOnInit(): void {
+    this.hiddenForm = false;
     this.onLoad()
   }
 
 
 
   private onLoad(): void {
-    this.hiddenForm= false;
+    this.hiddenForm = false;
 
     this.service.load_files(this.filter)
       .subscribe({
@@ -43,21 +47,40 @@ export class OperacoesArquivosComponent {
   }
 
 
-  onProcessar(id:string):void {
+
+
+  onView(id: string): void {
+    const params = { file_id: id };
+    this.router.navigate(['operacoes/detalhe'], { queryParams: params })
+  }
+
+  onSelectFile(event: any) {
+    this.selectedFile = event.target.files[0];
+  }
+
+  onUploadFile() {
+     if(this.selectedFile){
+      this.service.upload_file(this.selectedFile)
+      .subscribe({
+        next: (resp) => {
+          this.onLoad()
+        },
+        error: (e) => {
+          console.error(e)
+        }
+      })
+     }
+  }
+
+  onProcessFile(id: string): void {
     this.service.process_file(id)
-    .subscribe({
-      next: (resp) => {
-        this.onLoad()
-      },
-      error: (e) => {
-        console.error(e)
-      }
-    })
+      .subscribe({
+        next: (resp) => {
+          this.onLoad()
+        },
+        error: (e) => {
+          console.error(e)
+        }
+      })
   }
-
-  onView(id:string):void {
-    const params = { file_id: id};
-    this.router.navigate(['operacoes/detalhe'], {queryParams: params})
-  }
-
 }

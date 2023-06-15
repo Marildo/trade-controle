@@ -9,6 +9,7 @@ import { take, map, tap, catchError } from 'rxjs/operators';
 })
 export class OperacoesService {
 
+
   private baseURL = 'http://127.0.0.1:7500';
 
   private headers: HttpHeaders;
@@ -80,7 +81,31 @@ export class OperacoesService {
       )
   }
 
+  upload_file(file: File) : Observable<any> {
+    const headers = new HttpHeaders({
+      'Content-Type': 'multipart/form-data'
+    })
+
+    const options = { headers: headers}
+
+    const formData:FormData = new FormData();
+ 
+    formData.append('file', file);
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
+
+    const url = this.baseURL + '/notas/arquivos'
+
+    return this.http.post<any>(url, formData)
+    .pipe(
+      take(1),
+      tap(console.log),
+    )
+  }
+
   public process_file(file_id: string): Observable<any> {
+
     const options = { headers: this.headers}
     const url = this.baseURL + '/notas/arquivos/'+file_id
     return this.http.put<any>(url, options)

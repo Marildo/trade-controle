@@ -12,9 +12,6 @@ import { OperacoesService } from 'src/app/services/operacoes.service';
 })
 export class OperacoesDetailComponent {
 
-  private default_date = new Date(2020, 8, 10).toISOString().split('T')[0]
-
-
   public items: any[];
   public summary: any;
   public formFiltrer: FormGroup;
@@ -27,8 +24,11 @@ export class OperacoesDetailComponent {
     this.hiddenFilter = true;
     this.summary = { 'numero_operacoes': 0 }
 
+    const today = new Date();
+    const default_date = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0]
+
     this.formFiltrer = new FormGroup({
-      start_encerramento: new FormControl(this.default_date),
+      start_encerramento: new FormControl(default_date),
       end_encerramento: new FormControl(),
       start_data_compra: new FormControl(),
       end_data_compra: new FormControl(),
@@ -47,7 +47,7 @@ export class OperacoesDetailComponent {
       this.filter.set('file_id',params['file_id'])
     }
      
-    this.onLoad()
+    this.onFilter()
   }
 
   onFilter(): void {
@@ -66,24 +66,32 @@ export class OperacoesDetailComponent {
   }
 
   onHiddeFilter(): void {
-    console.log('fechando')
     this.hiddenFilter = true;
   }
 
   clearFilter(): void {
     this.filter.clear()
+    this.formFiltrer.reset()
     this.onLoad()
     this.onHiddeFilter()
   }
 
-  onFilterDataCompra(data: string): void {
-    this.filter.set('data_compra', data)
-    this.onLoad()
+  onFilterDataCompra(data: string): void {    
+    this.formFiltrer.patchValue({
+      start_data_compra: data,
+      end_data_compra: data,
+    })
+    
+    this.onFilter()
   }
 
   onFilterDataVenda(data: string): void {
-    this.filter.set('data_venda', data)
-    this.onLoad()
+    this.formFiltrer.patchValue({
+      start_data_venda: data,
+      end_data_venda: data,
+    })
+    
+    this.onFilter()
   }
 
 
@@ -103,13 +111,12 @@ export class OperacoesDetailComponent {
   }
 
   private onLoad(): void {
-    this.hiddenFilter = false;
-
     this.service.load_detail(this.filter)
       .subscribe({
         next: (resp) => {
           this.items = resp.data.items
           this.summary = resp.data.summary
+          this.onHiddeFilter()
         },
         error: (e) => {
           console.error(e)
