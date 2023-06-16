@@ -14,6 +14,8 @@ if __name__ == '__main__':
         pass
 
 
+
+
     @app.after_request
     def set_response_headers(response):
         response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"

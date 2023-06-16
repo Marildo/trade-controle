@@ -11,7 +11,7 @@ from src.model import TipoNota
 from ..investment import Investiment
 
 
-class BovespaAnual(Investiment):
+class BovespaSinacor(Investiment):
     DATA_OPERACAO = 4
     COMPROVANTE = 6
 

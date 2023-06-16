@@ -25,10 +25,10 @@ class BMFDiaria(Investiment):
             if len(self._lines) == 1:
                 continue
 
-            j = 0
-            for y in self.lines:
-                print(j, ';', y)
-                j += 1
+            # j = 0
+            # for y in self.lines:
+            #     print(j, ';', y)
+            #     j += 1
 
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()

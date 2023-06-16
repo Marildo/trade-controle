@@ -7,8 +7,8 @@ from typing import Dict, List
 from fitz import Document
 
 from .investment import Investiment
-from .bovespa import BovespaAnual
-from .bmf import  BMFSinacor, BMFDiaria
+from .bovespa import BovespaSinacor, BovespaDiaria
+from .bmf import BMFSinacor, BMFDiaria
 
 
 class ReadPDFCorretagem:
@@ -25,8 +25,12 @@ class ReadPDFCorretagem:
                 aclass = BMFSinacor
             elif 'COMPROVANTE BM&F' in lines:
                 aclass = BMFDiaria
+            elif 'COMPROVANTE BOVESPA AÇÕES' in lines:
+                aclass = BovespaDiaria
+            elif 'NOTA DE CORRETAGEM' in lines:
+                aclass = BovespaSinacor
             else:
-                aclass = BovespaAnual
+                raise Exception('Não identificado o tipo da nota')
 
             self._base_item = aclass(doc)
             self._base_item.load()
