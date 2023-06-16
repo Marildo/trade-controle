@@ -45,9 +45,11 @@ export class OperacoesDetailComponent {
     const params = this.route.snapshot.queryParams;
     if ('file_id' in params){
       this.filter.set('file_id',params['file_id'])
-    }
-     
-    this.onFilter()
+      this.onLoad()
+    }else{
+      this.onFilter()
+    }    
+
   }
 
   onFilter(): void {
@@ -77,21 +79,15 @@ export class OperacoesDetailComponent {
   }
 
   onFilterDataCompra(data: string): void {    
-    this.formFiltrer.patchValue({
-      start_data_compra: data,
-      end_data_compra: data,
-    })
-    
-    this.onFilter()
+    this.filter.set('start_data_compra', data)
+    this.filter.set('end_data_compra', data)
+    this.onLoad()
   }
 
   onFilterDataVenda(data: string): void {
-    this.formFiltrer.patchValue({
-      start_data_venda: data,
-      end_data_venda: data,
-    })
-    
-    this.onFilter()
+    this.filter.set('start_data_venda', data)
+    this.filter.set('end_data_venda', data)
+    this.onLoad()
   }
 
 
@@ -101,11 +97,13 @@ export class OperacoesDetailComponent {
   }
 
   onFilterNotaCompra(nota: string): void {
+    this.filter.clear()
     this.filter.set('nota_compra', nota)
     this.onLoad()
   }
 
   onFilterNotaVenda(nota: string): void {
+    this.filter.clear()
     this.filter.set('nota_venda', nota)
     this.onLoad()
   }

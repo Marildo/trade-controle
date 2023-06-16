@@ -63,7 +63,8 @@ export class OperacoesArquivosComponent {
       this.service.upload_file(this.selectedFile)
       .subscribe({
         next: (resp) => {
-          this.onLoad()
+          console.log(resp)
+          this.onView(resp.data.id)
         },
         error: (e) => {
           console.error(e)
@@ -76,7 +77,7 @@ export class OperacoesArquivosComponent {
     this.service.process_file(id)
       .subscribe({
         next: (resp) => {
-          this.onLoad()
+          this.onView(id)
         },
         error: (e) => {
           console.error(e)

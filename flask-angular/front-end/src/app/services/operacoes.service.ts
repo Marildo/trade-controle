@@ -82,22 +82,14 @@ export class OperacoesService {
   }
 
   upload_file(file: File) : Observable<any> {
-    const headers = new HttpHeaders({
-      'Content-Type': 'multipart/form-data'
-    })
-
+    const headers = new HttpHeaders({ })
     const options = { headers: headers}
 
     const formData:FormData = new FormData();
- 
     formData.append('file', file);
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
 
     const url = this.baseURL + '/notas/arquivos'
-
-    return this.http.post<any>(url, formData)
+    return this.http.post<any>(url, formData, options)
     .pipe(
       take(1),
       tap(console.log),
@@ -105,7 +97,6 @@ export class OperacoesService {
   }
 
   public process_file(file_id: string): Observable<any> {
-
     const options = { headers: this.headers}
     const url = this.baseURL + '/notas/arquivos/'+file_id
     return this.http.put<any>(url, options)
