@@ -34,7 +34,7 @@ export class OperacoesArquivosComponent {
 
 
     this.items = [];
-    this.tipoNota='1';
+    this.tipoNota='-1';
   }
 
   ngOnInit(): void {
@@ -70,7 +70,12 @@ export class OperacoesArquivosComponent {
   }
 
   onSelectTypeNota(tipo: any):void {
-    this.filter.set('tipo',tipo)
+    if (tipo == '-1'){
+      this.filter.clear()
+    }else{
+      this.filter.set('tipo',tipo)
+    }
+
     this.onLoad()
   }
 

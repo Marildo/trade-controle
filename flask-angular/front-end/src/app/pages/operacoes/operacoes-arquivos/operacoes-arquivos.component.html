@@ -2,6 +2,7 @@
     <div class="form-group-inline">
         <label for="tipo">Tipo da Nota: </label>
         <select id="tipo" [ngModel]="tipoNota" (ngModelChange)="onSelectTypeNota($event)">
+            <option value="-1">Todos</option>
             <option value="1">Acões</option>
             <option value="2">Mercado Futuro</option>
             <option value="0">N/A</option>
