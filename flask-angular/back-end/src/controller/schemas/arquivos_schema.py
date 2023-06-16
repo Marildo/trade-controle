@@ -5,6 +5,7 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 
+from src.utils.str_util import translate_enum
 from src.model import FileCorretagem, NotaStatusProcess
 from .notas_schema import NotaSchema
 
@@ -13,6 +14,6 @@ class ArquivoSchema(SQLAlchemyAutoSchema):
     class Meta:
         model = FileCorretagem
 
-    status = fields.Function(lambda obj: str(obj.status.name).capitalize())
-    tipo = fields.Function(lambda obj: str(obj.tipo.name).capitalize())
+    status = fields.Function(lambda obj: translate_enum(obj.status.name))
+    tipo = fields.Function(lambda obj: translate_enum(obj.tipo.name))
     # data_upload = fields.DateTime(format='%d/%m/%Y')

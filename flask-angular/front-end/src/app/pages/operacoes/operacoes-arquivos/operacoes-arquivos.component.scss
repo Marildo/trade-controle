@@ -31,10 +31,20 @@ tfoot {
   background-color: #f2f2f2;
 }
 
-
-
 a {
   text-decoration: underline;
   cursor: pointer;
 }
 
+.form-up {
+  position: fixed;
+  //top: 50;
+  right: 0;
+  width: 350px;
+  height: 100%;
+  background-color: #f1f1f1;
+  padding: 5px;
+  box-sizing: border-box;
+  border: 1px solid #c6c3c3;
+}
+ 

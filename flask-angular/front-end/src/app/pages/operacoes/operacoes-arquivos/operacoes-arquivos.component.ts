@@ -17,24 +17,35 @@ export class OperacoesArquivosComponent {
   public items: any[];
   public selectedFile!: File | null;
 
+  public tipoNota!:string;
+  public start_processamento!:any;
+  public end_processamento!:any;
+
   private filter = new Map();
- 
+
 
 
   constructor(private router: Router, private service: OperacoesService) {
+    const today = new Date()
+    const day = today.getDay();
+    const diff = today.getDate() - day + (day === 0 ? -6 : 1); 
+    this.start_processamento = new Date(today.setDate(diff)).toISOString().split('T')[0];
+    this.end_processamento=   new Date().toISOString().split('T')[0];
+
+
     this.items = [];
+    this.tipoNota='1';
   }
 
   ngOnInit(): void {
-    this.hiddenForm = false;
     this.onLoad()
   }
 
 
 
   private onLoad(): void {
-    this.hiddenForm = false;
-
+    this.filter.set('start_processamento',this.start_processamento)
+    this.filter.set('end_processamento',this.end_processamento)
     this.service.load_files(this.filter)
       .subscribe({
         next: (resp) => {
@@ -58,19 +69,28 @@ export class OperacoesArquivosComponent {
     this.selectedFile = event.target.files[0];
   }
 
+  onSelectTypeNota(tipo: any):void {
+    this.filter.set('tipo',tipo)
+    this.onLoad()
+  }
+
+  onFilterDates(){  
+    this.onLoad()
+  }
+
   onUploadFile() {
-     if(this.selectedFile){
+    if (this.selectedFile) {
       this.service.upload_file(this.selectedFile)
-      .subscribe({
-        next: (resp) => {
-          console.log(resp)
-          this.onView(resp.data.id)
-        },
-        error: (e) => {
-          console.error(e)
-        }
-      })
-     }
+        .subscribe({
+          next: (resp) => {
+            console.log(resp)
+            this.onView(resp.data.id)
+          },
+          error: (e) => {
+            console.error(e)
+          }
+        })
+    }
   }
 
   onProcessFile(id: string): void {
@@ -85,3 +105,7 @@ export class OperacoesArquivosComponent {
       })
   }
 }
+
+
+
+ 

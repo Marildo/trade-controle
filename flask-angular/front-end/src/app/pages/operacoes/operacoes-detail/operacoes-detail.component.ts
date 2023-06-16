@@ -63,10 +63,6 @@ export class OperacoesDetailComponent {
     this.onLoad()
   }
 
-  onShowFilter(): void {
-    this.hiddenFilter = false;
-  }
-
   onHiddeFilter(): void {
     this.hiddenFilter = true;
   }

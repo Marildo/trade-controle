@@ -6,7 +6,7 @@ from collections import namedtuple
 from typing import List, Dict
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
-                        text, ForeignKey)
+                        ForeignKey, text, func)
 from sqlalchemy.orm import relationship
 
 from .init_db import db_connection, Base
@@ -44,7 +44,10 @@ class BaseTable(Base):
         if params:
             columns = _class.__table__.columns
             for k, v in params.items():
-                if k in columns:
+                translasted = self.translate_query(field=k, value=v)
+                if translasted is not None:
+                    filters.append(translasted)
+                elif k in columns:
                     filters.append(columns[k] == v)
 
         with db_connection as conn:
@@ -52,6 +55,9 @@ class BaseTable(Base):
                      .filter(*filters)
                      )
             return query.all()
+
+    def translate_query(self, field: str, value: str):
+        return None
 
 
 class Setor(BaseTable):
@@ -129,10 +135,20 @@ class FileCorretagem(BaseTable):
         with db_connection as conn:
             query = (conn.session.query(FileCorretagem)
                      .filter(FileCorretagem.name == self.name,
-                             #FileCorretagem.status != NotaStatusProcess.ERROR
+                             # FileCorretagem.status != NotaStatusProcess.ERROR
                              )
                      )
             return query.first()
+
+    def translate_query(self, field: str, value: str):
+        map_fields = {
+            'start_processamento': eval(f'{FileCorretagem.data_processamento} >= "{value} 00:00:00"'),
+            'end_processamento': eval(f'{FileCorretagem.data_processamento} <= "{value} 23:59:59"')
+        }
+        if field in map_fields:
+            return map_fields[field]
+
+        return None
 
 
 class NotaCorretagem(BaseTable):

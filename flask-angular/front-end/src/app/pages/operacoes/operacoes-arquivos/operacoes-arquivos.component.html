@@ -1,6 +1,23 @@
 <nav>
-    <button mat-icon-button matTooltip="Enviar arquivo" color="accent" aria-label="Enviar arquivo">
-        <mat-icon color="primary">file_upload</mat-icon>
+    <div class="form-group-inline">
+        <label for="tipo">Tipo da Nota: </label>
+        <select id="tipo" [ngModel]="tipoNota" (ngModelChange)="onSelectTypeNota($event)">
+            <option value="1">Acões</option>
+            <option value="2">Mercado Futuro</option>
+            <option value="0">N/A</option>
+        </select>
+    </div>
+    <div class="form-group-inline">
+        <label> Data processamento:
+            <input type="date" [(ngModel)]="start_processamento" id="start"> a <input type="date" [(ngModel)]="end_processamento" id="end">
+        </label>
+    </div>
+    <button mat-icon-button matTooltip="Filtrar" color="primary" aria-label="Filtrar"  (click)="onFilterDates()">
+        <mat-icon>filter_alt</mat-icon>
+    </button>
+
+    <button mat-button color="primary" aria-label="Enviar arquivo" (click)="hiddenForm=false">
+        <mat-icon>file_upload</mat-icon> Enviar arquivo
     </button>
 </nav>
 <div class="contener">
@@ -36,9 +53,13 @@
         </tbody>
     </table>
     <div class="form-up" [hidden]="hiddenForm">
-        <form enctype="multipart/form-data">
-            <input type="file" (change)="onSelectFile($event)" accept=".pdf" />
-            <button  mat-raised-button color="primary" [disabled]="!selectedFile" (click)="onUploadFile()">Enviar arquivo</button>
-          </form>
+
+        <input type="file" (change)="onSelectFile($event)" accept=".pdf" class="form-group" />
+        <footer class="container-buttons">
+            <button mat-raised-button color="accent" (click)="hiddenForm=true">Cancelar</button>
+            <button mat-raised-button color="primary" [disabled]="!selectedFile" (click)="onUploadFile()">Enviar
+                arquivo</button>
+        </footer>
+
     </div>
 </div>

@@ -1,18 +1,22 @@
 """
  @author Marildo Cesar 06/05/2023
 """
-import threading
-import time
+
 from typing import List
 from datetime import datetime
 from pathlib import Path
 
+from flask import request
+from webargs.flaskparser import parser
+from webargs import fields, validate
+
 from werkzeug.datastructures import FileStorage
-from werkzeug.exceptions import BadRequest, NotFound
+from werkzeug.exceptions import BadRequest
+
 
 from src.settings import config
 from src.model.enums import NotaStatusProcess, TipoNota
-from src.model import FileCorretagem, NotaCorretagem
+from src.model import FileCorretagem
 
 from src.services import ReadPDFCorretagem
 
@@ -86,7 +90,15 @@ class NotaController:
 
     @staticmethod
     def read_by_params() -> List:
-        data = FileCorretagem().read_by_params({})
+        input_schema = {
+            'tipo': fields.Int(),
+            'start_processamento': fields.Date(),
+            'end_processamento': fields.Date()
+        }
+        args = parser.parse(input_schema, request, location='querystring')
+        if 'tipo' in args:
+            args['tipo'] = TipoNota(args['tipo'])
+        data = FileCorretagem().read_by_params(args)
         response = ArquivoSchema().dump(data, many=True)
         return response
 
