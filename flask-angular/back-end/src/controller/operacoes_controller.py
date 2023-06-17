@@ -3,7 +3,6 @@
 """
 import copy
 
-
 from json import dumps
 from typing import Dict, List, Tuple
 from collections import Counter
@@ -333,4 +332,12 @@ class OperacaoController:
         items = rows_to_dicts(data)
         total = sum([i.resultado for i in data])
         response = dict(items=items, summary=dict(resultado=total, numero_operacoes=numero_operacoes))
+        return response
+
+    @classmethod
+    def fetch_dashboard_data(cls):
+        data = Operacao.fetch_summary_month()
+        total = sum([i.total for i in data])
+        daytrade_operations = dict(items=rows_to_dicts(data), total=total)
+        response = dict(daytrade_operations=daytrade_operations)
         return response

@@ -274,3 +274,10 @@ class Operacao(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
+
+    @staticmethod
+    def fetch_summary_month() -> List:
+        sql = text(OperacoesSql.query_summary_month)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql)
+            return query.fetchall()

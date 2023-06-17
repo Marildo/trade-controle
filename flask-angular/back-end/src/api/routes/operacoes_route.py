@@ -12,6 +12,12 @@ resource = '/operacoes'
 operacao_router = Blueprint(name=name, import_name=name, url_prefix=resource)
 
 
+@operacao_router.route('/', methods=['GET'])
+@format_response
+def load_dashboard_data():
+    return OperacaoController.fetch_dashboard_data()
+
+
 @operacao_router.route('/summary/', methods=['GET'])
 @format_response
 def load_opened():

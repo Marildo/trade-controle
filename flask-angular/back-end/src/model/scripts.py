@@ -46,3 +46,12 @@ FROM
     LEFT JOIN carteiras c ON c.id = o.carteira_id
     WHERE o.encerrada=0 
 '''
+
+    query_summary_month = '''
+SELECT 
+    DATE_FORMAT(data_encerramento,'%d/%m') data ,a.codigo, ROUND(SUM(o.resultado -o.irpf - o.custos),2) total
+    FROM operacoes o
+    JOIN ativos a ON a.id = o.ativo_id
+WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade=1
+GROUP BY data_encerramento, a.codigo
+'''
