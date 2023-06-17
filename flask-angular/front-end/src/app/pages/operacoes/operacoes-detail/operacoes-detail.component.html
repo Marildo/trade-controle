@@ -1,8 +1,10 @@
 <nav class="filter">
-    <button mat-icon-button matTooltip="Mostrar Filtro" color="primary" aria-label="Mostrar Filtro" (click)="hiddenFilter = false">
+    <button mat-icon-button matTooltip="Mostrar Filtro" color="primary" aria-label="Mostrar Filtro"
+        (click)="hiddenFilter = false">
         <mat-icon>filter_alt</mat-icon>
     </button>
-    <button mat-icon-button matTooltip="Limpar filtro" color="accent" aria-label="Limpar filtro" (click)="clearFilter()">
+    <button mat-icon-button matTooltip="Limpar filtro" color="accent" aria-label="Limpar filtro"
+        (click)="clearFilter()">
         <mat-icon>filter_alt_off</mat-icon>
     </button>
 </nav>
@@ -22,6 +24,7 @@
 
                 <th>Resultado</th>
                 <th>Custos + IRPF</th>
+                <th>Líquido</th>
 
                 <th>Nt. Compra</th>
                 <th>Nt. Venda</th>
@@ -42,6 +45,7 @@
 
                 <td>{{ row.resultado | currency}}</td>
                 <td>{{ row.custos + row.irpf | number:'1.2-2'}}</td>
+                <td>{{ row.resultado - row.custos - row.irpf | number:'1.2-2'}}</td>
 
                 <td><a (click)="onFilterNotaCompra( row.nota_compra)"> {{ row.nota_compra }}</a></td>
                 <td><a (click)="onFilterNotaVenda( row.nota_compra)"> {{ row.nota_compra }}</a></td>

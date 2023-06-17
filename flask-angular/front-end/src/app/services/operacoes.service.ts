@@ -22,6 +22,16 @@ export class OperacoesService {
 
   }
 
+  
+  public load_dashboard(): Observable<any> {
+    const url =  this.baseURL + '/operacoes/'
+    return this.http.get<any>(url, {headers: this.headers})
+      .pipe(
+        take(1),
+        tap(console.log),
+      )
+  }
+
   public load_detail(filter: Map<string, string>): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',

@@ -1,22 +1,33 @@
 import { Component } from '@angular/core';
 
+import { OperacoesService } from 'src/app/services/operacoes.service';
+import { formatCurrency } from '@angular/common';
+import { ChartConfiguration, ChartData, ChartEvent, ChartOptions, ChartType } from 'chart.js';
+
+
+
 @Component({
   selector: 'app-operacoes-dashboard',
   templateUrl: './operacoes-dashboard.component.html',
   styleUrls: ['./operacoes-dashboard.component.scss']
 })
 export class OperacoesDashboardComponent {
-  data: any;
 
-  options: any;
+
+
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+  public barChartLabels: string[] = [];
+  public barChartData: any[] = [];
+  public barChartPlugins = [];
+
+
 
   constructor(private service: OperacoesService) {
 
   }
 
   ngOnInit() {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const colors = [documentStyle.getPropertyValue('--green-100'), documentStyle.getPropertyValue('--blue-800'),]
 
     this.service.load_dashboard()
       .subscribe({
@@ -42,15 +53,14 @@ export class OperacoesDashboardComponent {
             }
 
             datasets.push({
-              type: 'bar',
               label: ativo,
-              backgroundColor: colors[i],
-              data: totais
+              data: totais,
+              //backgroundColor: "#FFFDD",
             })
             i++
           }
           const labels = Array.from(labels_set)
-          this.drawChart(labels, datasets)
+          this.drawDaytradesChart(labels, datasets)
         },
         error: (e) => {
           console.error(e)
@@ -60,66 +70,54 @@ export class OperacoesDashboardComponent {
 
   }
 
-  drawChart(labels: any, datasets: any) {
-    const documentStyle = getComputedStyle(document.documentElement);
-    const textColor = documentStyle.getPropertyValue('--text-color');
-    const textColorSecondary = documentStyle.getPropertyValue('--text-color-secondary');
-    const surfaceBorder = documentStyle.getPropertyValue('--surface-border');
+  drawDaytradesChart(labels: any, datasets: any) {
+    this.barChartLabels = labels
+    this.barChartData = datasets
+  }
 
-    this.data = {
-      labels,
-      datasets
-    };
 
-    this.options = {
+  public barChartOptions: any = {
+    responsive: true,
+    scales: {
+      x: {
+        stacked: true
+      },
+      y: {
+        stacked: true,
+        ticks: {
+          callback: (value: number) => formatCurrency(value, 'pt-BR', '')
+        }
+      }
+    },
+    plugins: {
       title: {
         display: true,
-        text: 'Receitas x Despesas'
+        text: 'Resultado diário de daytrade'
       },
-      maintainAspectRatio: false,
-      aspectRatio: 0.8,
-      tooltips: {
+      tooltip: {
         callbacks: {
-          label: (tooltipItem: any, data: any) => {
-            var value = data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-            return 'R$ ' + value.toFixed(2);
-          },
-        }
-      },
-      plugins: {
-        tooltips: {
-          mode: 'index',
-          intersect: false,
-
-        },
-        legend: {
-          labels: {
-            color: textColor
-          }
-        }
-      },
-      scales: {
-        x: {
-          stacked: true,
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false
-          }
-        },
-        y: {
-          stacked: true,
-          ticks: {
-            color: textColorSecondary
-          },
-          grid: {
-            color: surfaceBorder,
-            drawBorder: false
+          label: (context: any) => {
+            let label = '';
+            if (context.dataset.label) {
+              label += `${context.dataset.label}: `;
+            }
+            if (context.parsed.y !== null) {
+              label += formatCurrency(context.parsed.y, 'pt-BR', 'R$')
+            }
+            return label;
           }
         }
       }
-    };
+
+    }
+
+  };
+
+
+
+
+
+
+
 
 }

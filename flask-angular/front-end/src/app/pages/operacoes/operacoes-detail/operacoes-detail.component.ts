@@ -74,13 +74,15 @@ export class OperacoesDetailComponent {
     this.onHiddeFilter()
   }
 
-  onFilterDataCompra(data: string): void {    
+  onFilterDataCompra(data: string): void {   
+    this.filter.clear() 
     this.filter.set('start_data_compra', data)
     this.filter.set('end_data_compra', data)
     this.onLoad()
   }
 
   onFilterDataVenda(data: string): void {
+    this.filter.clear()
     this.filter.set('start_data_venda', data)
     this.filter.set('end_data_venda', data)
     this.onLoad()

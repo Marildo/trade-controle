@@ -26,6 +26,7 @@ import { TabComponent } from './components/tab/tab/tab.component';
 
 import { OperacoesModule } from './pages/operacoes/operacoes.module';
 import { SharedModule } from './shared/shared.module';
+import { NgChartsModule } from 'ng2-charts';
 
 
 
@@ -59,7 +60,8 @@ registerLocaleData(localePt)
 
     AppRoutingModule,
 
-    OperacoesModule
+    OperacoesModule,
+     NgChartsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-BR' },
