@@ -19,10 +19,7 @@ import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
-import { TabHeaderComponent } from './components/tab/tab-header/tab-header.component';
-import { TabItemComponent } from './components/tab/tab-item/tab-item.component';
-import { TabBodyComponent } from './components/tab/tab-body/tab-body.component';
-import { TabComponent } from './components/tab/tab/tab.component';
+
 
 import { OperacoesModule } from './pages/operacoes/operacoes.module';
 import { SharedModule } from './shared/shared.module';
@@ -42,10 +39,7 @@ registerLocaleData(localePt)
 
     
     CarteirasComponent,
-    TabHeaderComponent,
-    TabItemComponent,
-    TabBodyComponent,
-    TabComponent,
+  
     DashboardComponent
   ],
   imports: [

@@ -34,7 +34,6 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "../node_modules/chart.js/dist/chart.js"
             ]
           },
           "configurations": {
@@ -100,7 +99,7 @@
               "src/styles.scss"
             ],
             "scripts": [
-              "../node_modules/chart.js/dist/chart.js"
+
             ]
           }
         }

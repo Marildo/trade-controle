@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 
 import { OperacoesService } from 'src/app/services/operacoes.service';
 import { formatCurrency } from '@angular/common';
-import { ChartConfiguration, ChartData, ChartEvent, ChartOptions, ChartType } from 'chart.js';
+import { ChartConfiguration, ChartData, ChartEvent, ChartOptions, ChartType} from 'chart.js';
 
 
 
@@ -12,23 +12,20 @@ import { ChartConfiguration, ChartData, ChartEvent, ChartOptions, ChartType } fr
   styleUrls: ['./operacoes-dashboard.component.scss']
 })
 export class OperacoesDashboardComponent {
-
+ 
 
 
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartLabels: string[] = [];
-  public barChartData: any[] = [];
-  public barChartPlugins = [];
-
-
+  public barChartData: any[] = [ ];
 
   constructor(private service: OperacoesService) {
 
   }
 
   ngOnInit() {
-
+      
     this.service.load_dashboard()
       .subscribe({
         next: (resp) => {
@@ -85,7 +82,7 @@ export class OperacoesDashboardComponent {
       y: {
         stacked: true,
         ticks: {
-          callback: (value: number) => formatCurrency(value, 'pt-BR', '')
+          callback: (value: number) => formatCurrency(value, 'pt-BR','')
         }
       }
     },
@@ -102,22 +99,22 @@ export class OperacoesDashboardComponent {
               label += `${context.dataset.label}: `;
             }
             if (context.parsed.y !== null) {
-              label += formatCurrency(context.parsed.y, 'pt-BR', 'R$')
+              label +=  formatCurrency(context.parsed.y, 'pt-BR', 'R$') 
             }
             return label;
           }
         }
       }
-
+      
     }
-
+    
   };
 
 
 
 
+  public barChartPlugins = [  ];
 
 
-
-
+  
 }
