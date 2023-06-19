@@ -4,6 +4,7 @@ import { TabComponent } from './tab/tab/tab.component';
 import { TabHeaderComponent } from './tab/tab-header/tab-header.component';
 import { TabBodyComponent } from './tab/tab-body/tab-body.component';
 import { TabItemComponent } from './tab/tab-item/tab-item.component';
+import { PanelResultComponent } from './panel-result/panel-result.component';
 
 
 
@@ -12,7 +13,8 @@ import { TabItemComponent } from './tab/tab-item/tab-item.component';
     TabComponent,
     TabHeaderComponent,
     TabBodyComponent,
-    TabItemComponent
+    TabItemComponent,
+    PanelResultComponent
   ],
   imports: [
     CommonModule
@@ -22,7 +24,8 @@ import { TabItemComponent } from './tab/tab-item/tab-item.component';
     TabComponent,
     TabHeaderComponent,
     TabBodyComponent,
-    TabItemComponent
+    TabItemComponent,
+    PanelResultComponent
   ]
 })
 export class ComponentsModule { }

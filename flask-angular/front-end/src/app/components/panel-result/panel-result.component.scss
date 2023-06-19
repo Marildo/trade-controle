@@ -1,0 +1,31 @@
+.container {
+  display: inline-block;
+  text-align: center;
+  border-radius: 4px;
+  margin: 10px;
+  width: 200px;
+}
+
+.card-negative {
+  border: 1px solid  #FFD6D6;
+  padding: 20px;
+}
+
+.card-positive {
+  border: 1px solid #70FF70;
+  padding: 20px;
+
+}
+
+.value {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.positive {
+  color: #008000;
+}
+
+.negative {
+  color: #ff0000;
+}
