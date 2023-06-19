@@ -1,0 +1,15 @@
+<div>
+  <app-panel-result [values]="results"> </app-panel-result>
+  <div class="chart-operations-daytrade">
+    <canvas
+      baseChart
+      [datasets]="barChartData"
+      [labels]="barChartLabels"
+      [options]="barChartOptions"
+      [plugins]="barChartPlugins"
+      [legend]="barChartLegend"
+      [type]="barChartType"
+    >
+    </canvas>
+  </div>
+</div>

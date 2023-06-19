@@ -37,10 +37,11 @@ registerLocaleData(localePt)
     ContentComponent,
     FooterComponent,
 
-    
+
     CarteirasComponent,
-  
-    DashboardComponent
+
+    DashboardComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -55,7 +56,7 @@ registerLocaleData(localePt)
     AppRoutingModule,
 
     OperacoesModule,
-     NgChartsModule
+    NgChartsModule
   ],
   providers: [
     { provide: LOCALE_ID, useValue: 'pt-BR' },
