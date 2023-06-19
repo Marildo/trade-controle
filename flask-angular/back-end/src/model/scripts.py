@@ -47,11 +47,23 @@ FROM
     WHERE o.encerrada=0 
 '''
 
-    query_summary_month = '''
+    query_daytrade_month = '''
 SELECT 
     DATE_FORMAT(data_encerramento,'%d/%m') data ,a.codigo, ROUND(SUM(o.resultado -o.irpf - o.custos),2) total
     FROM operacoes o
     JOIN ativos a ON a.id = o.ativo_id
 WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade=1
 GROUP BY data_encerramento, a.codigo
+'''
+
+    query_summary_daytrade = '''
+SELECT * FROM 
+(SELECT SUM(o.resultado - o.irpf - o.custos) anual 
+    FROM operacoes o WHERE data_encerramento >= CONCAT(YEAR(CURRENT_DATE()), '-01-01') AND daytrade=1 ) AS a,
+(SELECT SUM(o.resultado - o.irpf - o.custos) mensal
+    FROM operacoes o WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade=1) AS b,
+(SELECT SUM(o.resultado - o.irpf - o.custos) semanal 
+    FROM operacoes o WHERE data_encerramento >= DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE()) DAY) AND daytrade=1) AS c,
+(SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
+    FROM operacoes o WHERE daytrade=1) AS d
 '''

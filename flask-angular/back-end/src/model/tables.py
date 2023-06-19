@@ -156,12 +156,19 @@ class NotaCorretagem(BaseTable):
     id = Column(INTEGER, primary_key=True)
     comprovante = Column(INTEGER)
     data_referencia = Column(DATE)
+    finalizada = Column(BOOLEAN, default=False)
     file_id = Column(INTEGER, ForeignKey('arquivos_corretagem.id'))
-
-    # __table_args__ = (Index('idx_comprovante', 'comprovante','data_referencia', 'file_id', unique=True),)
+    Index('idx_comprovante', comprovante, data_referencia, unique=True)
 
     def __str__(self):
         return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} '
+
+    def is_exists(self):
+        query = self.read_by_params(dict(comprovante=self.comprovante, data_referencia=self.data_referencia))
+        if not query:
+            return False
+
+        return query[0].finalizada
 
 
 class Operacao(BaseTable):
@@ -276,8 +283,15 @@ class Operacao(BaseTable):
             return query.fetchall()
 
     @staticmethod
-    def fetch_summary_month() -> List:
-        sql = text(OperacoesSql.query_summary_month)
+    def fetch_daytrade_month() -> List:
+        sql = text(OperacoesSql.query_daytrade_month)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql)
             return query.fetchall()
+
+    @staticmethod
+    def fetch_summary_daytrade():
+        sql = text(OperacoesSql.query_summary_daytrade)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql)
+            return query.one()

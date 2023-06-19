@@ -17,3 +17,6 @@ class Nota:
         self.file = None
         self.irfp = irfp
         self.custos = custos
+
+    def __str__(self):
+        return f'Comprovante: {self.comprovante} - data: {self.data_operacao}'

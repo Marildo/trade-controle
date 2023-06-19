@@ -33,7 +33,7 @@ class BovespaSinacor(Investiment):
             comprovante = self.__find_comprovante()
             tipo_nota = TipoNota.ACOES
 
-            print(page.number, data_operacao, comprovante)
+            # print(page.number, data_operacao, comprovante)
 
             end = self.__locate_index('BOVESPA 1', self.lines)
             begin = end - 7

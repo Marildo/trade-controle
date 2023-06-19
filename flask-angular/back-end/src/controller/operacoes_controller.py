@@ -49,9 +49,9 @@ class OperacaoController:
         try:
             nota_corr = NotaCorretagem(comprovante=item.comprovante,
                                        data_referencia=item.data_operacao, file_id=item.file.id)
-            # if nota_corr.is_exists():
-            #     logger.warn(f'Nota já foi importada ({nota_corr})')
-            #     return
+            if nota_corr.is_exists():
+                logger.warn(f'Nota já foi importada ({nota_corr})')
+                return
 
             # if not nota_corr.comprovante in (29951,):
             #     return
@@ -69,7 +69,7 @@ class OperacaoController:
                 ##if ativo.id not in (641, 1030):                    continue
                 # print(f'{op["qtd"] * (1 if op["tipo"] == "C" else -1)}')
 
-                logger.info(f'Store: Nota: {nota_corr} - op: {dumps(op)}')
+                logger.info(f'Store: {nota_corr} - op: {dumps(op)}')
                 c_v = CompraVenda.VENDA if tipo_operacao == 'C' else CompraVenda.COMPRA
                 operacoes = Operacao.find_not_closed(ativo, c_v, op['daytrade'])
 
@@ -192,7 +192,6 @@ class OperacaoController:
                     percentual = op.qtd_venda * 100 / qtd_total
                     op.custos = item.custos * (percentual * 0.01)
                     session.add(op)
-                session.commit()
 
             if item.irfp > 0:
                 operacoes = [o for o in operacoes if o.resultado > 0]
@@ -201,9 +200,12 @@ class OperacaoController:
                     percentual = op.resultado * 100 / result_total
                     op.irpf = item.irfp * (percentual * 0.01)
                     session.add(op)
-                session.commit()
 
+            nota_corr.finalizada = True
+            session.merge(nota_corr)
+            session.commit()
         except Exception as exep:
+            logger.error(item)
             logger.error(exep)
             session.rollback()
             raise exep
@@ -336,8 +338,12 @@ class OperacaoController:
 
     @classmethod
     def fetch_dashboard_data(cls):
-        data = Operacao.fetch_summary_month()
-        total = sum([i.total for i in data])
-        daytrade_operations = dict(items=rows_to_dicts(data), total=total)
+        data = Operacao.fetch_daytrade_month()
+        totais = Operacao.fetch_summary_daytrade()
+        daytrade_operations = dict(items=rows_to_dicts(data),
+                                   total_mensal=totais.mensal,
+                                   total_semanal=totais.semanal,
+                                   total_anual=totais.anual,
+                                   total_acumulado=totais.acumulado)
         response = dict(daytrade_operations=daytrade_operations)
         return response

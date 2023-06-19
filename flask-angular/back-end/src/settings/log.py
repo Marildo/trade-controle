@@ -17,7 +17,7 @@ class Logger:
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-        formatter = logging.Formatter(fmt='%(asctime)s[%(levelname)s] %(funcName)s/%(lineno)d: %(message)s',
+        formatter = logging.Formatter(fmt='%(asctime)s[%(levelname)s] %(filename)s.%(funcName)s/%(lineno)d: %(message)s',
                                       datefmt='%Y-%m-%d %H:%M:%S')
 
         file_handler = logging.FileHandler(log_file_path)

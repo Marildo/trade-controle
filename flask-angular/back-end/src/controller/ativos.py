@@ -24,47 +24,52 @@ class AtivoController:
         else:
             ativos = Ativo.find_like_name(nome)
 
-        if not ativos:
-            st_invent = StatusInvest()
-            logger.info(f'Search by {nome}')
-            data = st_invent.find_by_name(nome)
-            st_invent.download_images(data[0]['parent_id'])
-            for item in data:
-                setor = item['setor']
-                subsetor = None
-                if 'subsetor' in setor:
-                    subsetor = SubSetor(**setor['subsetor'])
-                    subsetor.setor_id = setor['id']
-                    del setor['subsetor']
-
-                setor = Setor(**setor)
-                setor.subsetor = subsetor
-                setor.update()
-
-                if subsetor:
-                    subsetor.update()
-
-                segmento = Segmento(**item['segmento'])
-                segmento.update()
-
-                if 'tipo_ativo' not in item:
-                    item['tipo_ativo'] = tipo_id
-
-                del item['segmento']
-                del item['setor']
-                ativo = Ativo(**item)
-                ativo.nome = nome if nome_mapead else item['nome']
-                ativo.descricao = item['descricao']
-                ativo.setor_id = setor.id
-                ativo.segmento_id = segmento.id
-                ativo.update()
-                logger.info(f'Saved {ativo}')
-
-            ativos = Ativo.find_like_name(nome)
         ativo = [i for i in ativos if i.tipo_ativo == tipo_id]
         if ativo:
             return ativo[0]
-        return None
+
+
+        st_invent = StatusInvest()
+        logger.info(f'Search by {nome}')
+        data = st_invent.find_by_name(nome)
+        st_invent.download_images(data[0]['parent_id'])
+        for item in data:
+            setor = item['setor']
+            subsetor = None
+            if 'subsetor' in setor:
+                subsetor = SubSetor(**setor['subsetor'])
+                subsetor.setor_id = setor['id']
+                del setor['subsetor']
+
+            setor = Setor(**setor)
+            setor.subsetor = subsetor
+            setor.update()
+
+            if subsetor:
+                subsetor.update()
+
+            segmento = Segmento(**item['segmento'])
+            segmento.update()
+
+            if 'tipo_ativo' not in item:
+                item['tipo_ativo'] = tipo_id
+
+            del item['segmento']
+            del item['setor']
+            ativo = Ativo(**item)
+            ativo.nome = nome if nome_mapead else item['nome']
+            ativo.descricao = item['descricao']
+            ativo.setor_id = setor.id
+            ativo.segmento_id = segmento.id
+            ativo.update()
+            logger.info(f'Saved {ativo}')
+
+            ativos = Ativo.find_like_name(nome)
+            ativo = [i for i in ativos if i.tipo_ativo == tipo_id]
+            if ativo:
+                return ativo[0]
+
+        raise Exception(f'{source_nome} not found')
 
     @staticmethod
     def map_nome(full_name: str) -> Tuple[str, Optional[str], bool]:

@@ -9,20 +9,18 @@ import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 
 from src.utils.str_util import str_to_float
+from src.settings import logger
 
 
 class StatusInvest:
-    def __init__(self) -> None:
-
-        pass
 
     def find_by_name(self, name: str) -> List[Dict]:
         url = f'https://statusinvest.com.br/home/mainsearchquery?q={name}&country='
         data = self._request(url).json()
         data = [i for i in data if i['type'] in (1, 2)]
         result = []
-        if 1 == name:
-            pass
+
+        logger.info(f'Se{name}')
 
         for item in data:
             ativo = dict(
