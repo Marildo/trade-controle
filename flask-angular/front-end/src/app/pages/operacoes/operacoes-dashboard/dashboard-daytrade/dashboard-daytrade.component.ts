@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { OperacoesService } from 'src/app/services/operacoes.service';
+import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
 import { formatCurrency } from '@angular/common';
 import { ChartType } from 'chart.js';
 

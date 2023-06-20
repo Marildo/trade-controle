@@ -2,7 +2,7 @@ import { query } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { OperacoesService } from 'src/app/services/operacoes.service';
+import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
 
 
 

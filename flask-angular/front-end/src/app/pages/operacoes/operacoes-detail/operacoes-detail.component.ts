@@ -3,7 +3,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 
-import { OperacoesService } from 'src/app/services/operacoes.service';
+import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
 
 @Component({
   selector: 'app-operacoes-detail',
