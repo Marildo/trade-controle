@@ -28,7 +28,7 @@ export class OperacoesArquivosComponent {
   constructor(private router: Router, private service: OperacoesService) {
     const today = new Date()
     const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 1); 
+    const diff = today.getDate() - day + (day === 0 ? -6 : 0); 
     this.start_processamento = new Date(today.setDate(diff)).toISOString().split('T')[0];
     this.end_processamento=   new Date().toISOString().split('T')[0];
 
@@ -44,8 +44,13 @@ export class OperacoesArquivosComponent {
 
 
   private onLoad(): void {
-    this.filter.set('start_processamento',this.start_processamento)
-    this.filter.set('end_processamento',this.end_processamento)
+    if(this.start_processamento != ''){
+      this.filter.set('start_processamento',this.start_processamento)
+    }
+    if (this.end_processamento != ''){
+      this.filter.set('end_processamento',this.end_processamento)
+    }
+   
     this.service.load_files(this.filter)
       .subscribe({
         next: (resp) => {
@@ -92,7 +97,7 @@ export class OperacoesArquivosComponent {
             this.onView(resp.data.id)
           },
           error: (e) => {
-            console.error(e)
+            console.log(e.error)
           }
         })
     }

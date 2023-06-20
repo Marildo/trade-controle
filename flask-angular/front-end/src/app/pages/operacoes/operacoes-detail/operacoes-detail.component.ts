@@ -38,6 +38,7 @@ export class OperacoesDetailComponent {
       nota: new FormControl(),
       codigo: new FormControl(),
       carteira_id: new FormControl(),
+      tipo_investimento: new FormControl(),
     });
   }
 
@@ -122,3 +123,6 @@ export class OperacoesDetailComponent {
 
 
 }
+
+
+// TODO  - Visualizar arquivo pdf

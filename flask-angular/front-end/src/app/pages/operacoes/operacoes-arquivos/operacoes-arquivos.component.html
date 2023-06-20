@@ -25,7 +25,9 @@
     <table>
         <thead>
             <tr>
+                <th>Id</th>
                 <th>Nome</th>
+                <th>Referência</th>
                 <th>Data processamento</th>
                 <th>Status</th>
                 <th>Tipo</th>
@@ -34,7 +36,9 @@
         </thead>
         <tbody>
             <tr *ngFor="let row of items">
+                <td>{{ row.id}}</td>
                 <td>{{ row.name}}</td>
+                <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
                 <td>{{ row.data_processamento | date:'dd/MM/yyy HH:mm:ss'}}</td>
                 <td>{{ row.status }} </td>
                 <td>{{ row.tipo }}</td>

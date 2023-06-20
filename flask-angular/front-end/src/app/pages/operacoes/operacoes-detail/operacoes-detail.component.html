@@ -53,10 +53,11 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2">Número de Operações {{summary.numero_operacoes}}</td>
+                <td colspan="4">Número de Operações {{summary.numero_operacoes}}</td>
+                <td colspan="2">Bruto {{summary.resultado  | currency}}</td>
                 <td colspan="2">Custos {{summary.custos | currency}}</td>
                 <td colspan="2">IRPF {{summary.irpf | currency}}</td>
-                <td colspan="2">Resultado Liquido {{summary.liquido | currency}}</td>
+                <td colspan="2">Líquido {{summary.liquido | currency}}</td>
             </tr>
         </tfoot>
     </table>
@@ -101,10 +102,18 @@
                 <input type="text" formControlName="nota" id="" size="15">
             </div>
             <div class="form-group-inline">
+                <label for="tipo_investimento"> Tipo Ativo </label>
+                <select formControlName="tipo_investimento" id="tipo_investimento">
+                    <option value="1">Ações</option>
+                    <option value="2">Fundos Imobiliários</option>
+                    <option value="3">Indice</option>
+                </select>
+            </div> 
+            <div class="form-group-inline">
                 <label for="carteira_id"> Carteira </label>
                 <select formControlName="carteira_id" id="carteira_id">
-                    <option value="Houpe">Houpe</option>
-                    <option value="Houpe">Bony</option>
+                    <option value="2">Houpe</option>
+                    <option value="1">Bony</option>
                 </select>
             </div>
         </form>
