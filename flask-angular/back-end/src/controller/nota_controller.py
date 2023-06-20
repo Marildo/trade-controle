@@ -13,12 +13,13 @@ from webargs import fields, validate
 from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 
-
 from src.settings import config
 from src.model.enums import NotaStatusProcess, TipoNota
 from src.model import FileCorretagem
 
 from src.services import ReadPDFCorretagem
+from utils.dict_util import rows_to_dicts
+from utils.str_util import capitalize_plus
 
 from .schemas import ArquivoSchema
 from .operacoes_controller import OperacaoController
@@ -52,7 +53,7 @@ class NotaController:
 
         if filecorr.status is NotaStatusProcess.PROCESSANDO:
             diff = (datetime.today() - filecorr.data_processamento).seconds / 60
-            if diff < 0.3: # TODO VOLTA O LIMITE
+            if diff < 0.3:  # TODO VOLTA O LIMITE
                 raise BadRequest(
                     'Arquivo já está processando, aguarde o final do processamento ou tente novamente' +
                     f' em  {3 - int(diff)} minutos'
@@ -96,10 +97,14 @@ class NotaController:
             'end_processamento': fields.Date()
         }
         args = parser.parse(input_schema, request, location='querystring')
-        if 'tipo' in args:
-            args['tipo'] = TipoNota(args['tipo'])
-        data = FileCorretagem().read_by_params(args)
-        response = ArquivoSchema().dump(data, many=True)
+        data = FileCorretagem().list_arquivos(args)
+        data = rows_to_dicts(data)
+        response = []
+        for item in data:
+            for k, v in item.items():
+                if k in ('tipo', 'status'):
+                    item[k] = capitalize_plus(v)
+            response.append(item)
         return response
 
     @staticmethod

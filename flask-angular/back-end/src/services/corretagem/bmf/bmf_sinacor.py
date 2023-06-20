@@ -35,7 +35,7 @@ class BMFSinacor(Investiment):
             comprovante = self.__find_comprovante()
             tipo_nota = TipoNota.MERCADO_FUTURO
 
-            print(page.number, data_operacao, comprovante)
+            # print(page.number, data_operacao, comprovante)
 
             begin = self.__locate_index('DAY TRADE', self.lines) - 1
             end = begin + 8
@@ -66,7 +66,7 @@ class BMFSinacor(Investiment):
             irfp = self.__get_irrf(operacoes)
             self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
-        print('finish read')
+        # print('finish read')
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:

@@ -13,7 +13,7 @@ from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
 from .fields import primary_key
 
-from .scripts import OperacoesSql
+from .scripts import OperacoesSql, ArquivosCorretagemSQL
 
 
 class BaseTable(Base):
@@ -150,6 +150,37 @@ class FileCorretagem(BaseTable):
 
         return None
 
+    def list_arquivos(self, params: Dict) -> List:
+        # TODO pode passar isso para um metodos generico
+
+        if 'tipo' in params:
+            params['tipo'] = TipoNota(params['tipo']).name
+
+        filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
+
+        filter_translater = {
+            'start_referencia': 'data_referencia >= :start_referencia',
+            'end_referencia': 'data_referencia >= :end_referencia',
+            'start_processamento': 'data_processamento >= :start_processamento',
+            'end_processamento': 'data_processamento <= :end_processamento',
+        }
+
+
+
+        key_params = []
+        for key, value in filters_map.items():
+            if key in filter_translater:
+                key_params.append(filter_translater[key])
+            else:
+                key_params.append(f'{key} = :{key}')
+
+        where = f' AND {" AND ".join(key_params)}' if key_params else ''
+        order_group_by = ' GROUP BY a.id ORDER BY data_referencia'
+        sql = text(ArquivosCorretagemSQL.query_list + where + order_group_by)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql, filters_map)
+            return query.fetchall()
+
 
 class NotaCorretagem(BaseTable):
     __tablename__ = 'notas_corretagem'
@@ -163,12 +194,8 @@ class NotaCorretagem(BaseTable):
     def __str__(self):
         return f'Data: {self.data_referencia} - Comprovante: {self.comprovante} '
 
-    def is_exists(self):
-        query = self.read_by_params(dict(comprovante=self.comprovante, data_referencia=self.data_referencia))
-        if not query:
-            return False
-
-        return query[0].finalizada
+    def find_self(self):
+        return self.read_by_params(dict(comprovante=self.comprovante, data_referencia=self.data_referencia))
 
 
 class Operacao(BaseTable):

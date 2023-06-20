@@ -67,3 +67,11 @@ SELECT * FROM
 (SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
     FROM operacoes o WHERE daytrade=1) AS d
 '''
+
+
+class ArquivosCorretagemSQL:
+    query_list = '''
+SELECT a.*, MIN(n.data_referencia) data_referencia FROM arquivos_corretagem a
+JOIN notas_corretagem n ON n.file_id = a.id
+WHERE 1=1
+    '''

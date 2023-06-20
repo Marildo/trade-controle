@@ -15,5 +15,6 @@ def str_to_float(value: str) -> float:
 def onnly_numbers(value: str) -> str:
     return sub(r'\D', '', value)
 
-def translate_enum(value:str) -> str:
-    return value.replace('_',' ').capitalize()
+
+def capitalize_plus(value: str) -> str:
+    return value.replace('_', ' ').capitalize()

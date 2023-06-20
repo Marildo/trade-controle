@@ -15,7 +15,6 @@ from src.settings import logger
 from src.utils.dict_util import rows_to_dicts
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota
 from src.model.dtos import Nota
-from .schemas import OperacaoSchema
 from .ativos import AtivoController
 from .query_validations import validate_group_by_operacoes
 
@@ -47,18 +46,20 @@ class OperacaoController:
         }
         session = db_connection.session
         try:
-            nota_corr = NotaCorretagem(comprovante=item.comprovante,
-                                       data_referencia=item.data_operacao, file_id=item.file.id)
-            if nota_corr.is_exists():
-                logger.warn(f'Nota já foi importada ({nota_corr})')
-                return
+            nota_corr = NotaCorretagem(comprovante=item.comprovante, data_referencia=item.data_operacao,
+                                       file_id=item.file.id)
+            notas = nota_corr.find_self()
+            if notas:
+                nota = notas[0]
+                if nota.finalizada:
+                    logger.warn(f'Nota já foi importada ({nota})')
+                    return
+                nota_corr = nota
 
             # if not nota_corr.comprovante in (29951,):
             #     return
 
-            session.merge(nota_corr)
-            session.flush()
-
+            nota_corr.save()
             operacoes_nota = (cls.__appoint_daytrade(item.operacoes)
                               if item.tipo_nota != TipoNota.MERCADO_FUTURO else item.operacoes)
 
@@ -202,7 +203,7 @@ class OperacaoController:
                     session.add(op)
 
             nota_corr.finalizada = True
-            session.merge(nota_corr)
+            nota_corr.update()
             session.commit()
         except Exception as exep:
             logger.error(item)
@@ -312,6 +313,7 @@ class OperacaoController:
             'encerrada': fields.Bool(),
             'codigo': fields.Str(),
             'carteira_id': fields.Int(),
+            'tipo_investimento': fields.Int(),
         }
         args = parser.parse(input_schema, request, location='querystring')
         data = Operacao.fetch_detail(args)
@@ -341,9 +343,9 @@ class OperacaoController:
         data = Operacao.fetch_daytrade_month()
         totais = Operacao.fetch_summary_daytrade()
         daytrade_operations = dict(items=rows_to_dicts(data),
-                                   total_mensal=totais.mensal,
-                                   total_semanal=totais.semanal,
-                                   total_anual=totais.anual,
-                                   total_acumulado=totais.acumulado)
+                                   total_mensal=totais.mensal or 0,
+                                   total_semanal=totais.semanal or 0,
+                                   total_anual=totais.anual or 0,
+                                   total_acumulado=totais.acumulado or 0)
         response = dict(daytrade_operations=daytrade_operations)
         return response

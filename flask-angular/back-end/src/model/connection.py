@@ -11,7 +11,7 @@ from sqlalchemy.orm.session import SessionTransaction
 class BaseConnection(ABC):
 
     def __init__(self):
-        self._engine = create_engine(self._get_url(), echo=False)
+        self._engine = create_engine(self._get_url(), echo=True)
         maker = sessionmaker(expire_on_commit=False)
         self._session = maker(bind=self._engine, autocommit=False)
 

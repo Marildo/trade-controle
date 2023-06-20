@@ -104,7 +104,7 @@ class AtivoController:
                       .replace(' BR/', '/')
                       .replace(' N2', '')
                       .replace(' EDJ', '').replace(' EJS', '').replace(' ERS', '')
-                      .replace(' ED', '').replace(' EJ', '').replace(' ER', '').replace(' EC', '')
+                      .replace(' ED', '').replace(' EJ', '').replace(' ER', '').replace(' EC', '').replace(' CI', '')
                       ).split('/')
         if nome in _map_name:
             nome = _map_name[nome]
