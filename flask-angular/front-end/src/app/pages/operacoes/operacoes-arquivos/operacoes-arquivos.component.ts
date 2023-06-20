@@ -1,9 +1,8 @@
-import { query } from '@angular/animations';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
-
 
 
 @Component({
@@ -17,24 +16,24 @@ export class OperacoesArquivosComponent {
   public items: any[];
   public selectedFile!: File | null;
 
-  public tipoNota!:string;
-  public start_processamento!:any;
-  public end_processamento!:any;
+  public tipoNota!: string;
+  public start_processamento!: any;
+  public end_processamento!: any;
 
   private filter = new Map();
 
 
 
-  constructor(private router: Router, private service: OperacoesService) {
+  constructor(private router: Router, private service: OperacoesService, private messageService: MessageService) {
     const today = new Date()
     const day = today.getDay();
-    const diff = today.getDate() - day + (day === 0 ? -6 : 0); 
+    const diff = today.getDate() - day + (day === 0 ? -6 : 0);
     this.start_processamento = new Date(today.setDate(diff)).toISOString().split('T')[0];
-    this.end_processamento=   new Date().toISOString().split('T')[0];
+    this.end_processamento = new Date().toISOString().split('T')[0];
 
 
     this.items = [];
-    this.tipoNota='-1';
+    this.tipoNota = '-1';
   }
 
   ngOnInit(): void {
@@ -42,15 +41,14 @@ export class OperacoesArquivosComponent {
   }
 
 
-
   private onLoad(): void {
-    if(this.start_processamento != ''){
-      this.filter.set('start_processamento',this.start_processamento)
+    if (this.start_processamento != '') {
+      this.filter.set('start_processamento', this.start_processamento)
     }
-    if (this.end_processamento != ''){
-      this.filter.set('end_processamento',this.end_processamento)
+    if (this.end_processamento != '') {
+      this.filter.set('end_processamento', this.end_processamento)
     }
-   
+
     this.service.load_files(this.filter)
       .subscribe({
         next: (resp) => {
@@ -63,8 +61,6 @@ export class OperacoesArquivosComponent {
   }
 
 
-
-
   onView(id: string): void {
     const params = { file_id: id };
     this.router.navigate(['operacoes/detalhe'], { queryParams: params })
@@ -74,17 +70,17 @@ export class OperacoesArquivosComponent {
     this.selectedFile = event.target.files[0];
   }
 
-  onSelectTypeNota(tipo: any):void {
-    if (tipo == '-1'){
+  onSelectTypeNota(tipo: any): void {
+    if (tipo == '-1') {
       this.filter.clear()
-    }else{
-      this.filter.set('tipo',tipo)
+    } else {
+      this.filter.set('tipo', tipo)
     }
 
     this.onLoad()
   }
 
-  onFilterDates(){  
+  onFilterDates() {
     this.onLoad()
   }
 
@@ -96,9 +92,8 @@ export class OperacoesArquivosComponent {
             console.log(resp)
             this.onView(resp.data.id)
           },
-          error: (e) => {
-            console.log(e.error)
-          }
+          error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 })
+
         })
     }
   }
@@ -110,7 +105,7 @@ export class OperacoesArquivosComponent {
           this.onView(id)
         },
         error: (e) => {
-          console.error(e)
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 });
         }
       })
   }
@@ -118,4 +113,3 @@ export class OperacoesArquivosComponent {
 
 
 
- 

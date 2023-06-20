@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
+import { MessageService } from 'primeng/api';
 
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
@@ -19,7 +20,7 @@ export class OperacoesDetailComponent {
 
   private filter = new Map();
 
-  constructor(private route: ActivatedRoute, private service: OperacoesService) {
+  constructor(private route: ActivatedRoute, private service: OperacoesService, private messageService: MessageService) {
     this.items = [];
     this.hiddenFilter = true;
     this.summary = { 'numero_operacoes': 0 }
@@ -44,12 +45,12 @@ export class OperacoesDetailComponent {
 
   ngOnInit(): void {
     const params = this.route.snapshot.queryParams;
-    if ('file_id' in params){
-      this.filter.set('file_id',params['file_id'])
+    if ('file_id' in params) {
+      this.filter.set('file_id', params['file_id'])
       this.onLoad()
-    }else{
+    } else {
       this.onFilter()
-    }    
+    }
 
   }
 
@@ -57,8 +58,8 @@ export class OperacoesDetailComponent {
     this.filter.clear()
     const form = this.formFiltrer.value
     Object.keys(form).forEach((prop) => {
-      if(form[prop]!= null){
-        this.filter.set(prop,form[prop])
+      if (form[prop] != null) {
+        this.filter.set(prop, form[prop])
       }
     })
     this.onLoad()
@@ -75,8 +76,8 @@ export class OperacoesDetailComponent {
     this.onHiddeFilter()
   }
 
-  onFilterDataCompra(data: string): void {   
-    this.filter.clear() 
+  onFilterDataCompra(data: string): void {
+    this.filter.clear()
     this.filter.set('start_data_compra', data)
     this.filter.set('end_data_compra', data)
     this.onLoad()

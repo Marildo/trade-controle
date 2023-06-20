@@ -1,18 +1,13 @@
 import { NgModule } from '@angular/core';
-
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-import { ChartModule } from 'primeng/chart';
+
 import { NgChartsModule } from 'ng2-charts';
 
 import { MaterialModule } from './material.module';
+import { PrimeModule } from './prime.module';
+
 import { ComponentsModule } from '../components/components.module';
-
-
-
-
-
-
 
 
 @NgModule({
@@ -23,10 +18,11 @@ import { ComponentsModule } from '../components/components.module';
   imports: [
     FormsModule,
     ReactiveFormsModule,
-    ChartModule,
+
     NgChartsModule,
 
     MaterialModule,
+    PrimeModule,
     ComponentsModule,
 
 
@@ -36,9 +32,10 @@ import { ComponentsModule } from '../components/components.module';
   exports: [
     FormsModule,
     ReactiveFormsModule,
-    ChartModule,
     NgChartsModule,
+
     MaterialModule,
+    PrimeModule,
     ComponentsModule,
 
   ]

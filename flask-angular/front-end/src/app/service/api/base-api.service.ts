@@ -25,7 +25,7 @@ export class BaseAPIService {
     let params = new HttpParams();
     filter.forEach((k, v) => {
       params = params.set(v, k);
-    });
+    });    
 
     const options = { headers: headers != null ? headers : this.headers, params }
     return this.http.get<any>(full_url, options)
@@ -59,8 +59,8 @@ export class BaseAPIService {
   }
 
 
-  handleError(exception: HttpErrorResponse) {
-    console.error(exception)
-    return throwError('An error occurred');
+  handleError(response: HttpErrorResponse) {
+    console.log(response.error.data)
+    return throwError(response.error.data);
   }
 }
