@@ -93,11 +93,13 @@ class NotaController:
     def read_by_params() -> List:
         input_schema = {
             'tipo': fields.Int(),
+            'start_referencia': fields.Date(),
+            'end_referencia': fields.Date(),
             'start_processamento': fields.Date(),
-            'end_processamento': fields.Date()
+            'end_processamento': fields.Date(),
         }
         args = parser.parse(input_schema, request, location='querystring')
-        data = FileCorretagem().list_arquivos(args)
+        data = FileCorretagem.list_arquivos(args)
         data = rows_to_dicts(data)
         response = []
         for item in data:

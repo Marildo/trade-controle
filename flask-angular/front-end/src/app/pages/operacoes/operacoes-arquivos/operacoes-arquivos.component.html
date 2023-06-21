@@ -1,6 +1,6 @@
 <nav>
     <div class="form-group-inline">
-        <label for="tipo">Tipo da Nota: </label>
+        <label for="tipo">Tipo da Nota:  </label>
         <select id="tipo" [ngModel]="tipoNota" (ngModelChange)="onSelectTypeNota($event)">
             <option value="-1">Todos</option>
             <option value="1">Acões</option>
@@ -9,11 +9,16 @@
         </select>
     </div>
     <div class="form-group-inline">
-        <label> Data processamento:
-            <input type="date" [(ngModel)]="start_processamento" id="start"> a <input type="date" [(ngModel)]="end_processamento" id="end">
+        <label> Data Referência
+            <input type="date" [(ngModel)]="start_referencia"> a <input type="date" [(ngModel)]="end_referencia">
         </label>
     </div>
-    <button mat-icon-button matTooltip="Filtrar" color="primary" aria-label="Filtrar"  (click)="onFilterDates()">
+    <div class="form-group-inline">
+        <label> Data processamento:
+            <input type="date" [(ngModel)]="start_processamento"> a <input type="date" [(ngModel)]="end_processamento">
+        </label>
+    </div>
+    <button mat-icon-button matTooltip="Filtrar" color="primary" aria-label="Filtrar" (click)="onFilterDates()">
         <mat-icon>filter_alt</mat-icon>
     </button>
 

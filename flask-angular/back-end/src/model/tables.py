@@ -150,7 +150,8 @@ class FileCorretagem(BaseTable):
 
         return None
 
-    def list_arquivos(self, params: Dict) -> List:
+    @staticmethod
+    def list_arquivos(params: Dict) -> List:
         # TODO pode passar isso para um metodos generico
 
         if 'tipo' in params:
@@ -160,12 +161,10 @@ class FileCorretagem(BaseTable):
 
         filter_translater = {
             'start_referencia': 'data_referencia >= :start_referencia',
-            'end_referencia': 'data_referencia >= :end_referencia',
+            'end_referencia': 'data_referencia <= :end_referencia',
             'start_processamento': 'data_processamento >= :start_processamento',
             'end_processamento': 'data_processamento <= :end_processamento',
         }
-
-
 
         key_params = []
         for key, value in filters_map.items():
@@ -303,7 +302,7 @@ class Operacao(BaseTable):
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
         fields_filter = [f'{key} = :{key}' for key in filters_map.keys()]
         where = f' AND {" AND ".join(fields_filter)}' if fields_filter else ''
-        group = ' GROUP BY o.ativo_id ORDER BY abertura'
+        group = ' GROUP BY o.ativo_id,o.compra_venda,c.id  ORDER BY abertura'
         sql = text(OperacoesSql.query_summary + where + group)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)

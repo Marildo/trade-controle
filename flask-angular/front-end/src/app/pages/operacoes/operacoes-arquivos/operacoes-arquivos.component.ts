@@ -19,6 +19,8 @@ export class OperacoesArquivosComponent {
   public tipoNota!: string;
   public start_processamento!: any;
   public end_processamento!: any;
+  public start_referencia!: any;
+  public end_referencia!: any;
 
   private filter = new Map();
 
@@ -28,8 +30,8 @@ export class OperacoesArquivosComponent {
     const today = new Date()
     const day = today.getDay();
     const diff = today.getDate() - day + (day === 0 ? -6 : 0);
-    this.start_processamento = new Date(today.setDate(diff)).toISOString().split('T')[0];
-    this.end_processamento = new Date().toISOString().split('T')[0];
+    this.start_referencia = new Date(today.setDate(diff)).toISOString().split('T')[0];
+    this.end_referencia = new Date().toISOString().split('T')[0];
 
 
     this.items = [];
@@ -42,11 +44,20 @@ export class OperacoesArquivosComponent {
 
 
   private onLoad(): void {
-    if (this.start_processamento != '') {
+    if (this.start_processamento != undefined) {
       this.filter.set('start_processamento', this.start_processamento)
     }
-    if (this.end_processamento != '') {
+    if (this.end_processamento  != undefined) {
       this.filter.set('end_processamento', this.end_processamento)
+    }
+
+
+    if (this.start_referencia != undefined) {
+      this.filter.set('start_referencia', this.start_referencia)
+    }
+    
+    if (this.end_referencia  != undefined) {
+      this.filter.set('end_referencia', this.end_referencia)
     }
 
     this.service.load_files(this.filter)
