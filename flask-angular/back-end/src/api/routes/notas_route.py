@@ -4,6 +4,7 @@
 from flask import Blueprint, make_response, request
 from werkzeug.exceptions import BadRequest
 
+from src.exceptions import DuplicationProcessingException
 from .rest_response import format_response
 from src.controller import NotaController
 
@@ -27,17 +28,27 @@ def load_notas(_id: int):
 @nota_router.route('/arquivos', methods=['POST'])
 @format_response
 def file_upload():
-    if 'file' not in request.files:
-        raise BadRequest('Nenhum arquivo enviado')
+    i = 1
+    file_item = f'file{i}'
+    has_file = file_item in request.files
+    result = []
+    while has_file:
+        file = request.files[file_item]
+        if file.filename != '' and file.mimetype.endswith('/pdf'):
+            try:
+                resp = NotaController.store_pdf(file)
+                data = dict(status=resp['status'], file=file.filename, id=resp['id'])
+            except DuplicationProcessingException as ex:
+                data = dict(status=ex.message, id=ex.id, file=file.filename, )
+        else:
+            data = dict(status='Extensão inválida', id="", file=file.filename)
 
-    file = request.files['file']
-    if file.filename == '':
-        raise BadRequest('Nenhum arquivo selecionado')
+        result.append(data)
+        i += 1
+        file_item = f'file{i}'
+        has_file = file_item in request.files
 
-    if not file.mimetype.endswith('/pdf'):
-        raise BadRequest('Apenas arquivos PDF são permitidos')
-
-    return NotaController.store_pdf(file)
+    return result
 
 
 @nota_router.route('/arquivos/<int:_id>', methods=['PUT'])

@@ -33,7 +33,6 @@ class BovespaDiaria(Investiment):
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
 
-
             # print(page.number, data_operacao, comprovante)
 
             if page.number == 0:
@@ -118,9 +117,12 @@ class BovespaDiaria(Investiment):
 
     @staticmethod
     def __find_nome_ativo(cutting: List) -> str:
-        codigo = cutting[0].split('-')[1].replace('N1', '').replace('NM', '').strip(' ')
-        tipo = codigo[-2:]
-        value = f'{(codigo[:-2]).strip()}/{tipo}'
+        value = cutting[0]
+        split = value.split('-')
+        codigo = split[0].strip()
+        codigo = codigo[:-1] if codigo[-1] == 'F' and len(codigo) == 6 else codigo
+        #tipo = split[-1].split(' ')[0]
+        value = f'{codigo}/ '
         return value
 
     @staticmethod

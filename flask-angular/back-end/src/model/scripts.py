@@ -65,13 +65,43 @@ SELECT * FROM
 (SELECT SUM(o.resultado - o.irpf - o.custos) semanal 
     FROM operacoes o WHERE data_encerramento >= DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE()) DAY) AND daytrade=1) AS c,
 (SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
-    FROM operacoes o WHERE daytrade=1) AS d
-'''
+    FROM operacoes o WHERE daytrade=1) AS d '''
 
+    query_summary_quarter_daytrade = '''
+WITH QUERY01 AS(
+SELECT 
+	YEAR(o.data_encerramento) ano, 
+	MONTH(o.data_encerramento) mes, 
+	MAX(data_encerramento) encerramento,  
+	SUM(o.resultado - o.irpf - o.custos) AS resultado	
+FROM
+ operacoes o
+WHERE o.encerrada=1 AND daytrade=1
+GROUP BY 1,2
+ORDER BY encerramento DESC
+),
+
+QUERY02 AS (
+SELECT 
+	encerramento,  
+	resultado,ano,
+ 	CASE 
+		WHEN mes < 3 THEN 1
+		WHEN mes BETWEEN 4 AND 6 THEN 2
+		WHEN mes BETWEEN 7 AND 9 THEN 3
+		ELSE 4
+	END 'trimestre'	
+FROM QUERY01
+)
+
+SELECT  
+	ROUND(SUM(resultado),2) total, ano, trimestre,MAX(encerramento) encerramento, DATE_FORMAT(MAX(encerramento), '%m/%Y') data_group
+FROM QUERY02
+GROUP BY ano, trimestre 
+ORDER BY encerramento '''
 
 class ArquivosCorretagemSQL:
     query_list = '''
 SELECT a.*, MIN(n.data_referencia) data_referencia FROM arquivos_corretagem a
-JOIN notas_corretagem n ON n.file_id = a.id
-WHERE 1=1
-    '''
+LEFT JOIN notas_corretagem n ON n.file_id = a.id
+WHERE 1=1 '''

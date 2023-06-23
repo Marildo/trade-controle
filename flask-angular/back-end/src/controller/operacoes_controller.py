@@ -311,6 +311,7 @@ class OperacaoController:
             'nota_venda': fields.Int(),
             'file_id': fields.Int(),
             'encerrada': fields.Bool(),
+            'daytrade': fields.Bool(),
             'codigo': fields.Str(),
             'carteira_id': fields.Int(),
             'tipo_investimento': fields.Int(),
@@ -340,9 +341,11 @@ class OperacaoController:
 
     @classmethod
     def fetch_dashboard_data(cls):
-        data = Operacao.fetch_daytrade_month()
+        data_month = Operacao.fetch_daytrade_month()
         totais = Operacao.fetch_summary_daytrade()
-        daytrade_operations = dict(items=rows_to_dicts(data),
+        group_quarter = Operacao.fetch_summary_quarter_daytrade()
+        daytrade_operations = dict(operacoes=rows_to_dicts(data_month),
+                                   group_trimestral=rows_to_dicts(group_quarter),
                                    total_mensal=totais.mensal or 0,
                                    total_semanal=totais.semanal or 0,
                                    total_anual=totais.anual or 0,

@@ -16,6 +16,7 @@ from werkzeug.exceptions import BadRequest
 from src.settings import config
 from src.model.enums import NotaStatusProcess, TipoNota
 from src.model import FileCorretagem
+from src.exceptions import DuplicationProcessingException
 
 from src.services import ReadPDFCorretagem
 from utils.dict_util import rows_to_dicts
@@ -35,8 +36,7 @@ class NotaController:
 
         stored = file_corr.is_exists()
         if stored:
-            raise BadRequest(
-                f'Arquivo ja foi importado e possui o id {stored.id}, verifique o status do processamento.')
+            raise DuplicationProcessingException(stored.id)
 
         sufix = today.strftime('__%Y_%m_%d_%H_%M')
         filename = file.filename.replace('.pdf', f'{sufix}.pdf')

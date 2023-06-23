@@ -22,8 +22,11 @@ class AtivoController:
                 ativo.update()
             return ativo
         else:
-            ativos = Ativo.find_like_name(nome)
+            ativo = Ativo.find_by_codigo(nome)
+            if ativo:
+                return ativo
 
+        ativos = Ativo.find_like_name(nome)
         ativo = [i for i in ativos if i.tipo_ativo == tipo_id]
         if ativo:
             return ativo[0]

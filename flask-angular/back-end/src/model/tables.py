@@ -104,6 +104,12 @@ class Ativo(BaseTable):
         return f'{self.codigo} - {self.nome}'
 
     @staticmethod
+    def find_by_codigo(codigo: str):
+        with db_connection as conn:
+            query = conn.session.query(Ativo).filter(Ativo.codigo == codigo)
+            return query.first()
+
+    @staticmethod
     def find_like_name(nome: str):
         with db_connection as conn:
             query = conn.session.query(Ativo).filter(Ativo.nome.ilike(f'%{nome.strip()}%'))
@@ -280,6 +286,7 @@ class Operacao(BaseTable):
             'end_data_compra': 'data_compra <= :end_data_compra',
             'start_data_venda': 'data_venda >= :start_data_venda',
             'end_data_venda': 'data_venda <= :end_data_venda',
+            'daytrade': 'o.daytrade = :daytrade',
         }
 
         key_params = []
@@ -321,3 +328,10 @@ class Operacao(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql)
             return query.one()
+
+    @staticmethod
+    def fetch_summary_quarter_daytrade():
+        sql = text(OperacoesSql.query_summary_quarter_daytrade)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql)
+            return query.fetchall()
