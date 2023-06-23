@@ -1,0 +1,6 @@
+<ng-container *ngIf="isOpen">
+    <div class="modal" @modal>
+        <ng-content></ng-content>
+    </div>
+    <div @overlay class="overlay"></div>
+</ng-container>

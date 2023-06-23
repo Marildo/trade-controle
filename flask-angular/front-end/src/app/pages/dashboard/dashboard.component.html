@@ -1,1 +1,22 @@
-<p>dashboard works!</p>
+<button (click)="openModal()">
+    Mostrar modal
+</button>
+
+<app-modal #modal  id="10">
+    <h1>Lorem, ipsum dolor.</h1>
+    <p>
+        Lorem ipsum, dolor sit amet
+        consectetur adipisicing elit.
+        Earum dicta non alias distinctio,
+        aliquid aperiam ipsum provident
+        quae nihil voluptatibus veniam
+        fuga similique facilis consequatur
+        reiciendis recusandae. Velit magni
+        distinctio corporis eaque ad itaque
+        ex impedit accusamus. Debitis pariatur
+        cum quam rerum reprehenderit quod
+        iure, in explicabo facere vero nemo?
+    </p>
+
+    <button class="btn-secundario" (click)="closeModal()">Fechar 2</button>
+</app-modal>
