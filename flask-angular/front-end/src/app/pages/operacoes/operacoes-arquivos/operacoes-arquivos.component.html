@@ -1,6 +1,6 @@
 <nav>
     <div class="form-group-inline">
-        <label for="tipo">Tipo da Nota:  </label>
+        <label for="tipo">Tipo da Nota: </label>
         <select id="tipo" [ngModel]="tipoNota" (ngModelChange)="onSelectTypeNota($event)">
             <option value="-1">Todos</option>
             <option value="1">Acões</option>
@@ -22,8 +22,12 @@
         <mat-icon>filter_alt</mat-icon>
     </button>
 
-    <button mat-button color="primary" aria-label="Enviar arquivo" (click)="hiddenForm=false">
-        <mat-icon>file_upload</mat-icon> Enviar arquivo
+    <button mat-button color="primary"  matTooltip="Buscar na corretora"   (click)="onSearchCorretora()">
+        <mat-icon>find_replace</mat-icon> 
+    </button>
+
+    <button mat-button color="primary" aria-label="Enviar arquivo"  matTooltip="Enviar arquivo" (click)="hiddenForm=false">
+        <mat-icon>file_upload</mat-icon>
     </button>
 </nav>
 <div class="contener">
@@ -63,13 +67,42 @@
         </tbody>
     </table>
     <div class="form-up" [hidden]="hiddenForm">
-
-        <input type="file" (change)="onSelectFile($event)" accept=".pdf" class="form-group" />
+        <input type="file" (change)="onSelectFile($event)" accept=".pdf" class="form-group" multiple="True" />
         <footer class="container-buttons">
             <button mat-raised-button color="accent" (click)="hiddenForm=true">Cancelar</button>
-            <button mat-raised-button color="primary" [disabled]="!selectedFile" (click)="onUploadFile()">Enviar
+            <button mat-raised-button color="primary" [disabled]="!selectedFiles" (click)="onUploadFile()">Enviar
                 arquivo</button>
         </footer>
 
     </div>
 </div>
+
+<app-modal #modal id="modalArquivos">
+    <h3 class="title">Status do processamento</h3>
+    <table class="table-arquivos">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Arquivo</th>
+                <th>Status</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of uploadedFiles">
+                <td>{{ row.id}}</td>
+                <td>{{ row.file}}</td>
+                <td>{{ row.status}}</td>
+                <td>
+                    <button mat-icon-button matTooltip="Visualizar Transações" color="primary"
+                        aria-label="Visualizar Transações" (click)="onView(row.id)">
+                        <mat-icon>preview</mat-icon>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="container-end">
+        <button mat-raised-button color="accent" (click)="onCloseModalArquivos()">Fechar</button>
+    </div> 
+</app-modal>

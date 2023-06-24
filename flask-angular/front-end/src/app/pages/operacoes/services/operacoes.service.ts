@@ -13,6 +13,7 @@ import { BaseAPIService } from 'src/app/service/api/base-api.service';
 export class OperacoesService extends BaseAPIService {
 
 
+
   public load_dashboard(): Observable<any> {
     return this.get('operacoes/')
   }
@@ -30,12 +31,20 @@ export class OperacoesService extends BaseAPIService {
     return this.get('/notas/arquivos', filter)
   }
 
-  public upload_file(file: File): Observable<any> {
-    const headers = new HttpHeaders({})
-    const formData: FormData = new FormData();
-    formData.append('file', file);
+  search_files(): Observable<any> {
+    const url = '/notas/arquivos/search' 
+    return this.put(url)
+  }
 
-    return this.post('/notas/arquivos', formData, headers)
+  public upload_file(files: File[]): Observable<any> {
+    const formData: FormData = new FormData();
+    const headers = new HttpHeaders({})
+    let i = 0
+    for (const file of files) {
+      i++
+      formData.append('file'+i, file);  
+    }
+    return this.post('/notas/arquivos', formData, headers)    
   }
 
   public process_file(file_id: string): Observable<any> {
