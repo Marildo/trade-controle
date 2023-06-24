@@ -23,8 +23,12 @@ export class BaseAPIService {
   public get(url: string, filter: Map<string, string> = new Map(), headers: HttpHeaders | null = null): Observable<any> {
     const full_url = this.baseURL + url
     let params = new HttpParams();
-    filter.forEach((k, v) => {
-      params = params.set(v, k);
+    const isNullOrEmpty = (str: string | null | undefined): boolean => str === null || str === undefined || str === '';
+    filter.forEach((v,k) => {
+      if (! isNullOrEmpty(v)){
+        console.log(k,v)
+        params = params.set(k,v);
+      }
     });    
 
     const options = { headers: headers != null ? headers : this.headers, params }
