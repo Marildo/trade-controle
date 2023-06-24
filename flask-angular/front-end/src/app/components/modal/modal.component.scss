@@ -3,11 +3,13 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px #333;
     min-width: 320px;
+    max-height:90vh;
     position: fixed;
     left: 50%;
     padding: 24px;
     top: 50%;
     transform: translate(-50%, -50%);
+    overflow-y: auto;
     z-index: 11;
   }
 
