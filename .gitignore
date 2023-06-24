@@ -1,3 +1,6 @@
+
+.env
+
 code.npm
 
 vue-trade-controle/node_modules
@@ -9,7 +12,6 @@ quasar-trade-controle/.quasar
 
 tc-back-end/node_modules
 tc-back-end/dist
-tc-back-end/.env
 
 *.pyc
 trade_controler_django/.idea/
@@ -17,3 +19,4 @@ tc-django/.idea/
 trade_controler_django/media/
 flask-angular/back-end/notas_pdf/*
 flask-angular/back-end/.idea/
+

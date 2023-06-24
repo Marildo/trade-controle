@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
 import { formatCurrency } from '@angular/common';
-import { ChartType } from 'chart.js';
+import { ChartType, ChartConfiguration, ChartEvent } from 'chart.js';
 
 import { ParValues } from 'src/app/components/panel-result/par-value';
+
+// TODO organizar melhor, o que puder passar para funcao ao invez de variavel, separar cada grafico em componente e passar um object com dados
 
 @Component({
   selector: 'app-dashboard-daytrade',
@@ -12,27 +14,35 @@ import { ParValues } from 'src/app/components/panel-result/par-value';
   styleUrls: ['./dashboard-daytrade.component.scss'],
 })
 export class DashboardDaytradeComponent {
-  public results: ParValues[] = [ ];
+
+  // bar chart
+  public results: ParValues[] = [];
   public barChartType: ChartType = 'bar';
   public barChartLegend = true;
   public barChartLabels: string[] = [];
   public barChartData: any[] = [];
   public barChartPlugins = [];
 
-  constructor(private service: OperacoesService) {}
+
+  // line chart
+  public lineChartType: ChartType = 'line';
+  private lineChartLabels: string[] = [];
+  private lineChartDataRows: number[] = [];
+
+  constructor(private service: OperacoesService) { }
 
   ngOnInit() {
     this.service.load_dashboard().subscribe({
       next: (resp) => {
         const daytrade_operations = resp.data.daytrade_operations
-        this.results.push( {label: 'Total da Semana', value: daytrade_operations.total_semanal})
-        this.results.push( {label: 'Total do Mês', value: daytrade_operations.total_mensal})       
-        this.results.push( {label: 'Total do Ano', value: daytrade_operations.total_anual})
-        this.results.push( {label: 'Total Acumulado', value: daytrade_operations.total_acumulado})
+        this.results.push({ label: 'Total da Semana', value: daytrade_operations.total_semanal })
+        this.results.push({ label: 'Total do Mês', value: daytrade_operations.total_mensal })
+        this.results.push({ label: 'Total do Ano', value: daytrade_operations.total_anual })
+        this.results.push({ label: 'Total Acumulado', value: daytrade_operations.total_acumulado })
 
         const labels_set = new Set();
         const ativos = new Set();
-        const items = daytrade_operations.items;
+        const items = daytrade_operations.operacoes;
         for (const item of items) {
           labels_set.add(item.data);
           ativos.add(item.codigo);
@@ -59,7 +69,15 @@ export class DashboardDaytradeComponent {
           i++;
         }
         const labels = Array.from(labels_set);
-        this.drawDaytradesChart(labels, datasets);
+        this.drawBarChart(labels, datasets);
+
+        for (const item of daytrade_operations.group_trimestral){
+          this.lineChartLabels.push(item.data_group)
+          this.lineChartDataRows.push(item.total)
+
+        }
+
+        // line chart
       },
       error: (e) => {
         console.error(e);
@@ -67,7 +85,7 @@ export class DashboardDaytradeComponent {
     });
   }
 
-  drawDaytradesChart(labels: any, datasets: any) {
+  drawBarChart(labels: any, datasets: any) {
     this.barChartLabels = labels;
     this.barChartData = datasets;
   }
@@ -80,9 +98,9 @@ export class DashboardDaytradeComponent {
       },
       y: {
         stacked: true,
-        ticks: {
-          callback: (value: number) => formatCurrency(value, 'pt-BR', ''),
-        },
+        // ticks: {
+        //   callback: (value: number) => formatCurrency(value, 'pt-BR', ''),
+        // },
       },
     },
     plugins: {
@@ -106,4 +124,60 @@ export class DashboardDaytradeComponent {
       },
     },
   };
+
+
+  public lineChartData(): ChartConfiguration['data']  {
+    const data = {
+      datasets: [
+        {
+          data: this.lineChartDataRows,
+          label: 'Evolução de resultados',
+          backgroundColor: 'rgba(148,159,177,0.2)',
+          borderColor: 'rgba(148,159,177,1)',
+          pointBackgroundColor: 'rgba(148,159,177,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+          fill: 'origin',
+        }
+      ],
+      labels:this.lineChartLabels
+    }
+    return data
+  };
+
+
+  public lineChartOptions() {
+    const lineChartOptions: ChartConfiguration['options'] = {
+      elements: {
+        line: {
+          tension: 0.5
+        }
+      },
+      scales: {
+        // We use this empty structure as a placeholder for dynamic theming.
+        y:
+        {
+          position: 'left',
+        },
+        y1: {
+          position: 'right',
+          grid: {
+            color: 'rgba(255,0,0,0.3)',
+          },
+          ticks: {
+            color: 'gray'
+          }
+        }
+      },
+
+      plugins: {
+        legend: { display: true },
+
+      }
+    };
+
+    return lineChartOptions
+  }
+
 }

@@ -1,5 +1,14 @@
+.charts {
+    display: flex;
+}
 .chart-operations-daytrade {
     margin: 10px;
     border: 1px solid rgb(236, 232, 232);
     width: 600px; 
+}
+
+.chart-evolution-daytrade {
+    margin: 10px;
+    border: 1px solid rgb(236, 232, 232);
+    width: 700px; 
 }
