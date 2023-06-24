@@ -202,6 +202,12 @@ class NotaCorretagem(BaseTable):
     def find_self(self):
         return self.read_by_params(dict(comprovante=self.comprovante, data_referencia=self.data_referencia))
 
+    @staticmethod
+    def get_last_date_processed():
+        with db_connection as conn:
+            query = conn.session.query(func.max(NotaCorretagem.data_referencia))
+            return query.first()
+
 
 class Operacao(BaseTable):
     __tablename__ = 'operacoes'

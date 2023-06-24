@@ -15,10 +15,10 @@ from werkzeug.exceptions import BadRequest
 
 from src.settings import config
 from src.model.enums import NotaStatusProcess, TipoNota
-from src.model import FileCorretagem
+from src.model import FileCorretagem, NotaCorretagem
 from src.exceptions import DuplicationProcessingException
 
-from src.services import ReadPDFCorretagem
+from src.services import ReadPDFCorretagem, ToroService
 from utils.dict_util import rows_to_dicts
 from utils.str_util import capitalize_plus
 
@@ -117,3 +117,19 @@ class NotaController:
 
         response = ArquivoSchema().dump(data)
         return response
+
+    @classmethod
+    def search_corretagens(cls):
+        result = []
+        start_date = NotaCorretagem.get_last_date_processed()
+        service = ToroService()
+        files = service.process_corretagem(start_date)
+        for file in files:
+            try:
+                resp = cls.store_pdf(file)
+                data = dict(status=resp['status'], file=file.filename, id=resp['id'])
+            except DuplicationProcessingException as ex:
+                data = dict(status=ex.message, id=ex.id, file=file.filename)
+            result.append(data)
+
+        return result

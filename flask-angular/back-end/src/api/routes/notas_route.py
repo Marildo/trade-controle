@@ -1,8 +1,7 @@
 """
  @author Marildo Cesar 06/05/2023
 """
-from flask import Blueprint, make_response, request
-from werkzeug.exceptions import BadRequest
+from flask import Blueprint, request
 
 from src.exceptions import DuplicationProcessingException
 from .rest_response import format_response
@@ -39,7 +38,7 @@ def file_upload():
                 resp = NotaController.store_pdf(file)
                 data = dict(status=resp['status'], file=file.filename, id=resp['id'])
             except DuplicationProcessingException as ex:
-                data = dict(status=ex.message, id=ex.id, file=file.filename, )
+                data = dict(status=ex.message, id=ex.id, file=file.filename)
         else:
             data = dict(status='Extensão inválida', id="", file=file.filename)
 
@@ -55,3 +54,9 @@ def file_upload():
 @format_response
 def file_proccess(_id: int):
     return NotaController.process_nota(_id)
+
+
+@nota_router.route('/arquivos/search', methods=['PUT'])
+@format_response
+def search_files():
+    return NotaController.search_corretagens()
