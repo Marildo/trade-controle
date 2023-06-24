@@ -1,8 +1,8 @@
-<div class="container" *ngFor="let item of values">
-  <div [ngClass]="{'card-positive': item.value >= 0, 'card-negative': item.value < 0}">
-    <h2>{{ item.label }}</h2>
-    <p class=" value" [ngClass]="{'positive': item.value >= 0, 'negative': item.value < 0}">
-      {{ item.value | currency:'BRL' }}
-    </p>
+<div class="container">
+  <div class="card" *ngFor="let item of values" [ngClass]="{'card-positive': item.value >= 0, 'card-negative': item.value < 0}">
+      <h2 class="label">{{ item.label }}</h2>
+      <p class=" value" [ngClass]="{'positive': item.value >= 0, 'negative': item.value < 0}">
+        {{ item.value | currency:'BRL' }}
+      </p>
   </div>
 </div>
