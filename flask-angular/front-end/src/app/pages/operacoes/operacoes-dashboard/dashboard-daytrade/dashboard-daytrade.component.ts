@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
+import { ChartType, ChartConfiguration } from 'chart.js';
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
-import { formatCurrency } from '@angular/common';
-import { ChartType, ChartConfiguration, ChartEvent } from 'chart.js';
-
 import { ParValues } from 'src/app/components/panel-result/par-value';
 
 // TODO organizar melhor, o que puder passar para funcao ao invez de variavel, separar cada grafico em componente e passar um object com dados
@@ -15,16 +13,8 @@ import { ParValues } from 'src/app/components/panel-result/par-value';
 })
 export class DashboardDaytradeComponent {
 
-  // bar chart
+
   public results: ParValues[] = [];
-  public barChartType: ChartType = 'bar';
-  public barChartLegend = true;
-  public barChartLabels: string[] = [];
-  public barChartData: any[] = [];
-  public barChartPlugins = [];
-
-
-  // line chart
   public lineChartType: ChartType = 'line';
   private lineChartLabels: string[] = [];
   private lineChartDataRows: number[] = [];
@@ -40,44 +30,11 @@ export class DashboardDaytradeComponent {
         this.results.push({ label: 'Total do Ano', value: daytrade_operations.total_anual })
         this.results.push({ label: 'Total Acumulado', value: daytrade_operations.total_acumulado })
 
-        const labels_set = new Set();
-        const ativos = new Set();
-        const items = daytrade_operations.operacoes;
-        for (const item of items) {
-          labels_set.add(item.data);
-          ativos.add(item.codigo);
-        }
-
-        const datasets = [];
-        let i = 0;
-        for (const ativo of ativos) {
-          const ops = items.filter((i: any) => i.codigo == ativo);
-          const totais = [];
-          for (const day of labels_set) {
-            const value =
-              ops
-                .filter((i: any) => i.data == day)
-                .map((i: any) => i.total)[0] || 0;
-            totais.push(value);
-          }
-
-          datasets.push({
-            label: ativo,
-            data: totais,
-            //backgroundColor: "#FFFDD",
-          });
-          i++;
-        }
-        const labels = Array.from(labels_set);
-        this.drawBarChart(labels, datasets);
-
-        for (const item of daytrade_operations.group_trimestral){
+        for (const item of daytrade_operations.group_trimestral) {
           this.lineChartLabels.push(item.data_group)
           this.lineChartDataRows.push(item.total)
 
         }
-
-        // line chart
       },
       error: (e) => {
         console.error(e);
@@ -85,48 +42,9 @@ export class DashboardDaytradeComponent {
     });
   }
 
-  drawBarChart(labels: any, datasets: any) {
-    this.barChartLabels = labels;
-    this.barChartData = datasets;
-  }
-
-  public barChartOptions: any = {
-    responsive: true,
-    scales: {
-      x: {
-        stacked: true,
-      },
-      y: {
-        stacked: true,
-        // ticks: {
-        //   callback: (value: number) => formatCurrency(value, 'pt-BR', ''),
-        // },
-      },
-    },
-    plugins: {
-      title: {
-        display: true,
-        text: 'Resultado diário de daytrade',
-      },
-      tooltip: {
-        callbacks: {
-          label: (context: any) => {
-            let label = '';
-            if (context.dataset.label) {
-              label += `${context.dataset.label}: `;
-            }
-            if (context.parsed.y !== null) {
-              label += formatCurrency(context.parsed.y, 'pt-BR', 'R$');
-            }
-            return label;
-          },
-        },
-      },
-    },
-  };
 
 
-  public lineChartData(): ChartConfiguration['data']  {
+  public lineChartData(): ChartConfiguration['data'] {
     const data = {
       datasets: [
         {
@@ -141,7 +59,7 @@ export class DashboardDaytradeComponent {
           fill: 'origin',
         }
       ],
-      labels:this.lineChartLabels
+      labels: this.lineChartLabels
     }
     return data
   };

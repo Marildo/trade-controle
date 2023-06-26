@@ -2,10 +2,12 @@
  @author Marildo Cesar 25/04/2023
 """
 import copy
+import json
 
 from json import dumps
 from typing import Dict, List, Tuple
 from collections import Counter
+from datetime import date, timedelta
 
 from flask import request
 from webargs.flaskparser import parser
@@ -41,8 +43,8 @@ class OperacaoController:
     @classmethod
     def __import_nota(cls, item: Nota):
         map_order = {
-            'C': lambda x: x.data_venda,
-            'V': lambda x: x.data_compra,
+            'C': x.data_venda,
+            'V': x.data_compra,
         }
         session = db_connection.session
         try:
@@ -258,7 +260,7 @@ class OperacaoController:
             for op in ops:
                 op['daytrade'] = False
 
-        return sorted(operacoes, key=lambda x: x['daytrade'], reverse=True)
+        return sorted(operacoes, key=x['daytrade'], reverse=True)
 
     @staticmethod
     def __new_operacao(item: Dict, nota: NotaCorretagem) -> Operacao:
@@ -341,14 +343,33 @@ class OperacaoController:
 
     @classmethod
     def fetch_dashboard_data(cls):
-        data_month = Operacao.fetch_daytrade_month()
         totais = Operacao.fetch_summary_daytrade()
         group_quarter = Operacao.fetch_summary_quarter_daytrade()
-        daytrade_operations = dict(operacoes=rows_to_dicts(data_month),
-                                   group_trimestral=rows_to_dicts(group_quarter),
+        daytrade_operations = dict(group_trimestral=rows_to_dicts(group_quarter),
                                    total_mensal=totais.mensal or 0,
                                    total_semanal=totais.semanal or 0,
                                    total_anual=totais.anual or 0,
                                    total_acumulado=totais.acumulado or 0)
         response = dict(daytrade_operations=daytrade_operations)
+        return response
+
+    @classmethod
+    def fetch_statistics_daytrade(cls):
+        input_schema = {'period_type': fields.Int(required=True, validate=validate.Range(min=1, max=5))}
+        args = parser.parse(input_schema, request, location='querystring')
+
+        today = date.today()
+        period_type_map = {
+            1: date(day=1, month=1, year=2000),
+            2: today.replace(day=1, month=1),
+            3: today.replace(day=1),
+            4: today - timedelta(days=today.weekday()),
+            5: today if today.weekday() not in (5, 6) else today - timedelta(days=(today.weekday() - 4) % 7),
+        }
+
+        start_date = period_type_map[int(args['period_type'])]
+        operations = Operacao.fetch_daytrade_operations(start_date)
+        statistics = Operacao.fetch_statistics_daytrade(start_date)
+        st = rows_to_dicts(statistics)[0]
+        response = dict(operacoes=rows_to_dicts(operations), statistics=st)
         return response

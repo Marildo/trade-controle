@@ -11,6 +11,7 @@ import { OperacoesSummaryComponent } from './operacoes-summary/operacoes-summary
 import { OperacoesDetailComponent } from './operacoes-detail/operacoes-detail.component';
 import { OperacoesArquivosComponent } from './operacoes-arquivos/operacoes-arquivos.component';
 import { DashboardDaytradeComponent } from './operacoes-dashboard/dashboard-daytrade/dashboard-daytrade.component';
+import { DaytradeStatisticsComponent } from './operacoes-dashboard/dashboard-daytrade/daytrade-statistics/daytrade-statistics.component';
 
 
 
@@ -21,7 +22,8 @@ import { DashboardDaytradeComponent } from './operacoes-dashboard/dashboard-dayt
     OperacoesSummaryComponent,
     OperacoesDetailComponent,
     OperacoesArquivosComponent,
-    DashboardDaytradeComponent
+    DashboardDaytradeComponent,
+    DaytradeStatisticsComponent
    ],
   imports: [
     CommonModule,

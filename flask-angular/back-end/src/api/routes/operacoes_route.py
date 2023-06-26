@@ -18,6 +18,12 @@ def load_dashboard_data():
     return OperacaoController.fetch_dashboard_data()
 
 
+@operacao_router.route('/daytrade/statistics/', methods=['GET'])
+@format_response
+def load_daytrade_statistics():
+    return OperacaoController.fetch_statistics_daytrade()
+
+
 @operacao_router.route('/summary/', methods=['GET'])
 @format_response
 def load_opened():

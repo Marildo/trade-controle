@@ -18,6 +18,11 @@ export class OperacoesService extends BaseAPIService {
     return this.get('operacoes/')
   }
 
+  
+  public load_statistics_daytrade(filter: Map<string, string>): Observable<any> {
+    return this.get('operacoes/daytrade/statistics/',filter)
+  }
+
   public load_detail(filter: Map<string, string>): Observable<any> {
     return this.get('operacoes/detail/', filter)
   }

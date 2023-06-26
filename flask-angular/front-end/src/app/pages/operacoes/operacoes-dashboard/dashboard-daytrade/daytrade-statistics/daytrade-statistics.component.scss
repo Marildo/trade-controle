@@ -1,0 +1,63 @@
+.container {
+  border: 1px solid rgb(230, 232, 232);
+}
+
+.type {
+  display: flex;
+  justify-content: end;
+  background-color: rgb(230, 232, 232);
+  padding: 0.2rem;
+}
+
+.type > select {
+  border: 1px solid #bebeb9;
+  border-radius: 0.5ch;
+}
+
+.panel-statistics {
+  display: grid;
+  grid-template-columns: 30% 70%;
+  margin: 0;
+}
+
+.panel-statistics > div {
+  flex: 1;
+}
+
+.statistics {
+  border: 1px solid rgb(240, 232, 232);
+  padding: 0.5em;
+}
+
+.statistics table {
+  width: 100%;
+  color: #7c7c79;
+  font-size: 12px;
+}
+
+.statistics td {
+  border-bottom: 1px solid #ddd;
+  padding: 3px;
+}
+
+.diviser {
+  height: 40px;
+  background-color: #ddd;
+}
+
+.result {
+  text-align: end;
+  font-weight: 600;
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}
+
+.chart-operations-daytrade {
+  border: 1px solid rgb(240, 232, 232);
+}

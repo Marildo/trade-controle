@@ -2,8 +2,8 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from collections import namedtuple
 from typing import List, Dict
+from datetime import date
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
                         ForeignKey, text, func)
@@ -322,13 +322,6 @@ class Operacao(BaseTable):
             return query.fetchall()
 
     @staticmethod
-    def fetch_daytrade_month() -> List:
-        sql = text(OperacoesSql.query_daytrade_month)
-        with db_connection.engine.begin() as conn:
-            query = conn.execute(sql)
-            return query.fetchall()
-
-    @staticmethod
     def fetch_summary_daytrade():
         sql = text(OperacoesSql.query_summary_daytrade)
         with db_connection.engine.begin() as conn:
@@ -340,4 +333,18 @@ class Operacao(BaseTable):
         sql = text(OperacoesSql.query_summary_quarter_daytrade)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql)
+            return query.fetchall()
+
+    @staticmethod
+    def fetch_daytrade_operations(start_date: date) -> List:
+        sql = text(OperacoesSql.query_daytrade_operations)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql, {'start_date': start_date})
+            return query.fetchall()
+
+    @staticmethod
+    def fetch_statistics_daytrade(start_date: date):
+        sql = text(OperacoesSql.query_statistics_daytrade)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql, {'start_date': start_date})
             return query.fetchall()

@@ -3,6 +3,7 @@
 """
 from typing import List, Dict
 from datetime import datetime, date
+from decimal import Decimal
 
 from sqlalchemy.engine.row import Row
 
@@ -14,6 +15,8 @@ def rows_to_dicts(query: List[Row]) -> List[Dict]:
         for k, v in row.items():
             if isinstance(v, (date, datetime)):
                 row[k] = str(v)
+            elif isinstance(v, Decimal):
+                row[k] = float(v)
 
         result.append(row)
 

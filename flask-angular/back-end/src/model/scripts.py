@@ -47,13 +47,13 @@ FROM
     WHERE o.encerrada=0 
 '''
 
-    query_daytrade_month = '''
+    query_daytrade_operations = '''
 SELECT 
-    DATE_FORMAT(data_encerramento,'%d/%m') data ,a.codigo, ROUND(SUM(o.resultado -o.irpf - o.custos),2) total
+    data_encerramento data ,a.codigo, ROUND(SUM(o.resultado -o.irpf - o.custos),2) total
     FROM operacoes o
     JOIN ativos a ON a.id = o.ativo_id
-WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade=1
-GROUP BY data_encerramento, a.codigo
+WHERE data_encerramento >= :start_date AND daytrade=1
+GROUP BY data_encerramento, a.codigo ORDER BY data_encerramento
 '''
 
     query_summary_daytrade = '''
@@ -95,10 +95,53 @@ FROM QUERY01
 )
 
 SELECT  
-	ROUND(SUM(resultado),2) total, ano, trimestre,MAX(encerramento) encerramento, DATE_FORMAT(MAX(encerramento), '%m/%Y') data_group
+	ROUND(SUM(resultado),2) total, ano, trimestre,MAX(encerramento) encerramento, 
+	CONCAT(LPAD( trimestre * 3,2,'0'),'/',ano) data_group
 FROM QUERY02
 GROUP BY ano, trimestre 
 ORDER BY encerramento '''
+
+
+    query_statistics_daytrade = '''
+WITH 
+	QUERY01 AS (
+	SELECT 
+   	resultado  gross,
+   	custos + irpf costs,
+   	resultado - (custos + irpf) net
+	FROM operacoes o
+	WHERE data_encerramento >= :start_date AND daytrade=1)
+	
+	,SUMMARY_TOTAL AS(
+	 SELECT 
+	 	ROUND(SUM(net),2) net_total,
+	 	ROUND(SUM(gross),2) gross_total,
+	 	ROUND(SUM(costs),2) costs_total,
+		ROUND(AVG(gross),2) avg_total,
+	 	COUNT(1) total_trades,
+		MAX(gross) biggest_gain,
+	 	MIN(gross) biggest_loss
+	 FROM  QUERY01	)
+	 	
+	,SUMMARY_GAIN AS(
+	SELECT 
+	  COUNT(1) count_gain,	 
+	  ROUND(AVG(gross),2) avg_gain
+	FROM QUERY01 WHERE gross > 0)
+	
+	,SUMMARY_LOSS AS(
+	SELECT 
+	  COUNT(1) count_loss,	  
+	  ROUND(AVG(gross),2) avg_loss
+	FROM QUERY01 WHERE gross <= 0)
+	
+SELECT
+	SUMMARY_TOTAL.*,
+	SUMMARY_GAIN.*,
+	SUMMARY_LOSS.*,
+   ROUND(count_gain * 100 / total_trades,2) perc_gain
+	FROM SUMMARY_GAIN,SUMMARY_LOSS,SUMMARY_TOTAL 
+    '''
 
 class ArquivosCorretagemSQL:
     query_list = '''
