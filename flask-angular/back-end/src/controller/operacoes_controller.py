@@ -358,7 +358,7 @@ class OperacaoController:
         input_schema = {'period_type': fields.Int(required=True, validate=validate.Range(min=1, max=5))}
         args = parser.parse(input_schema, request, location='querystring')
 
-        today = date.today()
+        today = date.today() - timedelta(days=1)
         period_type_map = {
             1: date(day=1, month=1, year=2000),
             2: today.replace(day=1, month=1),
