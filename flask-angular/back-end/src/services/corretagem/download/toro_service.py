@@ -2,11 +2,14 @@
  @author Marildo Cesar 24/06/2023
 """
 
+import os.path
+
 import requests
+import json
 
 from typing import Dict, List
 from io import BytesIO
-from datetime import date
+from datetime import date, datetime
 from dateutil import parser
 from werkzeug.datastructures import FileStorage
 
@@ -30,13 +33,22 @@ class ToroService:
         if self.__token is not None:
             return
 
+        auth_file = 'settings/auth_file.json'
+        if os.path.exists(auth_file):
+            with open(auth_file, 'r') as file:
+                data = json.load(file)
+                expires = parser.parse(data['.expires']).replace(tzinfo=None)
+                if expires > datetime.now():
+                    self.__token = data['access_token']
+                    return
+
         url = "https://webapieqr.toroinvestimentos.com.br/auth/authentication/login"
         data = {
             'username': config.load_value('USER_NAME'),
             'password': config.load_value('PWD'),
             'client_id': 'Hub',
             'grant_type': 'password',
-            #'X-UserIP': '172.16.7.143',
+            'X-UserIP': '172.16.7.143',
             'X-TOKEN': '19260',
             'X-TOKEN_TYPE': 'TokenTime',
             'X-TOKEN_CATEGORY': 'Monthly'
@@ -44,6 +56,10 @@ class ToroService:
         payload = '&'.join([f'{k}={v}' for k, v in data.items()])
         headers = {'Content-Type': 'text/plain'}
         response = requests.request("POST", url, headers=headers, data=payload)
+        response.raise_for_status()
+        with open(auth_file, 'w') as file:
+            json.dump(response.json(), file)
+
         self.__token = response.json()['access_token']
 
     def __process_date(self, nota: Dict) -> FileStorage:
