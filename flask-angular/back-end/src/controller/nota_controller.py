@@ -36,7 +36,10 @@ class NotaController:
 
         stored = file_corr.is_exists()
         if stored:
-            raise DuplicationProcessingException(stored.id)
+            if stored.status == NotaStatusProcess.ERROR:
+                return cls.process_nota(stored.id)
+            else:
+                raise DuplicationProcessingException(stored.id)
 
         sufix = today.strftime('__%Y_%m_%d_%H_%M')
         filename = file.filename.replace('.pdf', f'{sufix}.pdf')
@@ -121,7 +124,8 @@ class NotaController:
     @classmethod
     def search_corretagens(cls):
         result = []
-        start_date = NotaCorretagem.get_last_date_processed()
+        start_date = NotaCorretagem.get_last_date_processed()[0]
+        start_date = datetime.today().replace(day=25).date()
         service = ToroService()
         files = service.process_corretagem(start_date)
         for file in files:

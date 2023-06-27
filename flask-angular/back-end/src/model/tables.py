@@ -206,7 +206,7 @@ class NotaCorretagem(BaseTable):
     def get_last_date_processed():
         with db_connection as conn:
             query = conn.session.query(func.max(NotaCorretagem.data_referencia))
-            return query.first()
+            return query.one()
 
 
 class Operacao(BaseTable):

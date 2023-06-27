@@ -43,8 +43,8 @@ class OperacaoController:
     @classmethod
     def __import_nota(cls, item: Nota):
         map_order = {
-            'C': x.data_venda,
-            'V': x.data_compra,
+            'C': lambda x: x.data_venda,
+            'V': lambda x: x.data_compra,
         }
         session = db_connection.session
         try:
@@ -260,7 +260,7 @@ class OperacaoController:
             for op in ops:
                 op['daytrade'] = False
 
-        return sorted(operacoes, key=x['daytrade'], reverse=True)
+        return sorted(operacoes, key=lambda x: x['daytrade'], reverse=True)
 
     @staticmethod
     def __new_operacao(item: Dict, nota: NotaCorretagem) -> Operacao:

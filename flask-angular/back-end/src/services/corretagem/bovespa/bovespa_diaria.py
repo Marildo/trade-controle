@@ -74,7 +74,8 @@ class BovespaDiaria(Investiment):
                 begin = self.__locate_index('C/V', self.lines, end + 1)
                 end = self.__locate_index('C/V', self.lines, begin + 2) - 1
 
-            self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
+            if operacoes:
+                self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:
