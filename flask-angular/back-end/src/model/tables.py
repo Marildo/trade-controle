@@ -322,10 +322,10 @@ class Operacao(BaseTable):
             return query.fetchall()
 
     @staticmethod
-    def fetch_summary_daytrade():
-        sql = text(OperacoesSql.query_summary_daytrade)
+    def fetch_summary_total(daytrade: bool):
+        sql = text(OperacoesSql.query_summary_total)
         with db_connection.engine.begin() as conn:
-            query = conn.execute(sql)
+            query = conn.execute(sql, dict(daytrade=daytrade))
             return query.one()
 
     @staticmethod

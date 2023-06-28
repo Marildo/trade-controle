@@ -30,17 +30,9 @@ class ToroService:
         return result
 
     def __authenticate(self):
+        self.__token = config.toro_token
         if self.__token is not None:
             return
-
-        auth_file = 'settings/auth_file.json'
-        if os.path.exists(auth_file):
-            with open(auth_file, 'r') as file:
-                data = json.load(file)
-                expires = parser.parse(data['.expires']).replace(tzinfo=None)
-                if expires > datetime.now():
-                    self.__token = data['access_token']
-                    return
 
         url = "https://webapieqr.toroinvestimentos.com.br/auth/authentication/login"
         data = {
@@ -57,10 +49,9 @@ class ToroService:
         headers = {'Content-Type': 'text/plain'}
         response = requests.request("POST", url, headers=headers, data=payload)
         response.raise_for_status()
-        with open(auth_file, 'w') as file:
-            json.dump(response.json(), file)
-
-        self.__token = response.json()['access_token']
+        data = response.json()
+        self.__token = data['access_token']
+        config.set_token(self.__token, data['expires_in'])
 
     def __process_date(self, nota: Dict) -> FileStorage:
         base_url = 'https://webapieqr.toroinvestimentos.com.br/finance/brokeragenote/'

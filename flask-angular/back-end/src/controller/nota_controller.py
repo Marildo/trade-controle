@@ -125,7 +125,7 @@ class NotaController:
     def search_corretagens(cls):
         result = []
         start_date = NotaCorretagem.get_last_date_processed()[0]
-        start_date = datetime.today().replace(day=25).date()
+       # start_date = datetime.today().replace(day=25).date()
         service = ToroService()
         files = service.process_corretagem(start_date)
         for file in files:

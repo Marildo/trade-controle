@@ -1,8 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { ChartType, ChartConfiguration } from 'chart.js';
 
-import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
-import { ParValues } from './panel-result/par-value';  
+import { ParValues } from '../panel-result/par-value';
 
 // TODO organizar melhor, o que puder passar para funcao ao invez de variavel, separar cada grafico em componente e passar um object com dados
 
@@ -11,36 +10,39 @@ import { ParValues } from './panel-result/par-value';
   templateUrl: './dashboard-daytrade.component.html',
   styleUrls: ['./dashboard-daytrade.component.scss'],
 })
-export class DashboardDaytradeComponent {
+export class DashboardDaytradeComponent implements OnInit {
 
+  @Input() onLoad!: EventEmitter<any>;
 
   public results: ParValues[] = [];
   public lineChartType: ChartType = 'line';
   private lineChartLabels: string[] = [];
   private lineChartDataRows: number[] = [];
 
-  constructor(private service: OperacoesService) { }
+
+  constructor() { }
+
 
   ngOnInit() {
-    this.service.load_dashboard().subscribe({
-      next: (resp) => {
-        const daytrade_operations = resp.data.daytrade_operations
-        this.results.push({ label: 'Semana', value: daytrade_operations.total_semanal })
-        this.results.push({ label: 'Mês', value: daytrade_operations.total_mensal })
-        this.results.push({ label: 'Ano', value: daytrade_operations.total_anual })
-        this.results.push({ label: 'Acumulado', value: daytrade_operations.total_acumulado })
-
-        for (const item of daytrade_operations.group_trimestral) {
-          this.lineChartLabels.push(item.data_group)
-          this.lineChartDataRows.push(item.total)
-        }
-      },
-      error: (e) => {
-        console.error(e);
-      },
-    });
+    this.onLoad.subscribe({
+      next: (resp: any) => {
+        this.setup(resp.data)
+      }
+    })
   }
 
+  setup(data: any): void {
+    const daytrade_operations = data.daytrade_operations
+    this.results.push({ label: 'Semana', value: daytrade_operations.total_semanal })
+    this.results.push({ label: 'Mês', value: daytrade_operations.total_mensal })
+    this.results.push({ label: 'Ano', value: daytrade_operations.total_anual })
+    this.results.push({ label: 'Acumulado', value: daytrade_operations.total_acumulado })
+
+    for (const item of daytrade_operations.group_trimestral) {
+      this.lineChartLabels.push(item.data_group)
+      this.lineChartDataRows.push(item.total)
+    }
+  }
 
 
   public lineChartData(): ChartConfiguration['data'] {

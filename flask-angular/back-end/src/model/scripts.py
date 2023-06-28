@@ -56,16 +56,17 @@ WHERE data_encerramento >= :start_date AND daytrade=1
 GROUP BY data_encerramento, a.codigo ORDER BY data_encerramento
 '''
 
-    query_summary_daytrade = '''
+    query_summary_total = '''
 SELECT * FROM 
 (SELECT SUM(o.resultado - o.irpf - o.custos) anual 
-    FROM operacoes o WHERE data_encerramento >= CONCAT(YEAR(CURRENT_DATE()), '-01-01') AND daytrade=1 ) AS a,
+    FROM operacoes o WHERE data_encerramento >= CONCAT(YEAR(CURRENT_DATE()), '-01-01') AND daytrade = :daytrade ) AS a,
 (SELECT SUM(o.resultado - o.irpf - o.custos) mensal
-    FROM operacoes o WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade=1) AS b,
+    FROM operacoes o WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade = :daytrade) AS b,
 (SELECT SUM(o.resultado - o.irpf - o.custos) semanal 
-    FROM operacoes o WHERE data_encerramento >= DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE()) DAY) AND daytrade=1) AS c,
+    FROM operacoes o WHERE data_encerramento >= 
+    DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE()) DAY) AND daytrade= :daytrade) AS c,
 (SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
-    FROM operacoes o WHERE daytrade=1) AS d '''
+    FROM operacoes o WHERE daytrade = :daytrade) AS d '''
 
     query_summary_quarter_daytrade = '''
 WITH QUERY01 AS(
@@ -106,7 +107,7 @@ ORDER BY encerramento '''
 WITH 
 	QUERY01 AS (
 	SELECT 
-   	resultado  gross,
+   	resultado gross,
    	custos + irpf costs,
    	resultado - (custos + irpf) net
 	FROM operacoes o
@@ -118,25 +119,25 @@ WITH
 	 	ROUND(SUM(gross),2) gross_total,
 	 	ROUND(SUM(costs),2) costs_total,
 		ROUND(AVG(gross),2) avg_total,
-	 	COUNT(1) total_trades,
-		MAX(gross) biggest_gain,
-	 	MIN(gross) biggest_loss
+	 	COUNT(1) total_trades
 	 FROM  QUERY01	)
-	 	
+
 	,SUMMARY_GAIN AS(
 	SELECT 
 	  COUNT(1) count_gain,	 
-	  ROUND(AVG(gross),2) avg_gain
+	  COALESCE(MAX(gross),0) biggest_gain,
+	  ROUND(COALESCE(AVG(gross),0),2) avg_gain
 	FROM QUERY01 WHERE gross > 0)
-	
+
 	,SUMMARY_LOSS AS(
 	SELECT 
 	  COUNT(1) count_loss,	  
-	  ROUND(AVG(gross),2) avg_loss
+	  COALESCE(MIN(gross),0) biggest_loss,
+	  ROUND(COALESCE(AVG(gross),0),2) avg_loss
 	FROM QUERY01 WHERE gross <= 0)
-	
+
 SELECT
-	SUMMARY_TOTAL.*,
+    SUMMARY_TOTAL.*,
 	SUMMARY_GAIN.*,
 	SUMMARY_LOSS.*,
    ROUND(count_gain * 100 / total_trades,2) perc_gain

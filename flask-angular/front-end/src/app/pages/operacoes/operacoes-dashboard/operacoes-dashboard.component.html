@@ -2,13 +2,13 @@
   <app-tab-item>
     <app-tab-header>Operações de daytrade</app-tab-header>
     <app-tab-body>
-      <app-dashboard-daytrade> </app-dashboard-daytrade>
+      <app-dashboard-daytrade [onLoad]="onLoad" > </app-dashboard-daytrade>
     </app-tab-body>
   </app-tab-item>
   <app-tab-item>
-    <app-tab-header>Operações abertas</app-tab-header>
+    <app-tab-header>Swing/Long</app-tab-header>
     <app-tab-body>
-
+      <app-dashboard-long [onLoad]="onLoad"></app-dashboard-long>
     </app-tab-body>
   </app-tab-item>
 </app-tab>

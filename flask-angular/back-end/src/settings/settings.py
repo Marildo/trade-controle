@@ -2,12 +2,15 @@
  @author Marildo Cesar 24/04/2023
 """
 import os
+from datetime import datetime, timedelta
 
 from dotenv import load_dotenv
 
 
 class Settings:
     def __init__(self):
+        self.__toro_token = None
+        self.__toro_token_expires = datetime.now()
         load_dotenv()
 
     def get_level_log(self) -> str:
@@ -27,6 +30,16 @@ class Settings:
         path = self.load_value('PATH_NOTAS', '../notas_pdf/')
         os.makedirs(path, exist_ok=True)
         return path
+
+    def set_token(self, token: int, expires_in: int):
+        self.__toro_token = token
+        self.__toro_token_expires = datetime.today() + timedelta(seconds=expires_in)
+
+    @property
+    def toro_token(self):
+        if self.__toro_token_expires < datetime.today():
+            return self.__toro_token
+        return None
 
 
 config = Settings()

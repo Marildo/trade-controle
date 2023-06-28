@@ -343,14 +343,22 @@ class OperacaoController:
 
     @classmethod
     def fetch_dashboard_data(cls):
-        totais = Operacao.fetch_summary_daytrade()
+        totais = Operacao.fetch_summary_total(True)
         group_quarter = Operacao.fetch_summary_quarter_daytrade()
         daytrade_operations = dict(group_trimestral=rows_to_dicts(group_quarter),
                                    total_mensal=totais.mensal or 0,
                                    total_semanal=totais.semanal or 0,
                                    total_anual=totais.anual or 0,
                                    total_acumulado=totais.acumulado or 0)
-        response = dict(daytrade_operations=daytrade_operations)
+
+        totais = Operacao.fetch_summary_total(False)
+        long_operations = dict(
+                               total_mensal=totais.mensal or 0,
+                               total_semanal=totais.semanal or 0,
+                               total_anual=totais.anual or 0,
+                               total_acumulado=totais.acumulado or 0)
+
+        response = dict(daytrade_operations=daytrade_operations, long_operations=long_operations)
         return response
 
     @classmethod
