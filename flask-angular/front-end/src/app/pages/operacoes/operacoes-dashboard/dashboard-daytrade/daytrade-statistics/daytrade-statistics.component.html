@@ -10,81 +10,130 @@
   </div>
   <div class="panel-statistics">
     <div class="statistics">
-      <h3  >Performance</h3>
+      <h3 class="subtitle">Performance</h3>
+      <div class="gauge">
+        <ngx-gauge
+          [type]="gaugeType"
+          [value]="statistics.avg_total"
+          label='Média trade'
+          append="R$"
+          [size]="110"
+          [thick]="5"
+          [thresholds]="thresholdConfig"
+          [min]="-200"
+          [max]="200"
+          [foregroundColor]="foregroundColor"
+        >
+        </ngx-gauge>
+
+        <ngx-gauge
+        [type]="gaugeType"
+        [value]="statistics.perc_gain"
+        [label]="'Taxa Acerto'"
+        [append]="'%'"
+        [size]="110"
+        [thick]="5"      
+      >
+      </ngx-gauge>
+      </div>
       <table>
         <tbody>
           <tr>
             <td>Resultado Líquido</td>
-            <td class="result"
-              [ngClass]="{'positive' : statistics.net_total >= 0 , 'negative':  statistics.net_total < 0}">
-              {{statistics.net_total | currency}}</td>
+            <td
+              class="result"
+              [ngClass]="{
+                positive: statistics.net_total >= 0,
+                negative: statistics.net_total < 0
+              }"
+            >
+              {{ statistics.net_total | currency }}
+            </td>
           </tr>
           <tr>
             <td>Resultado Bruto</td>
-            <td class="result"
-              [ngClass]="{'positive' : statistics.net_total >= 0 , 'negative':  statistics.net_total < 0}">
-              {{statistics.gross_total | currency}}</td>
+            <td
+              class="result"
+              [ngClass]="{
+                positive: statistics.net_total >= 0,
+                negative: statistics.net_total < 0
+              }"
+            >
+              {{ statistics.gross_total | currency }}
+            </td>
           </tr>
           <tr>
             <td>Total Custos</td>
-            <td class="result">{{statistics.costs_total | currency}}</td>
+            <td class="result">{{ statistics.costs_total | currency }}</td>
           </tr>
         </tbody>
       </table>
-      <br>
+      <br />
       <table>
         <tbody>
           <tr>
             <td>Número de Operações</td>
-            <td class="result">{{statistics.total_trades}}</td>
+            <td class="result">{{ statistics.total_trades }}</td>
           </tr>
           <tr>
             <td>Número de Gain</td>
-            <td class="result">{{statistics.count_gain}}</td>
+            <td class="result">{{ statistics.count_gain }}</td>
           </tr>
           <tr>
             <td>Número de Loss</td>
-            <td class="result">{{statistics.count_loss}}</td>
+            <td class="result">{{ statistics.count_loss }}</td>
           </tr>
           <tr>
             <td>Taxa de Acerto</td>
-            <td class="result">{{statistics.perc_gain}}%</td>
+            <td class="result">{{ statistics.perc_gain }}%</td>
           </tr>
         </tbody>
       </table>
-      <br>
+      <br />
       <table>
         <tbody>
           <tr>
             <td>Maior Gain</td>
-            <td class="result">{{statistics.biggest_gain | currency}}</td>
+            <td class="result">{{ statistics.biggest_gain | currency }}</td>
           </tr>
           <tr>
             <td>Maior de Loss</td>
-            <td class="result">{{statistics.biggest_loss | currency}}</td>
+            <td class="result">{{ statistics.biggest_loss | currency }}</td>
           </tr>
           <tr>
             <td>Média Gain</td>
-            <td class="result">{{statistics.avg_gain | currency}}</td>
+            <td class="result">{{ statistics.avg_gain | currency }}</td>
           </tr>
           <tr>
             <td>Média Loss</td>
-            <td class="result">{{statistics.avg_loss | currency}}</td>
+            <td class="result">{{ statistics.avg_loss | currency }}</td>
           </tr>
           <tr>
             <td>Média Geral</td>
-            <td class="result"
-              [ngClass]="{'positive' : statistics.net_total >= 0 , 'negative':  statistics.net_total < 0}">
-              {{statistics.avg_total | currency}}</td>
+            <td
+              class="result"
+              [ngClass]="{
+                positive: statistics.net_total >= 0,
+                negative: statistics.net_total < 0
+              }"
+            >
+              {{ statistics.avg_total | currency }}
+            </td>
           </tr>
         </tbody>
       </table>
     </div>
     <div class="chart-operations-daytrade">
-      <canvas baseChart [datasets]="barChartData" [labels]="barChartLabels" [options]="barChartOptions"
-        [plugins]="barChartPlugins" [legend]="barChartLegend" [type]="barChartType">
+      <canvas
+        baseChart
+        [datasets]="barChartData"
+        [labels]="barChartLabels"
+        [options]="barChartOptions"
+        [plugins]="barChartPlugins"
+        [legend]="barChartLegend"
+        [type]="barChartType"
+      >
       </canvas>
     </div>
-
   </div>
 </div>

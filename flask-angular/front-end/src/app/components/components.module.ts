@@ -4,7 +4,6 @@ import { TabComponent } from './tab/tab/tab.component';
 import { TabHeaderComponent } from './tab/tab-header/tab-header.component';
 import { TabBodyComponent } from './tab/tab-body/tab-body.component';
 import { TabItemComponent } from './tab/tab-item/tab-item.component';
-import { PanelResultComponent } from './panel-result/panel-result.component';
 import { ModalComponent } from './modal/modal.component';
 
 
@@ -20,7 +19,6 @@ import { ModalComponent } from './modal/modal.component';
     TabHeaderComponent,
     TabBodyComponent,
     TabItemComponent,
-    PanelResultComponent,
     ModalComponent
   ],
 
@@ -30,7 +28,6 @@ import { ModalComponent } from './modal/modal.component';
     TabHeaderComponent,
     TabBodyComponent,
     TabItemComponent,
-    PanelResultComponent,
     ModalComponent,
   ],
 })

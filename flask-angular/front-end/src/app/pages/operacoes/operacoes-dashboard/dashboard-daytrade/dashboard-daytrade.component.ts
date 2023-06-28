@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ChartType, ChartConfiguration } from 'chart.js';
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
-import { ParValues } from 'src/app/components/panel-result/par-value';
+import { ParValues } from './panel-result/par-value';  
 
 // TODO organizar melhor, o que puder passar para funcao ao invez de variavel, separar cada grafico em componente e passar um object com dados
 
@@ -25,15 +25,14 @@ export class DashboardDaytradeComponent {
     this.service.load_dashboard().subscribe({
       next: (resp) => {
         const daytrade_operations = resp.data.daytrade_operations
-        this.results.push({ label: 'Total da Semana', value: daytrade_operations.total_semanal })
-        this.results.push({ label: 'Total do Mês', value: daytrade_operations.total_mensal })
-        this.results.push({ label: 'Total do Ano', value: daytrade_operations.total_anual })
-        this.results.push({ label: 'Total Acumulado', value: daytrade_operations.total_acumulado })
+        this.results.push({ label: 'Semana', value: daytrade_operations.total_semanal })
+        this.results.push({ label: 'Mês', value: daytrade_operations.total_mensal })
+        this.results.push({ label: 'Ano', value: daytrade_operations.total_anual })
+        this.results.push({ label: 'Acumulado', value: daytrade_operations.total_acumulado })
 
         for (const item of daytrade_operations.group_trimestral) {
           this.lineChartLabels.push(item.data_group)
           this.lineChartDataRows.push(item.total)
-
         }
       },
       error: (e) => {
@@ -67,34 +66,21 @@ export class DashboardDaytradeComponent {
 
   public lineChartOptions() {
     const lineChartOptions: ChartConfiguration['options'] = {
+      responsive: true,
       elements: {
         line: {
-          tension: 0.5
+          tension: 0.2
         }
       },
       scales: {
-        // We use this empty structure as a placeholder for dynamic theming.
-        y:
-        {
-          position: 'left',
-        },
-        y1: {
-          position: 'right',
+        y: {
           grid: {
             color: 'rgba(255,0,0,0.3)',
           },
-          ticks: {
-            color: 'gray'
-          }
         }
-      },
-
-      plugins: {
-        legend: { display: true },
-
       }
-    };
 
+    }
     return lineChartOptions
   }
 

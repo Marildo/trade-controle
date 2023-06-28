@@ -14,6 +14,13 @@
   border-radius: 0.5ch;
 }
 
+.gauge {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+
+
 .panel-statistics {
   display: grid;
   grid-template-columns: 30% 70%;
@@ -38,11 +45,6 @@
 .statistics td {
   border-bottom: 1px solid #ddd;
   padding: 3px;
-}
-
-.diviser {
-  height: 40px;
-  background-color: #ddd;
 }
 
 .result {

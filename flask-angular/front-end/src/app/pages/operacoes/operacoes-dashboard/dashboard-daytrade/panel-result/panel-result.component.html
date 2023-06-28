@@ -1,0 +1,10 @@
+<div class="container">
+  <div class="card" *ngFor="let item of values"
+    [ngClass]="{'card-positive': item.value >= 0, 'card-negative': item.value < 0}">
+    <div class="label">{{ item.label }} </div>
+
+    <p class=" value" [ngClass]="{'positive': item.value >= 0, 'negative': item.value < 0}">
+      {{ item.value | currency:'BRL' }}
+    </p>
+  </div>
+</div>

@@ -24,6 +24,7 @@ import localePt from '@angular/common/locales/pt';
 import { OperacoesModule } from './pages/operacoes/operacoes.module';
 import { SharedModule } from './shared/shared.module';
 import { NgChartsModule } from 'ng2-charts';
+import { GaugeChartComponent } from './gauge-chart/gauge-chart.component';
 
 
 
@@ -41,6 +42,7 @@ registerLocaleData(localePt)
     CarteirasComponent,
 
     DashboardComponent,
+     GaugeChartComponent,
 
   ],
   imports: [

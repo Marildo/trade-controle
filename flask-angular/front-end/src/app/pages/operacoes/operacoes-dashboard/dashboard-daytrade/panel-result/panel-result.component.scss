@@ -1,17 +1,15 @@
 .container {
   display: flex;
-  align-items: center;
+  flex-direction: column;
   justify-content: space-around;
+  height: 100%;
 }
 
 .card {
   border: 1px solid #bebbbbc5;
-  display: inline-block;
-  text-align: center;
   border-radius: 4px;
-  margin: 5px;
-  width: 200px;
-  padding: 20px;
+  margin: 0 10px 20px 10px;
+  padding: 7px 0 10px 10px;
 }
 
 .card-negative {
@@ -25,11 +23,15 @@
 .label {   
   font-size: 16px;
   font-weight: 400;
+  color: #7c7c79;
 }
 
 .value {
   font-size: 22px;
   font-weight: bold;
+  margin: 10px;
+  padding: 10px;
+  text-align: center;
 }
 
 .positive {

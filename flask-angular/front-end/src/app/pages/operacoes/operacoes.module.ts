@@ -12,7 +12,7 @@ import { OperacoesDetailComponent } from './operacoes-detail/operacoes-detail.co
 import { OperacoesArquivosComponent } from './operacoes-arquivos/operacoes-arquivos.component';
 import { DashboardDaytradeComponent } from './operacoes-dashboard/dashboard-daytrade/dashboard-daytrade.component';
 import { DaytradeStatisticsComponent } from './operacoes-dashboard/dashboard-daytrade/daytrade-statistics/daytrade-statistics.component';
-
+import { PanelResultComponent } from './operacoes-dashboard/dashboard-daytrade/panel-result/panel-result.component';
 
 
 @NgModule({
@@ -23,7 +23,8 @@ import { DaytradeStatisticsComponent } from './operacoes-dashboard/dashboard-day
     OperacoesDetailComponent,
     OperacoesArquivosComponent,
     DashboardDaytradeComponent,
-    DaytradeStatisticsComponent
+    DaytradeStatisticsComponent,
+    PanelResultComponent
    ],
   imports: [
     CommonModule,

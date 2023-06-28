@@ -36,7 +36,7 @@ export class OperacoesDetailComponent {
       start_data_venda: new FormControl(),
       end_data_venda: new FormControl(),
       encerrada: new FormControl(true),
-      daytrade: new FormControl(false),
+      daytrade: new FormControl(true),
       nota: new FormControl(),
       codigo: new FormControl(),
       carteira_id: new FormControl(),
