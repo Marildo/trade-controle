@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { take, map, tap, catchError } from 'rxjs/operators';
+import { LoaderService } from 'src/app/components/loader/loader.service';
 
 import { environment } from 'src/environments/environment';
 
@@ -13,7 +14,7 @@ export class BaseAPIService {
   protected baseURL: string;
   protected headers: HttpHeaders;
 
-  constructor(protected http: HttpClient) {
+  constructor(protected http: HttpClient, protected loader: LoaderService) {
     this.baseURL = environment.apiUrl
     this.headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -21,6 +22,7 @@ export class BaseAPIService {
   }
 
   public get(url: string, filter: Map<string, string> = new Map(), headers: HttpHeaders | null = null): Observable<any> {
+    this.loader.show()
     const full_url = this.baseURL + url
     let params = new HttpParams();
     const isNullOrEmpty = (str: string | null | undefined): boolean => str === null || str === undefined || str === '';
@@ -31,33 +33,44 @@ export class BaseAPIService {
       }
     });    
 
-    const options = { headers: headers != null ? headers : this.headers, params }
+    const options = { headers: headers != null ? headers : this.headers, params }   
     return this.http.get<any>(full_url, options)
       .pipe(
         take(1),
-        tap(console.log),
+        tap( (resp:any) => {
+          console.log(resp)
+          this.loader.hide()
+        }),
         catchError(this.handleError)
       )
   }
 
   public post(url: string, body: any, headers: HttpHeaders | null = null): Observable<any> {
+    this.loader.show()
     const full_url = this.baseURL + url
     const options = { headers: headers != null ? headers : this.headers }
     return this.http.post<any>(full_url, body, options)
       .pipe(
         take(1),
-        tap(console.log),
+        tap( (resp:any) => {
+          console.log(resp)
+          this.loader.hide()
+        }),
         catchError(this.handleError)
       )
   }
 
   public put(url: string, body: any | null = null, headers: HttpHeaders | null = null): Observable<any> {
+    this.loader.show()
     const full_url = this.baseURL + url
     const options = { headers: headers != null ? headers : this.headers }
     return this.http.put<any>(full_url, body, options)
       .pipe(
         take(1),
-        tap(console.log),
+        tap( (resp:any) => {
+          console.log(resp)
+          this.loader.hide()
+        }),
         catchError(this.handleError)
       )
   }
@@ -65,6 +78,7 @@ export class BaseAPIService {
 
   handleError(response: HttpErrorResponse) {
     console.log(response.error.data)
+    this.loader.hide()
     return throwError(response.error.data);
   }
 }

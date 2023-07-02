@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoaderService } from 'src/app/components/loader/loader.service';
 import { ModalService } from 'src/app/components/modal/modal-service';
 
 @Component({
@@ -8,7 +9,7 @@ import { ModalService } from 'src/app/components/modal/modal-service';
 })
 export class DashboardComponent {
 
-  constructor(public modalService: ModalService){
+  constructor(public modalService: ModalService,private loader: LoaderService){
     
   }
 
@@ -18,5 +19,13 @@ export class DashboardComponent {
 
   closeModal(){
     this.modalService.close('10')
+  }
+
+  showLoader(){
+    this.loader.show()
+  }
+
+  hideLoader(){
+    this.loader.hide()
   }
 }

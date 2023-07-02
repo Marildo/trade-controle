@@ -5,6 +5,8 @@ import { TabHeaderComponent } from './tab/tab-header/tab-header.component';
 import { TabBodyComponent } from './tab/tab-body/tab-body.component';
 import { TabItemComponent } from './tab/tab-item/tab-item.component';
 import { ModalComponent } from './modal/modal.component';
+import { LoaderComponent } from './loader/loader.component';
+import { LoaderService } from './loader/loader.service';
 
 
 
@@ -19,9 +21,13 @@ import { ModalComponent } from './modal/modal.component';
     TabHeaderComponent,
     TabBodyComponent,
     TabItemComponent,
-    ModalComponent
+    ModalComponent,
+    LoaderComponent,
   ],
 
+  providers: [
+    LoaderService
+  ],
 
   exports: [
     TabComponent,
@@ -29,6 +35,9 @@ import { ModalComponent } from './modal/modal.component';
     TabBodyComponent,
     TabItemComponent,
     ModalComponent,
+    LoaderComponent,
   ],
+
+
 })
 export class ComponentsModule { }

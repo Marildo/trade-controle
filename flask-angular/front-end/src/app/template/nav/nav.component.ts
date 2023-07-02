@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { LoaderService } from 'src/app/components/loader/loader.service';
 
 @Component({
   selector: 'tc-nav',
@@ -7,4 +8,5 @@ import { Component } from '@angular/core';
 })
 export class NavComponent {
 
+  constructor (private loader:LoaderService){}
 }

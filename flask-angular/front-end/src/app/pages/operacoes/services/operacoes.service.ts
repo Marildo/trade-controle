@@ -13,7 +13,6 @@ import { BaseAPIService } from 'src/app/service/api/base-api.service';
 export class OperacoesService extends BaseAPIService {
 
 
-
   public load_dashboard(): Observable<any> {
     return this.get('operacoes/')
   }
