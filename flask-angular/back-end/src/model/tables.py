@@ -248,7 +248,14 @@ class Operacao(BaseTable):
         return self.qtd_compra - self.qtd_venda
 
     def calc_resultado(self) -> float:
-        value = (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra)
+        if self.encerrada:
+            value = (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra)
+        else:
+            if self.compra_venda == CompraVenda.COMPRA:
+                value = ( self.ativo.cotacao - self.pm_compra) * self.qtd_compra
+            else:
+                value = (self.pm_venda - self.ativo.cotacao) * self.qtd_venda
+
         if self.ativo_id == 800000:
             value = value / 5
         elif self.ativo_id == 900000:
@@ -303,7 +310,7 @@ class Operacao(BaseTable):
                 key_params.append(f'{key} = :{key}')
 
         where = f' AND {" AND ".join(key_params)}' if key_params else ''
-        order_by = ' ORDER BY data_encerramento'
+        order_by = ' ORDER BY data_encerramento, data_compra, data_venda'
 
         sql = text(OperacoesSql.query_detail + where + order_by)
         with db_connection.engine.begin() as conn:

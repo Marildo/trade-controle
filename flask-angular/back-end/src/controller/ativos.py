@@ -1,11 +1,12 @@
 """
  @author Marildo Cesar 25/04/2023
 """
-
+import datetime
 from typing import Dict, List, Tuple, Optional
 
+from services import YFinanceService
 from settings import logger
-from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
+from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento, Operacao
 
 from src.services import StatusInvest
 
@@ -30,7 +31,6 @@ class AtivoController:
         ativo = [i for i in ativos if i.tipo_ativo == tipo_id]
         if ativo:
             return ativo[0]
-
 
         st_invent = StatusInvest()
         logger.info(f'Search by {nome}')
@@ -116,3 +116,22 @@ class AtivoController:
             tipo = _map_type[nome]
 
         return nome.strip(), tipo.strip(), mapead
+
+    @classmethod
+    def update_prices(cls):
+        def dif_time(dt0, dt1):
+            diff = dt0 - dt1
+            time_diff = diff.total_seconds() / 3600
+            return time_diff
+
+        operacoes = Operacao().read_by_params(dict(encerrada=False))
+        ativos = list(set([o.ativo for o in operacoes]))
+        ativos = [i for i in ativos if dif_time(datetime.datetime.today(), i.update_at) > 1]
+        if ativos:
+            yfinance = YFinanceService()
+            yfinance.update_price(ativos)
+            for at in ativos:
+                at.save()
+                for item in [o for o in operacoes if o.ativo == at]:
+                    item.resultado = item.calc_resultado()
+                    item.save()
