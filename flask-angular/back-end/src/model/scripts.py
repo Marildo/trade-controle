@@ -87,7 +87,7 @@ SELECT
 	encerramento,  
 	resultado,ano,
  	CASE 
-		WHEN mes < 3 THEN 1
+		WHEN mes <= 3 THEN 1
 		WHEN mes BETWEEN 4 AND 6 THEN 2
 		WHEN mes BETWEEN 7 AND 9 THEN 3
 		ELSE 4
