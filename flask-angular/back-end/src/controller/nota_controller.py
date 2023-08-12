@@ -81,10 +81,11 @@ class NotaController:
 
             OperacaoController.save_operacoes(notas)
 
-            filecorr.status = NotaStatusProcess.FINALIZADO
-            filecorr.tipo = notas[0].tipo_nota
-            filecorr.data_processamento = datetime.today()
-            filecorr.update()
+            if notas:
+                filecorr.status = NotaStatusProcess.FINALIZADO
+                filecorr.tipo = notas[0].tipo_nota
+                filecorr.data_processamento = datetime.today()
+                filecorr.update()
 
             return cls.load_notas(file_id)
         except Exception as ex:
