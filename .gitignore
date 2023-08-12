@@ -19,4 +19,5 @@ tc-django/.idea/
 trade_controler_django/media/
 flask-angular/back-end/notas_pdf/*
 flask-angular/back-end/.idea/
-
+flask-angular/back-end/.idea/misc.xml
+flask-angular/back-end/.idea/tt-back-end.iml
