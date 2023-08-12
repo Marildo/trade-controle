@@ -1,23 +1,9 @@
 """
  @author Marildo Cesar 03/05/2023
 """
-import threading
-import time
 
 from src.api import App
 from src.settings import config
-from src.controller import AtivoController
-
-
-def update_ativos():
-    while True:
-        AtivoController.update_prices()
-        t_sleep = 60 * 60
-        time.sleep(t_sleep)
-
-
-t = threading.Thread(target=update_ativos)
-t.start()
 
 if __name__ == '__main__':
     retaguarda_app = App()

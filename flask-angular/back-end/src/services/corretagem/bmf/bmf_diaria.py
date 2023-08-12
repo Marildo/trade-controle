@@ -33,7 +33,7 @@ class BMFDiaria(Investiment):
             data_operacao = self.__data_operacao()
             comprovante = self.__find_comprovante()
 
-            #print(page.number, data_operacao, comprovante)
+            print(page.number, data_operacao, comprovante)
 
             if page.number == 0:
                 custos = self.__get_custos(operacoes)
@@ -42,7 +42,7 @@ class BMFDiaria(Investiment):
             begin = self.__locate_index('DAY TRADE', self.lines) - 4
             end = begin + 7
 
-            while begin > 0:
+            while begin >= 0:
                 cutting = self.lines[begin: end]
                 _id += 1
                 ativo = self.__find_nome_ativo(cutting)

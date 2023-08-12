@@ -34,7 +34,7 @@
             <tr *ngFor="let row of items">
                 <td>{{ row.carteira }}</td>
                 <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
-                <td>{{ row.compre_venda == 'COMPRA' ? row.qtd_compra : row.qtd_venda }}</td>
+                <td>{{ row.compre_venda != 'COMPRA' ? row.qtd_compra : row.qtd_venda }}</td>
 
                 <td><a (click)="onFilterDataCompra( row.data_compra)"> {{ row.data_compra | date:'dd/MM/yyy' }}</a>
                 </td>

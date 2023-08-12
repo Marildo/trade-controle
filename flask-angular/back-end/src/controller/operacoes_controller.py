@@ -7,18 +7,19 @@ import json
 from json import dumps
 from typing import Dict, List, Tuple
 from collections import Counter
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 
 from flask import request
 from webargs.flaskparser import parser
 from webargs import fields, validate
 
+from model import TipoInvestimento
+from services import YFinanceService, StatusInvest
 from src.settings import logger
 from src.utils.dict_util import rows_to_dicts
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota
 from src.model.dtos import Nota
 from .ativos import AtivoController
-from .query_validations import validate_group_by_operacoes
 
 
 class OperacaoController:
@@ -353,10 +354,10 @@ class OperacaoController:
 
         totais = Operacao.fetch_summary_total(False)
         long_operations = dict(
-                               total_mensal=totais.mensal or 0,
-                               total_semanal=totais.semanal or 0,
-                               total_anual=totais.anual or 0,
-                               total_acumulado=totais.acumulado or 0)
+            total_mensal=totais.mensal or 0,
+            total_semanal=totais.semanal or 0,
+            total_anual=totais.anual or 0,
+            total_acumulado=totais.acumulado or 0)
 
         response = dict(daytrade_operations=daytrade_operations, long_operations=long_operations)
         return response
@@ -381,3 +382,28 @@ class OperacaoController:
         st = rows_to_dicts(statistics)[0]
         response = dict(operacoes=rows_to_dicts(operations), statistics=st)
         return response
+
+    @classmethod
+    def update_prices(cls):
+        def dif_time(dt0, dt1):
+            diff = dt0 - dt1
+            time_diff = diff.total_seconds() / 3600
+            return time_diff
+
+        operacoes = Operacao().read_by_params(dict(encerrada=False))
+        ativos = list(set([o.ativo for o in operacoes]))
+        ativos = [i for i in ativos if dif_time(datetime.today(), i.update_at) > 1]
+        if ativos:
+            yfinance = YFinanceService()
+            yfinance.update_price(ativos)
+            for at in ativos:
+                at.save()
+                for item in [o for o in operacoes if o.ativo == at]:
+                    item.resultado = item.calc_resultado()
+                    item.save()
+
+    @classmethod
+    def update_dividendos(cls):
+        operacoes = Operacao().read_by_params(dict(encerrada=False))
+        ativos = list(set([o.ativo for o in operacoes if o.ativo.tipo_investimento == TipoInvestimento.FIIS]))
+

@@ -16,3 +16,9 @@ index_router = Blueprint(name=name, import_name=name, url_prefix=resource)
 def index():
     response = {"Data": datetime.today()}
     return response
+
+
+@index_router.route('/services/start', methods=['PUT'])
+@format_response
+def start(_id: int):
+    return NotaController.process_nota(_id)
