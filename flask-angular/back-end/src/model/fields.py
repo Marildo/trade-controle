@@ -3,4 +3,3 @@
 """
 from sqlalchemy import Column, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, Enum, text
 
-primary_key = Column(INTEGER, primary_key=True)

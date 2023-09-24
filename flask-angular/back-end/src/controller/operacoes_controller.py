@@ -2,10 +2,9 @@
  @author Marildo Cesar 25/04/2023
 """
 import copy
-import json
 
 from json import dumps
-from typing import Dict, List, Tuple
+from typing import Dict, List
 from collections import Counter
 from datetime import date, timedelta, datetime
 
@@ -14,7 +13,7 @@ from webargs.flaskparser import parser
 from webargs import fields, validate
 
 from model import TipoInvestimento
-from services import YFinanceService, StatusInvest
+from services import YFinanceService
 from src.settings import logger
 from src.utils.dict_util import rows_to_dicts
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota

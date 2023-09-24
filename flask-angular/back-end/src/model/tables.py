@@ -11,7 +11,6 @@ from sqlalchemy.orm import relationship
 
 from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
-from .fields import primary_key
 
 from .scripts import OperacoesSql, ArquivosCorretagemSQL
 
@@ -124,6 +123,7 @@ class Carteira(BaseTable):
     saldo_caixa = Column(FLOAT, default=0)
     tipo = Column(Enum(TipoCarteira))
     daytrade = Column(BOOLEAN, default=False, nullable=False)
+    dividendos = Column(BOOLEAN, default=False, nullable=False)
 
 
 class FileCorretagem(BaseTable):
@@ -212,7 +212,7 @@ class NotaCorretagem(BaseTable):
 class Operacao(BaseTable):
     __tablename__ = 'operacoes'
 
-    id = primary_key
+    id = Column(INTEGER, primary_key=True)
     data_compra = Column(DATE, nullable=True)
     data_venda = Column(DATE, nullable=True)
     pm_compra = Column(FLOAT(precision=2), default=0)
@@ -252,7 +252,7 @@ class Operacao(BaseTable):
             value = (self.qtd_venda * self.pm_venda) - (self.qtd_compra * self.pm_compra)
         else:
             if self.compra_venda == CompraVenda.COMPRA:
-                value = ( self.ativo.cotacao - self.pm_compra) * self.qtd_compra
+                value = (self.ativo.cotacao - self.pm_compra) * self.qtd_compra
             else:
                 value = (self.pm_venda - self.ativo.cotacao) * self.qtd_venda
 
@@ -355,3 +355,23 @@ class Operacao(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, {'start_date': start_date})
             return query.fetchall()
+
+
+class Dividendos(BaseTable):
+    __tablename__ = 'dividendos'
+
+    id = Column(INTEGER, primary_key=True)
+    data_com = Column(DATE, nullable=True)
+    data_pgto = Column(DATE, nullable=True)
+    data_ref = Column(DATE, nullable=True)
+    qtd = Column(FLOAT(precision=2), default=0)
+    valor = Column(FLOAT(precision=2), default=0)
+    total = Column(FLOAT(precision=2), default=0)
+    ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
+    ativo = relationship("Ativo")
+
+    @staticmethod
+    def fint_by_ativo(ativo_id: int):
+        with db_connection as conn:
+            query = conn.session.query(Dividendos).filter(Dividendos.ativo_id == ativo_id)
+            return query.all()

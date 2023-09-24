@@ -10,5 +10,5 @@ statusI = StatusInvest()
 # for i in data:
 #     print(i)
 
-data = statusI.load_dividendos_fiis('tord11')
+data = statusI.load_dividendos_fiis('vghf11')
 print(data)
