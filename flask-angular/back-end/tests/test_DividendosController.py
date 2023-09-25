@@ -1,7 +1,7 @@
 # @author Marildo Cesar 19/09/2023
 
 
-from src.controller import DividendosController
+import requests
 
-dv = DividendosController()
-dv.proccess_historic()
+res = requests.put('http://127.0.0.1:7500/dividendos/process')
+print(res.json())

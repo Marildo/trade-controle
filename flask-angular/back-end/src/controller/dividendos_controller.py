@@ -3,7 +3,8 @@ from typing import NamedTuple
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from src.services.status_invest import StatusInvest
-from model import OperacoesRepository, DividendosRepository, Dividendos
+from model import DividendosRepository, Dividendos
+from .schemas import DividendosSchema
 
 
 class DayHistoric(NamedTuple):
@@ -13,11 +14,19 @@ class DayHistoric(NamedTuple):
 
 class DividendosController:
 
-    def proccess_historic(self):
-        print('processing')
+    @classmethod
+    def summary(cls):
+        today = date.today()
+        dividendos = Dividendos.all()
+        year = sum([i.total for i in dividendos if i.data_ref.year == today.year])
+        month = sum([i.total for i in dividendos if i.data_ref >= today.replace(day=1)])
+        total = sum([i.total for i in dividendos])
+        data = DividendosSchema().dumps(dividendos, many=True)
+        return dict(year=year, month=month, total=total, items=data)
 
+    @staticmethod
+    def proccess():
         statusI = StatusInvest()
-
         rows = DividendosRepository.load_ativos()
         for row in rows:
             dividendos = []
@@ -29,7 +38,7 @@ class DividendosController:
                 month -= timedelta(days=1)
 
                 if not dividendos:
-                    dividendos = Dividendos.fint_by_ativo(row.ativo_id)
+                    dividendos = Dividendos.find_by_ativo(row.ativo_id)
 
                 exists = [i for i in dividendos if i.data_ref == month]
                 if exists:
@@ -43,7 +52,6 @@ class DividendosController:
                 div = Dividendos()
                 div.data_ref = month
                 div.ativo_id = row.ativo_id
-                div.data_ref = month
                 div.qtd = qtd
 
                 pays = [i for i in payments if i['data_com'].year == month.year and i['data_com'].month == month.month]
@@ -55,5 +63,7 @@ class DividendosController:
                     div.data_com = month
                     div.data_pgto = month
                     div.valor = 0
+
+                div.data_ref = div.data_pgto.replace(day=1)
                 div.total = div.qtd * div.valor
                 div.save()

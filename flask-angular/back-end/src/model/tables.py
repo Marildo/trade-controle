@@ -371,7 +371,13 @@ class Dividendos(BaseTable):
     ativo = relationship("Ativo")
 
     @staticmethod
-    def fint_by_ativo(ativo_id: int):
+    def all():
+        with db_connection as conn:
+            query = conn.session.query(Dividendos)
+            return query.all()
+
+    @staticmethod
+    def find_by_ativo(ativo_id: int):
         with db_connection as conn:
             query = conn.session.query(Dividendos).filter(Dividendos.ativo_id == ativo_id)
             return query.all()
