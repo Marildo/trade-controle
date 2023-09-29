@@ -1,0 +1,23 @@
+.container {
+    display: grid;
+    grid-template-columns: 20% 80%;
+    margin: 5px;
+  }
+  
+  .panel-result {
+    height: 100%;
+  }
+  
+  .chart-evolution {
+    padding: 3px;
+    border: 1px solid rgb(248, 246, 246);
+  
+    width: 100%;
+  }
+  
+  .result {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+  }
+  

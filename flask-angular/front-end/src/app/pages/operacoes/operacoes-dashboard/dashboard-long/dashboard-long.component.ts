@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input } from '@angular/core';
-import { ChartType } from 'chart.js';
-import { ParValues } from '../panel-result/par-value';
+import { ParValues } from '../../../../components/panel-result/par-value';
 
 @Component({
   selector: 'app-dashboard-long',

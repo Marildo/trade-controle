@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { ChartType, ChartConfiguration } from 'chart.js';
 
-import { ParValues } from '../panel-result/par-value';
+import { ParValues } from '../../../../components/panel-result/par-value';
 
 // TODO organizar melhor, o que puder passar para funcao ao invez de variavel, separar cada grafico em componente e passar um object com dados
 

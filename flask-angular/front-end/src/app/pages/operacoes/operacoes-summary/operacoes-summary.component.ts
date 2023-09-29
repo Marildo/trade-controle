@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import {  HttpParams } from '@angular/common/http';
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
 
 

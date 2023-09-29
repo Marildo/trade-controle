@@ -12,7 +12,6 @@ import { OperacoesDetailComponent } from './operacoes-detail/operacoes-detail.co
 import { OperacoesArquivosComponent } from './operacoes-arquivos/operacoes-arquivos.component';
 import { DashboardDaytradeComponent } from './operacoes-dashboard/dashboard-daytrade/dashboard-daytrade.component';
 import { DaytradeStatisticsComponent } from './operacoes-dashboard/dashboard-daytrade/daytrade-statistics/daytrade-statistics.component';
-import { PanelResultComponent } from './operacoes-dashboard/panel-result/panel-result.component';
 import { DashboardLongComponent } from './operacoes-dashboard/dashboard-long/dashboard-long.component';
 
 
@@ -25,7 +24,6 @@ import { DashboardLongComponent } from './operacoes-dashboard/dashboard-long/das
     OperacoesArquivosComponent,
     DashboardDaytradeComponent,
     DaytradeStatisticsComponent,
-    PanelResultComponent,
     DashboardLongComponent
    ],
   imports: [
