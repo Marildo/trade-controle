@@ -21,7 +21,7 @@ class DividendosController:
         year = sum([i.total for i in dividendos if i.data_ref.year == today.year])
         month = sum([i.total for i in dividendos if i.data_ref >= today.replace(day=1)])
         total = sum([i.total for i in dividendos])
-        data = DividendosSchema().dumps(dividendos, many=True)
+        data = DividendosSchema().dump(dividendos, many=True)
         return dict(year=year, month=month, total=total, items=data)
 
     @staticmethod

@@ -401,8 +401,3 @@ class OperacaoController:
                     item.resultado = item.calc_resultado()
                     item.save()
 
-    @classmethod
-    def update_dividendos(cls):
-        operacoes = Operacao().read_by_params(dict(encerrada=False))
-        ativos = list(set([o.ativo for o in operacoes if o.ativo.tipo_investimento == TipoInvestimento.FIIS]))
-
