@@ -365,8 +365,10 @@ class Dividendos(BaseTable):
     data_pgto = Column(DATE, nullable=True)
     data_ref = Column(DATE, nullable=True)
     qtd = Column(FLOAT(precision=2), default=0)
+    cotacao = Column(FLOAT(precision=2), default=0)
     valor = Column(FLOAT(precision=2), default=0)
     total = Column(FLOAT(precision=2), default=0)
+    div_yield = Column(FLOAT(precision=2), default=0)
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
     ativo = relationship("Ativo")
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
@@ -374,7 +376,7 @@ class Dividendos(BaseTable):
     @staticmethod
     def all():
         with db_connection as conn:
-            query = conn.session.query(Dividendos)
+            query = conn.session.query(Dividendos).order_by(Dividendos.data_pgto.desc())
             return query.all()
 
     @staticmethod

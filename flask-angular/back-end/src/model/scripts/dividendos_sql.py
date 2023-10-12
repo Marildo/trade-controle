@@ -3,7 +3,7 @@
 
 class DividendosSql:
     load_ativos = '''
-    SELECT o.ativo_id, a.codigo, min(o.data_compra) start
+    SELECT o.ativo_id, a.codigo, MIN(o.data_compra) dt_start, MAX(o.data_venda) dt_end
     FROM operacoes o
     JOIN ativos a ON a.id = o.ativo_id
     LEFT JOIN carteiras ct ON ct.id = o.carteira_id

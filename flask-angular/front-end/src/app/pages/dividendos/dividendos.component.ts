@@ -15,9 +15,17 @@ import { DividendosService } from './dividendos.service';
 export class DividendosComponent {
 
   public results: ParValues[] = [];
+  public items: any[] = []
+  public itemsTable: any[] = []
+  public totalTable = 0
+  public itemsFilter?: string[];
   public lineChartType: ChartType = 'line';
+
+
   private lineChartLabels: string[] = [];
   private lineChartDataRows: number[] = [];
+
+
 
   constructor(private service: DividendosService) {
     this.loadAll()
@@ -30,6 +38,10 @@ export class DividendosComponent {
       this.results.push({ label: 'Mês', value: resp.data.month })
       this.results.push({ label: 'Ano', value: resp.data.year })
       this.results.push({ label: 'Total', value: resp.data.total })
+
+      this.items = resp.data.items      
+      this.itemsFilter = Array.from(new Set(this.items.map(i => i.ativo.codigo)))
+      this.filterItems()
 
       const group_month = resp.data.items.reduce((acc: any, item: any) => {
         const xdate = new Date(item.data_ref)
@@ -110,5 +122,16 @@ export class DividendosComponent {
       console.log(resp)
       this.loadAll()
     })
+  }
+
+  filterItems(codigo?: string) {
+    console.log(codigo)
+    let result = this.items.filter(f => f.qtd > 0)
+    if (codigo)
+      result = result.filter(i => i.ativo.codigo == codigo)
+
+    console.log('result', result)
+    this.totalTable = result.reduce((acc: any, item: any) => acc + item.total, 0)
+    this.itemsTable = result
   }
 }

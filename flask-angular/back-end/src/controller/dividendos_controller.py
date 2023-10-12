@@ -2,7 +2,7 @@
 from typing import NamedTuple
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from src.services.status_invest import StatusInvest
+from src.services.fiis import load_dividendos
 from model import DividendosRepository, Dividendos
 from .schemas import DividendosSchema
 
@@ -26,12 +26,14 @@ class DividendosController:
 
     @staticmethod
     def proccess():
-        statusI = StatusInvest()
         rows = DividendosRepository.load_ativos()
         for row in rows:
+            diff = (row.dt_end - row.dt_start).days
+            if diff < 30:
+                continue
             dividendos = []
             payments = []
-            month = row.start.replace(day=1)
+            month = row.dt_start.replace(day=1)
             end = date.today().replace(day=1) - relativedelta(months=1)
             while month < end:
                 month += relativedelta(months=1)
@@ -48,12 +50,13 @@ class DividendosController:
                 qtd = DividendosRepository.get_qtd(row.ativo_id, month)
 
                 if not payments:
-                    payments = statusI.load_dividendos_fiis(row.codigo)
+                    payments = load_dividendos(row.codigo)
 
                 div = Dividendos()
                 div.data_ref = data_ref
                 div.ativo_id = row.ativo_id
                 div.qtd = qtd
+                div.div_yield = 0
 
                 pays = [i for i in payments if
                         i['data_com'].year == data_ref.year and i['data_com'].month == data_ref.month]
@@ -61,6 +64,8 @@ class DividendosController:
                     div.data_com = pays[0]['data_com']
                     div.data_pgto = pays[0]['data_pgto']
                     div.valor = pays[0]['valor']
+                    div.div_yield = pays[0]['div_yield']
+                    div.cotacao = pays[0]['cotacao']
                 else:
                     div.data_com = month
                     div.data_pgto = month
