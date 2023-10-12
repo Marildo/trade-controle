@@ -20,14 +20,21 @@ export class DividendosComponent {
   private lineChartDataRows: number[] = [];
 
   constructor(private service: DividendosService) {
-    service.load_all().subscribe(resp => {
+    this.loadAll()
+
+  }
+
+  private loadAll() {
+    this.service.loadAll().subscribe(resp => {
+      this.results = []
       this.results.push({ label: 'Mês', value: resp.data.month })
       this.results.push({ label: 'Ano', value: resp.data.year })
       this.results.push({ label: 'Total', value: resp.data.total })
 
       const group_month = resp.data.items.reduce((acc: any, item: any) => {
-        const key = item.data_ref
-
+        const xdate = new Date(item.data_ref)
+        const dtpgto = xdate.setMonth(xdate.getMonth() + 1)
+        const key = new Date(dtpgto).toLocaleDateString()
         if (!acc[key]) {
           acc[key] = {
             total: 0
@@ -39,24 +46,20 @@ export class DividendosComponent {
       }, {}
       )
 
-      console.log(group_month)
-      
+      //console.log(group_month)
+
       for (let propriedade in group_month) {
         let total = group_month[propriedade].total
-        if (total != 0 ){
-          let split = propriedade.split('-')
-          let label = `${split[1]}/${split[0]}`
+        if (total != 0) {
+          let split = propriedade.split('/')
+          let label = `${split[1]}/${split[2]}`
           this.lineChartLabels.push(label)
           this.lineChartDataRows.push(total)
         }
 
       }
 
-
-
     })
-
-
   }
 
 
@@ -100,5 +103,12 @@ export class DividendosComponent {
 
     }
     return lineChartOptions
+  }
+
+  OnFindNew() {
+    this.service.findNew().subscribe(resp => {
+      console.log(resp)
+      this.loadAll()
+    })
   }
 }

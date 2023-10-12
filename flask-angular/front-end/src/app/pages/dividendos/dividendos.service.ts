@@ -8,8 +8,12 @@ import { BaseAPIService } from 'src/app/service/api/base-api.service';
 })
 export class DividendosService extends BaseAPIService{
 
-  public load_all(): Observable<any> {
+  public loadAll(): Observable<any> {
     return this.get('dividendos/')
+  }
+
+  public findNew(): Observable<any> {
+    return this.put('dividendos/process')
   }
 
 }

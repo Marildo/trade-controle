@@ -369,6 +369,7 @@ class Dividendos(BaseTable):
     total = Column(FLOAT(precision=2), default=0)
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
     ativo = relationship("Ativo")
+    created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
 
     @staticmethod
     def all():
