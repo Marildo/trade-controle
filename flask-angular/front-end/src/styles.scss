@@ -5,6 +5,7 @@ html,
 body {
   height: 100%;
 }
+
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
@@ -61,13 +62,36 @@ $tt-gray-light: #ced4da;
   margin-top: 5px;
 }
 
-.container-buttons > button {
+.container-buttons>button {
   flex: 1;
   margin: 5px 3px;
 }
 
 .container-end {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 5px;
-  }
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 5px;
+}
+
+
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background-color: #f2f2f2;
+}
+
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tfoot {
+  font-weight: bold;
+  background-color: #f2f2f2;
+}
