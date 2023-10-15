@@ -47,29 +47,30 @@ class DividendosController:
                 if exists:
                     continue
 
-                qtd = DividendosRepository.get_qtd(row.ativo_id, month)
+                div = Dividendos()
+                div.data_ref = data_ref
+                div.ativo_id = row.ativo_id
+
+                div.div_yield = 0
 
                 if not payments:
                     payments = load_dividendos(row.codigo)
 
-                div = Dividendos()
-                div.data_ref = data_ref
-                div.ativo_id = row.ativo_id
-                div.qtd = qtd
-                div.div_yield = 0
-
                 pays = [i for i in payments if
                         i['data_com'].year == data_ref.year and i['data_com'].month == data_ref.month]
-                if pays:
-                    div.data_com = pays[0]['data_com']
-                    div.data_pgto = pays[0]['data_pgto']
-                    div.valor = pays[0]['valor']
-                    div.div_yield = pays[0]['div_yield']
-                    div.cotacao = pays[0]['cotacao']
-                else:
+                if not pays:
                     div.data_com = month
-                    div.data_pgto = month
+                    div.data_pgto = month + relativedelta(months=1)
                     div.valor = 0
+                else:
+                    pay = pays[0]
+                    div.data_com = pay['data_com']
+                    div.data_pgto = pay['data_pgto']
+                    div.valor = pay['valor']
+                    div.div_yield = pay['div_yield']
+                    div.cotacao = pay['cotacao']
 
+                qtd = DividendosRepository.get_qtd(row.ativo_id, div.data_com)
+                div.qtd = qtd
                 div.total = div.qtd * div.valor
                 div.save()

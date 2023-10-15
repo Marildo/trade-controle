@@ -376,7 +376,7 @@ class Dividendos(BaseTable):
     @staticmethod
     def all():
         with db_connection as conn:
-            query = conn.session.query(Dividendos).order_by(Dividendos.data_pgto.desc())
+            query = conn.session.query(Dividendos).order_by(Dividendos.data_pgto)
             return query.all()
 
     @staticmethod
