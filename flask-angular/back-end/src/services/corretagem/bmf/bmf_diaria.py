@@ -59,7 +59,7 @@ class BMFDiaria(Investiment):
 
         self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
-        #print('finish read')
+        # print('finish read')
 
     @staticmethod
     def __locate_index(value, cutting: List, start: int = 0) -> int:
@@ -88,6 +88,9 @@ class BMFDiaria(Investiment):
         value = cutting[1][0]
         if value in ('G', 'J', 'M', 'Q', 'V', 'Z'):
             return Investiment.MINI_INDICE
+
+        if value in ('X',):
+            return Investiment.MINI_DOLAR
 
         raise Exception('Nome de ativo não mapeado')
 

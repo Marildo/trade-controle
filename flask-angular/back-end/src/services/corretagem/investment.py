@@ -14,7 +14,7 @@ from src.model.dtos import Nota
 
 class Investiment(ABC):
     MINI_INDICE = 'WIN/800000'
-    DOLAR = 'WDO/900000'
+    MINI_DOLAR = 'WDO/900000'
 
     def __init__(self, document: Document):
         self.__document = document
