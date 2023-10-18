@@ -7,7 +7,8 @@ class DividendosSql:
     FROM operacoes o
     JOIN ativos a ON a.id = o.ativo_id
     LEFT JOIN carteiras ct ON ct.id = o.carteira_id
-    WHERE o.daytrade=0 AND o.compra_venda='COMPRA' AND (a.tipo_investimento = "FIIS" OR ct.dividendos = 1)
+    WHERE o.daytrade=0 AND o.compra_venda='COMPRA' 
+    AND (a.tipo_investimento = "FIIS" OR ct.dividendos = 1 OR ct.buyhold = 1)
     GROUP BY a.id
     '''
 

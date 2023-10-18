@@ -124,6 +124,8 @@ class Carteira(BaseTable):
     tipo = Column(Enum(TipoCarteira))
     daytrade = Column(BOOLEAN, default=False, nullable=False)
     dividendos = Column(BOOLEAN, default=False, nullable=False)
+    buyhold = Column(BOOLEAN, default=False, nullable=False)
+    descricao = Column(VARCHAR(120))
 
 
 class FileCorretagem(BaseTable):

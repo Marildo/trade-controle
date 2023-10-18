@@ -3,5 +3,6 @@
 """
 
 from .arquivos_schema import ArquivoSchema
-from .operacoes_schema import OperacaoSchema
+from .carteira_schema import CarteitaSchema
 from .dividendos_schema import DividendosSchema
+from .operacoes_schema import OperacaoSchema

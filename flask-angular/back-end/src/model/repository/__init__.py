@@ -2,4 +2,5 @@
 
 from .operacoes_repository import OperacoesRepository
 from .dividendos_repository import DividendosRepository
+from .carteira_repository import CarteiraRepository
 
