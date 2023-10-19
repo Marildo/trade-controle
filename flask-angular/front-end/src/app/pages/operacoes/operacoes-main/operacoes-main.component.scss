@@ -10,7 +10,7 @@ header {
 
 
 .menu {
-
+    padding: 1px;
 }
 
 .menu ul {
@@ -23,19 +23,19 @@ header {
     display: inline-block;
 }
 
-.menu ul li a {    
+.menu ul li a {
     display: block;
     padding: 6px 8px;
     color: #333;
     text-decoration: none;
 }
 
-.menu ul li:hover > a {
-  background-color: #ddd;
-  color: #000;
-  font-weight: 400;
+.menu ul li:hover>a {
+    background-color: #ddd;
+    color: #000;
+    font-weight: 400;
 }
 
-a.active {
+.menu a.active {
     font-weight: bold;
-  }
+}

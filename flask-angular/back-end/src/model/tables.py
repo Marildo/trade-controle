@@ -119,13 +119,14 @@ class Carteira(BaseTable):
     __tablename__ = 'carteiras'
     id = Column(INTEGER, primary_key=True)
     nome = Column(VARCHAR(40))
+    descricao = Column(VARCHAR(120))
     saldo_ativos = Column(FLOAT, default=0)
     saldo_caixa = Column(FLOAT, default=0)
     tipo = Column(Enum(TipoCarteira))
     daytrade = Column(BOOLEAN, default=False, nullable=False)
     dividendos = Column(BOOLEAN, default=False, nullable=False)
     buyhold = Column(BOOLEAN, default=False, nullable=False)
-    descricao = Column(VARCHAR(120))
+
 
 
 class FileCorretagem(BaseTable):

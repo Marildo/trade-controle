@@ -19,8 +19,6 @@ class CarteiraController:
     def save(cls):
         input_schema = {
             'nome': fields.String(required=True),
-            'saldo_ativos': fields.Float(required=False, default=0),
-            'saldo_caixa': fields.Float(required=False, default=0),
             'tipo': fields.String(required=True),
             'daytrade': fields.Boolean(required=True),
             'dividendos': fields.Boolean(required=True),
@@ -41,8 +39,6 @@ class CarteiraController:
         input_schema = {
             'id': fields.Integer(required=True),
             'nome': fields.String(required=False),
-            'saldo_ativos': fields.Float(required=False),
-            'saldo_caixa': fields.Float(required=False),
             'tipo': fields.String(required=False),
             'daytrade': fields.Boolean(required=False),
             'dividendos': fields.Boolean(required=False),

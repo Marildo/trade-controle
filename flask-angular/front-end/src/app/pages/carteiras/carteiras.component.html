@@ -1,4 +1,4 @@
-<app-tab>
+<!-- <app-tab>
     <app-tab-item>
         <app-tab-header>First tab</app-tab-header>
         <app-tab-body>
@@ -17,4 +17,78 @@
             I am third content
         </app-tab-body>
     </app-tab-item>
-</app-tab>
+</app-tab> -->
+
+
+<header>
+    <mat-icon fontIcon="wallet" class="title"></mat-icon>
+    <h3 class="title"> Carteiras </h3>
+    <nav class="menu">
+        <ul>
+            <button mat-icon-button matTooltip="Nova Carteira" color="primary" aria-label="Limpar filtro"
+                (click)="showFormCarteira()">
+                <mat-icon>add_circle</mat-icon> </button>
+        </ul>
+    </nav>
+</header>
+
+<div class="carteiras">
+    <div *ngFor="let item of carteiras" class="cart">
+        <span>{{item.nome}}</span>
+        <div>Saldo Ativos: {{item.saldo_ativos | currency}}</div>
+        <div>Saldo caixa: {{item.saldo_caixa | currency}}</div>
+        <div>Total: {{item.saldo_caixa + item.saldo_ativos | currency}}</div>
+
+    </div>
+</div>
+
+
+<app-modal #modal id="modalCarteira">
+    <form [formGroup]="formCarteira">
+        <h2 class="title">Nova carteira</h2>
+
+        <div class="form-group-inline">
+            <label for="nome">Nome:</label>
+            <input type="text" id="nome" formControlName="nome" maxlength="40" required>
+        </div>
+
+        <div class="form-group-inline">
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" formControlName="descricao" maxlength="120">
+        </div>
+
+        <div class="form-group-inline">
+            <label for="tipo">Tipo de Carteira:</label>
+            <select id="tipo" formControlName="tipo">
+                <option value="VARIAVEL">Renda Variavél</option>
+                <option value="FIXA">Renda Fixa</option>            
+            </select>
+        </div>
+
+        <div class="form-group-inline">
+            <label for="daytrade">Day Trade:</label>
+            <input type="checkbox" id="daytrade" formControlName="daytrade" value="1">
+            
+        </div>
+        <div class="form-group-inline">
+            <label for="dividendos">Dividendos:</label>
+            <input type="checkbox" id="dividendos" formControlName="dividendos" value="1">
+        </div>
+        <div class="form-group-inline">
+            <label for="buyhold">Buy and Hold:</label>
+            <input type="checkbox" id="buyhold" formControlName="buyhold" value="1">
+        </div>
+    </form>
+    <hr>
+
+
+    <div class="contener-footer">
+        <div class="new-carteira-footer">
+            <footer class="container-buttons">
+                <button mat-raised-button color="accent" (click)="hideFormCarteira()">Cancelar</button>
+                <button mat-raised-button color="primary" (click)="saveCarteira()">Salvar</button>
+            </footer>
+        </div>
+    </div>
+
+</app-modal>
