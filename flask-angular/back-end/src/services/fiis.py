@@ -46,6 +46,7 @@ def load_dividendos(codigo: str) -> List[Dict]:
             row[map_row[i]] = map_convert[i](value)
             i += 1
             if i == 5:
+                row['jcp'] = False
                 result.append(row)
                 row = {}
                 i = 0

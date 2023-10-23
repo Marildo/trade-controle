@@ -22,14 +22,19 @@
 
 </div>
 <div>
-    <div class="form-group-inline">
+    <div class="header_table">
         <h2>Pagamentos</h2>
-        <select placeholder="Ativo" ngModel="ativo" (ngModelChange)="filterItems($event)">
-            <option></option>
-            <option *ngFor="let item of itemsFilter">
-                {{item}}
-            </option>
-        </select>
+        <div>
+            <label>Oculta totais igual a zero</label>
+            <input type="checkbox"[(ngModel)]="hideZeros">
+
+            <select placeholder="Ativo" ngModel="ativo" (ngModelChange)="filterItems($event)">
+                <option></option>
+                <option *ngFor="let item of itemsFilter">
+                    {{item}}
+                </option>
+            </select>
+        </div>
     </div>
     <table>
         <thead>

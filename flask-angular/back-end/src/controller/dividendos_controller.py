@@ -3,8 +3,10 @@ from typing import NamedTuple
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 from src.services.fiis import load_dividendos
+from ..services.status_invest import StatusInvest
 from model import DividendosRepository, Dividendos
 from .schemas import DividendosSchema
+from .carteira_controller import CarteiraController
 
 
 class DayHistoric(NamedTuple):
@@ -26,6 +28,14 @@ class DividendosController:
 
     @staticmethod
     def proccess():
+        def new_dividendo():
+            nd = Dividendos()
+            nd.data_ref = data_ref
+            nd.ativo_id = row.ativo_id
+            nd.carteira_id = row.carteira_id
+            nd.div_yield = 0
+            return nd
+
         rows = DividendosRepository.load_ativos()
         for row in rows:
             diff = (row.dt_end - row.dt_start).days
@@ -47,30 +57,35 @@ class DividendosController:
                 if exists:
                     continue
 
-                div = Dividendos()
-                div.data_ref = data_ref
-                div.ativo_id = row.ativo_id
-
-                div.div_yield = 0
+                print(f'Processing {row.codigo} - {month}')
 
                 if not payments:
-                    payments = load_dividendos(row.codigo)
+                    payments = load_dividendos(row.codigo) if row.tipo_investimento == 'FIIS' \
+                        else StatusInvest().load_dividendos(row.codigo)
 
                 pays = [i for i in payments if
                         i['data_com'].year == data_ref.year and i['data_com'].month == data_ref.month]
                 if not pays:
+                    div = new_dividendo()
                     div.data_com = month
-                    div.data_pgto = month + relativedelta(months=1)
+                    div.qtd = DividendosRepository.get_qtd(row.ativo_id, div.data_com)
+                    div.data_pgto = month
                     div.valor = 0
+                    div.total = 0
+                    div.ir = 0
+                    div.save()
                 else:
-                    pay = pays[0]
-                    div.data_com = pay['data_com']
-                    div.data_pgto = pay['data_pgto']
-                    div.valor = pay['valor']
-                    div.div_yield = pay['div_yield']
-                    div.cotacao = pay['cotacao']
-
-                qtd = DividendosRepository.get_qtd(row.ativo_id, div.data_com)
-                div.qtd = qtd
-                div.total = div.qtd * div.valor
-                div.save()
+                    for pay in pays:
+                        div = new_dividendo()
+                        div.data_com = pay['data_com']
+                        div.data_pgto = pay['data_pgto']
+                        div.valor = pay['valor']
+                        div.div_yield = pay['div_yield']
+                        div.cotacao = pay['cotacao']
+                        div.jcp = pay['jcp']
+                        div.qtd = DividendosRepository.get_qtd(row.ativo_id, div.data_com)
+                        total = div.qtd * div.valor
+                        div.ir = total * (15 / 100) if div.jcp else 0
+                        div.total = total - div.ir
+                        div.save()
+                        CarteiraController.update_by_dividendos(div, row.codigo)

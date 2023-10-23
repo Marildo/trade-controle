@@ -7,10 +7,11 @@ from datetime import date
 
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
                         ForeignKey, text, func)
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, Mapper
+from sqlalchemy import event
 
 from .init_db import db_connection, Base
-from .enums import TipoInvestimento, TipoNota, TipoCarteira, CompraVenda, NotaStatusProcess
+from .enums import TipoInvestimento, TipoNota, TipoCarteira, TipoMovimentacao, CompraVenda, NotaStatusProcess
 
 from .scripts import OperacoesSql, ArquivosCorretagemSQL
 
@@ -128,6 +129,37 @@ class Carteira(BaseTable):
     buyhold = Column(BOOLEAN, default=False, nullable=False)
 
 
+class Dividendos(BaseTable):
+    __tablename__ = 'dividendos'
+
+    id = Column(INTEGER, primary_key=True)
+    data_com = Column(DATE, nullable=True)
+    data_pgto = Column(DATE, nullable=True)
+    data_ref = Column(DATE, nullable=True)
+    qtd = Column(FLOAT(precision=2), default=0)
+    cotacao = Column(FLOAT(precision=2), default=0)
+    valor = Column(FLOAT(precision=2), default=0)
+    ir = Column(FLOAT(precision=2), default=0)
+    total = Column(FLOAT(precision=2), default=0)
+    div_yield = Column(FLOAT(precision=2), default=0)
+    jcp = Column(BOOLEAN, default=False, nullable=False)
+    ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id'))
+    ativo = relationship("Ativo")
+    created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
+
+    @staticmethod
+    def all():
+        with db_connection as conn:
+            query = conn.session.query(Dividendos).order_by(Dividendos.data_pgto)
+            return query.all()
+
+    @staticmethod
+    def find_by_ativo(ativo_id: int):
+        with db_connection as conn:
+            query = conn.session.query(Dividendos).filter(Dividendos.ativo_id == ativo_id)
+            return query.all()
+
 
 class FileCorretagem(BaseTable):
     __tablename__ = 'arquivos_corretagem'
@@ -188,6 +220,28 @@ class FileCorretagem(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
+
+
+class Historico(BaseTable):
+    __tablename__ = 'historicos'
+    id = Column(INTEGER, primary_key=True)
+    valor = Column(FLOAT, default=0)
+    descricao = Column(VARCHAR(120))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id'))
+    movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
+    operacao_id = Column(INTEGER, ForeignKey('operacoes.id'))
+    dividendo_id = Column(INTEGER, ForeignKey('dividendos.id'))
+    data_referencia = Column(DATE)
+    created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
+
+
+class Movimentacao(BaseTable):
+    __tablename__ = 'movimentacaoes'
+    id = Column(INTEGER, primary_key=True)
+    data_referencia = Column(DATE)
+    valor = Column(FLOAT, default=0)
+    tipo = Column(Enum(TipoMovimentacao))
+    descricao = Column(VARCHAR(60))
 
 
 class NotaCorretagem(BaseTable):
@@ -360,30 +414,8 @@ class Operacao(BaseTable):
             return query.fetchall()
 
 
-class Dividendos(BaseTable):
-    __tablename__ = 'dividendos'
+@event.listens_for(Operacao, "before_insert")
+def before_save_operacao(mapper: Mapper, connection, instance: Operacao):
+    if instance.daytrade:
+        instance.carteira_id = 1
 
-    id = Column(INTEGER, primary_key=True)
-    data_com = Column(DATE, nullable=True)
-    data_pgto = Column(DATE, nullable=True)
-    data_ref = Column(DATE, nullable=True)
-    qtd = Column(FLOAT(precision=2), default=0)
-    cotacao = Column(FLOAT(precision=2), default=0)
-    valor = Column(FLOAT(precision=2), default=0)
-    total = Column(FLOAT(precision=2), default=0)
-    div_yield = Column(FLOAT(precision=2), default=0)
-    ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
-    ativo = relationship("Ativo")
-    created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
-
-    @staticmethod
-    def all():
-        with db_connection as conn:
-            query = conn.session.query(Dividendos).order_by(Dividendos.data_pgto)
-            return query.all()
-
-    @staticmethod
-    def find_by_ativo(ativo_id: int):
-        with db_connection as conn:
-            query = conn.session.query(Dividendos).filter(Dividendos.ativo_id == ativo_id)
-            return query.all()

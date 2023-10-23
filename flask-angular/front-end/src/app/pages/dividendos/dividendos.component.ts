@@ -20,6 +20,7 @@ export class DividendosComponent {
   public totalTable = 0
   public itemsFilter?: string[];
   public lineChartType: ChartType = 'line';
+  public hideZeros = true
 
 
   private lineChartLabels: string[] = [];
@@ -125,6 +126,9 @@ export class DividendosComponent {
     let result = this.items.filter(f => f.qtd > 0)
     if (codigo)
       result = result.filter(i => i.ativo.codigo == codigo)
+
+    if (this.hideZeros)
+      result = result.filter(f => f.total > 0)
 
     this.totalTable = result.reduce((acc: any, item: any) => acc + item.total, 0)
     this.itemsTable = result.sort((a:any, b:any) => new Date(b.data_pgto).getTime() - new Date(a.data_pgto).getTime())

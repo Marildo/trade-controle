@@ -3,7 +3,7 @@ from webargs import fields, validate
 from flask import request
 from webargs.flaskparser import parser
 
-from ..model import CarteiraRepository, Carteira
+from ..model import CarteiraRepository, Carteira, Dividendos, Historico
 from .schemas import CarteitaSchema
 
 
@@ -51,3 +51,14 @@ class CarteiraController:
         carteira.update()
         response = CarteitaSchema().dump(carteira)
         return response
+
+    @classmethod
+    def update_by_dividendos(cls, dividendo: Dividendos, codigo: str):
+        if dividendo.total > 0:
+            hist = Historico()
+            hist.carteira_id = dividendo.carteira_id
+            hist.dividendo_id = dividendo.id
+            hist.data_referencia = dividendo.data_pgto
+            hist.descricao = f'{"Juros sobre capital" if dividendo.jcp else "Dividendos"} de ({codigo})'
+            hist.valor = dividendo.total
+            hist.save()

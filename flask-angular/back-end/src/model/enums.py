@@ -40,3 +40,8 @@ class NotaStatusProcess(BaseIntEnum):
     PROCESSANDO = 1
     FINALIZADO = 2
     ERROR = -1
+
+
+class TipoMovimentacao(BaseIntEnum):
+    APORTE = 0
+    SAQUE = 1

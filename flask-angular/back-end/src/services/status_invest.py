@@ -8,10 +8,10 @@ from typing import Tuple, List, Dict
 import requests
 from bs4 import BeautifulSoup, ResultSet, Tag
 
-
 from src.utils.str_util import str_to_float
 from src.utils.date_util import str_date
 from src.settings import logger
+from json import loads
 
 
 class StatusInvest:
@@ -129,23 +129,41 @@ class StatusInvest:
             handler.write(image_data)
 
     @classmethod
-    def load_dividendos_fiis(cls, codigo: str) -> List[Dict]:
+    def load_dividendos(cls, codigo: str) -> List[Dict]:
         result = []
-        url = f'https://statusinvest.com.br/fundos-imobiliarios/{codigo}'
+        url = f'https://statusinvest.com.br/acoes/{codigo}'
         response = cls._request(url)
 
-        seletor = '#earning-section'
         soup = BeautifulSoup(response.text, 'html.parser')
-        div1 = soup.select_one(seletor)
-        table = div1.find('div', {'class': 'list'}).find('div').find_all('table')[0]
-        if table:
-            for line in table.find_all('tr'):
-                cols = line.find_all('td')
-                if cols:
-                    data = [c.get_text(strip=True) for c in cols]
-                    result.append({
-                        'data_com': str_date(data[1]),
-                        'data_pgto': str_date(data[2]),
-                        'valor': str_to_float(data[3])
-                    })
+
+        data = soup.select_one("#results")
+        value = data.get('value')
+        data = loads(value)
+        for item in data:
+            try:
+                result.append({
+                    'data_com': str_date(item['ed']),
+                    'data_pgto': str_date(item['pd']),
+                    'valor': item['v'],
+                    'jcp':  item['et'] == 'JCP',
+                    'div_yield': None,
+                    'cotacao': None,
+                })
+            except Exception as e:
+                print(e, item)
+
         return result
+        # seletor = '#earning-section'
+        # div1 = soup.select_one(seletor)
+        # table = div1.find('div', {'class': 'list'}).find('div').find_all('table')[0]
+        # if table:
+        #     for line in table.find_all('tr'):
+        #         cols = line.find_all('td')
+        #         if cols:
+        #             data = [c.get_text(strip=True) for c in cols]
+        #             result.append({
+        #                 'data_com': str_date(data[1]),
+        #                 'data_pgto': str_date(data[2]),
+        #                 'valor': str_to_float(data[3])
+        #             })
+        # return result

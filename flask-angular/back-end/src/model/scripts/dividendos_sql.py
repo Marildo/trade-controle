@@ -3,13 +3,13 @@
 
 class DividendosSql:
     load_ativos = '''
-    SELECT o.ativo_id, a.codigo, MIN(o.data_compra) dt_start, MAX(o.data_venda) dt_end
+    SELECT o.ativo_id,o.carteira_id, a.codigo,tipo_investimento, MIN(o.data_compra) dt_start, MAX(o.data_venda) dt_end
     FROM operacoes o
     JOIN ativos a ON a.id = o.ativo_id
-    LEFT JOIN carteiras ct ON ct.id = o.carteira_id
+    JOIN carteiras ct ON ct.id = o.carteira_id
     WHERE o.daytrade=0 AND o.compra_venda='COMPRA' 
     AND (a.tipo_investimento = "FIIS" OR ct.dividendos = 1 OR ct.buyhold = 1)
-    GROUP BY a.id
+    GROUP BY a.id,o.carteira_id
     '''
 
     get_qtd = '''
