@@ -8,12 +8,18 @@ from .schemas import CarteitaSchema
 
 
 class CarteiraController:
+    repository = CarteiraRepository()
 
     @classmethod
     def carteiras(cls):
-        data = CarteiraRepository.get_carteiras()
+        data = cls.repository.get_carteiras()
         response = CarteitaSchema().dump(data, many=True)
         return response
+
+    @classmethod
+    def update_saldos(cls):
+        cls.repository.totalize_saldo_caixa()
+        cls.repository.totalize_saldo_ativos()
 
     @classmethod
     def save(cls):

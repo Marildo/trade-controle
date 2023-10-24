@@ -89,3 +89,4 @@ class DividendosController:
                         div.total = total - div.ir
                         div.save()
                         CarteiraController.update_by_dividendos(div, row.codigo)
+                        CarteiraController.update_saldos()

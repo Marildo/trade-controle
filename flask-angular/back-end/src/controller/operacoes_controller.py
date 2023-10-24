@@ -19,6 +19,7 @@ from src.utils.dict_util import rows_to_dicts
 from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota
 from src.model.dtos import Nota
 from .ativos import AtivoController
+from .carteira_controller import CarteiraController
 
 
 class OperacaoController:
@@ -207,6 +208,8 @@ class OperacaoController:
             nota_corr.finalizada = True
             nota_corr.update()
             session.commit()
+
+            CarteiraController.update_saldos()
         except Exception as exep:
             logger.error(item)
             logger.error(exep)
@@ -400,4 +403,3 @@ class OperacaoController:
                 for item in [o for o in operacoes if o.ativo == at]:
                     item.resultado = item.calc_resultado()
                     item.save()
-
