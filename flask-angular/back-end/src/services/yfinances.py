@@ -21,6 +21,3 @@ class YFinanceService:
                 ativo.cotacao = value
 
         return ativos
-
-    def teste(self):
-        print(datetime.datetime.now())

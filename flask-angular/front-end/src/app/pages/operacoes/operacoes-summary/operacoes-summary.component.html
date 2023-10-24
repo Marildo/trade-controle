@@ -8,25 +8,28 @@
             <th>Carteira</th>
             <th>Quantidade</th>
             <th>Pr. Médio</th>
-            <th>Resultado</th>          
+            <th>Resultado</th>
+            <th>Total</th>
         </tr>
     </thead>
     <tbody>
         <tr *ngFor="let row of items">
             <td><a (click)="onFilterAtivo( row.ativo_id)"> {{ row.ativo }}</a></td>
-            <td>{{ row.cotacao | currency}}</td>    
+            <td>{{ row.cotacao | currency}}</td>
             <td>{{ row.tipo }}</td>
             <td>{{ row.abertura | date:'dd/MM/yyy'}} </td>
             <td>{{ row.carteira }}</td>
-            <td>{{ row.qtd }}</td>                   
+            <td>{{ row.qtd }}</td>
             <td>{{ row.pm_medio | currency}}</td>
-            <td>{{ row.resultado | currency}}</td>            
+            <td>{{ row.resultado | currency}}</td>
+            <td>{{ row.cotacao * row.qtd | currency }}</td>
         </tr>
     </tbody>
     <tfoot>
         <tr>
-            <td colspan="4">Número de Operações {{summary.numero_operacoes}}</td>
-            <td colspan="4">Resultado {{summary.resultado | currency}}</td>
+            <td colspan="3">Número de Operações {{summary.numero_operacoes}}</td>
+            <td colspan="3">Resultado {{summary.resultado | currency}}</td>
+            <td colspan="3">Total {{summary.total | currency}}</td>
         </tr>
     </tfoot>
 </table>

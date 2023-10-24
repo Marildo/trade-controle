@@ -8,12 +8,15 @@ from flask_cors import CORS
 
 from .routes import index_router, nota_router, operacao_router, dividendo_router, carteira_router
 
+from .tasks import Tasks
+
 
 class App:
     def __init__(self):
         self.__app = Flask(__name__)
         self.__config_cors()
         self.__register_routes()
+        Tasks().start()
 
     def __register_routes(self):
         self.__app.register_blueprint(index_router)

@@ -340,8 +340,9 @@ class OperacaoController:
         data = Operacao.fetch_summary(args)
         numero_operacoes = len(data)
         items = rows_to_dicts(data)
-        total = sum([i.resultado for i in data])
-        response = dict(items=items, summary=dict(resultado=total, numero_operacoes=numero_operacoes))
+        resultado = sum([i.resultado for i in data])
+        total = sum([i.cotacao * i.qtd for i in data])
+        response = dict(items=items, summary=dict(resultado=resultado, numero_operacoes=numero_operacoes, total=total))
         return response
 
     @classmethod

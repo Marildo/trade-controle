@@ -43,6 +43,7 @@ export class OperacoesSummaryComponent {
     this.service.load_summary(this.filter).subscribe(resp => {   
       this.items = resp.data.items
       this.summary = resp.data.summary
+      console.log(resp)
     })
   }
 
