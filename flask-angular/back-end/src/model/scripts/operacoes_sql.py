@@ -94,49 +94,69 @@ class OperacoesSql:
     )
 
     SELECT  
-    	ROUND(SUM(resultado),2) total, ano, trimestre,MAX(encerramento) encerramento, 
-    	CONCAT(LPAD( trimestre * 3,2,'0'),'/',ano) data_group
+        ROUND(SUM(resultado),2) total, ano, trimestre,MAX(encerramento) encerramento, 
+        CONCAT(LPAD( trimestre * 3,2,'0'),'/',ano) data_group
     FROM QUERY02
     GROUP BY ano, trimestre 
     ORDER BY encerramento '''
 
     query_statistics_daytrade = '''
     WITH 
-    	QUERY01 AS (
-    	SELECT 
-       	resultado gross,
-       	custos + irpf costs,
-       	resultado - (custos + irpf) net
-    	FROM operacoes o
-    	WHERE data_encerramento >= :start_date AND daytrade=1)
+        QUERY01 AS (
+            SELECT 
+            resultado gross,
+            custos + irpf costs,
+            resultado - (custos + irpf) net
+            FROM operacoes o
+            WHERE data_encerramento >= :start_date AND daytrade=1)
 
-    	,SUMMARY_TOTAL AS(
-    	 SELECT 
-    	 	ROUND(SUM(net),2) net_total,
-    	 	ROUND(SUM(gross),2) gross_total,
-    	 	ROUND(SUM(costs),2) costs_total,
-    		ROUND(AVG(gross),2) avg_total,
-    	 	COUNT(1) total_trades
-    	 FROM  QUERY01	)
+            ,SUMMARY_TOTAL AS(
+             SELECT 
+                ROUND(SUM(net),2) net_total,
+                ROUND(SUM(gross),2) gross_total,
+                ROUND(SUM(costs),2) costs_total,
+                ROUND(AVG(gross),2) avg_total,
+                COUNT(1) total_trades
+             FROM  QUERY01	)
 
-    	,SUMMARY_GAIN AS(
-    	SELECT 
-    	  COUNT(1) count_gain,	 
-    	  COALESCE(MAX(gross),0) biggest_gain,
-    	  ROUND(COALESCE(AVG(gross),0),2) avg_gain
-    	FROM QUERY01 WHERE gross > 0)
+            ,SUMMARY_GAIN AS(
+            SELECT 
+              COUNT(1) count_gain,	 
+              COALESCE(MAX(gross),0) biggest_gain,
+              ROUND(COALESCE(AVG(gross),0),2) avg_gain
+            FROM QUERY01 WHERE gross > 0)
 
-    	,SUMMARY_LOSS AS(
-    	SELECT 
-    	  COUNT(1) count_loss,	  
-    	  COALESCE(MIN(gross),0) biggest_loss,
-    	  ROUND(COALESCE(AVG(gross),0),2) avg_loss
-    	FROM QUERY01 WHERE gross <= 0)
+            ,SUMMARY_LOSS AS(
+            SELECT 
+              COUNT(1) count_loss,	  
+              COALESCE(MIN(gross),0) biggest_loss,
+              ROUND(COALESCE(AVG(gross),0),2) avg_loss
+            FROM QUERY01 WHERE gross <= 0)
 
     SELECT
         SUMMARY_TOTAL.*,
-    	SUMMARY_GAIN.*,
-    	SUMMARY_LOSS.*,
-       ROUND(count_gain * 100 / total_trades,2) perc_gain
-    	FROM SUMMARY_GAIN,SUMMARY_LOSS,SUMMARY_TOTAL 
+        SUMMARY_GAIN.*,
+        SUMMARY_LOSS.*,
+        ROUND(count_gain * 100 / total_trades,2) perc_gain
+        FROM SUMMARY_GAIN,SUMMARY_LOSS,SUMMARY_TOTAL 
         '''
+
+    # TODO -  remover
+    query_compras_without_historic = """
+    SELECT o.id, o.data_compra,o.qtd_compra, o.pm_compra,o.resultado, o.custos, o.irpf, o.daytrade, 
+        o.encerrada, o.carteira_id, o.compra_venda, a.codigo
+        FROM operacoes o
+        JOIN ativos a ON a.id = o.ativo_id
+        LEFT JOIN historicos h ON h.compra_id = o.id
+        WHERE h.compra_id IS NULL
+    """
+
+    # TODO -  remover
+    query_vendas_without_historic = """
+    SELECT o.id, o.data_venda, o.qtd_venda, o.pm_venda ,o.resultado, o.custos, o.irpf, o.daytrade, 
+        o.encerrada, o.carteira_id, o.compra_venda, a.codigo
+        FROM operacoes o
+        JOIN ativos a ON a.id = o.ativo_id
+        LEFT JOIN historicos h ON h.venda_id = o.id
+        WHERE h.venda_id IS NULL
+    """

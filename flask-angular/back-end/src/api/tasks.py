@@ -16,5 +16,6 @@ class Tasks:
 
     @classmethod
     def __tasks(cls):
+        OperacaoController().update_historico()
         OperacaoController().update_prices()
         CarteiraController.update_saldos()

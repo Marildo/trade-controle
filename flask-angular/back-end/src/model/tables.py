@@ -227,9 +227,8 @@ class Historico(BaseTable):
     id = Column(INTEGER, primary_key=True)
     valor = Column(FLOAT, default=0)
     descricao = Column(VARCHAR(120))
-    carteira_id = Column(INTEGER, ForeignKey('carteiras.id'))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
     movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
-    operacao_id = Column(INTEGER, ForeignKey('operacoes.id'))
     dividendo_id = Column(INTEGER, ForeignKey('dividendos.id'))
     data_referencia = Column(DATE)
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
@@ -291,6 +290,8 @@ class Operacao(BaseTable):
     nota_compra = relationship("NotaCorretagem", foreign_keys=[nota_compra_id], lazy=True)
     nota_venda_id = Column(INTEGER, ForeignKey('notas_corretagem.id'))
     nota_venda = relationship("NotaCorretagem", foreign_keys=[nota_venda_id], lazy=True)
+    compra_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
+    venda_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
 
     def __init__(self):
         self.qtd_compra = 0.0
@@ -418,4 +419,3 @@ class Operacao(BaseTable):
 def before_save_operacao(mapper: Mapper, connection, instance: Operacao):
     if instance.daytrade:
         instance.carteira_id = 1
-

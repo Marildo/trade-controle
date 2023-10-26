@@ -16,7 +16,8 @@ from model import TipoInvestimento
 from services import YFinanceService
 from src.settings import logger
 from src.utils.dict_util import rows_to_dicts
-from src.model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota
+from ..model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota, Historico
+from ..model import OperacoesRepository
 from src.model.dtos import Nota
 from .ativos import AtivoController
 from .carteira_controller import CarteiraController
@@ -38,6 +39,9 @@ class OperacaoController:
 
         for item in notas:
             cls.__import_nota(item)
+
+        cls.update_historico()
+        CarteiraController.update_saldos()
 
         logger.info('Finished import')
 
@@ -209,7 +213,6 @@ class OperacaoController:
             nota_corr.update()
             session.commit()
 
-            CarteiraController.update_saldos()
         except Exception as exep:
             logger.error(item)
             logger.error(exep)
@@ -404,3 +407,43 @@ class OperacaoController:
                 for item in [o for o in operacoes if o.ativo == at]:
                     item.resultado = item.calc_resultado()
                     item.save()
+
+    @classmethod
+    def update_historico(cls):
+        pass
+
+        param = dict(compra_hist_id=None, venda_hist_id=None)
+        operacoes = Operacao().read_by_params(param)
+
+        for op in operacoes:
+            if op.daytrade:
+                hist = Historico()
+                hist.carteira_id = op.carteira_id
+                hist.descricao = f'Daytrade de {op.ativo.codigo}'
+                hist.valor = op.resultado - op.custos - op.irpf
+                hist.data_referencia = op.data_compra
+                hist.save()
+                op.compra_hist_id = hist.id
+                op.venda_hist_id = hist.id
+            else:
+                if op.data_compra is not None:
+                    hist = Historico()
+                    hist.carteira_id = op.carteira_id
+                    hist.data_referencia = op.data_compra
+                    hist.descricao = f'Compra de {op.ativo.codigo}'
+                    custos = 0 if op.compra_venda == 'COMPRA' else op.custos - op.irpf
+                    hist.valor = -1 * op.pm_compra * op.qtd_compra - custos
+                    hist.save()
+                    op.compra_hist_id = hist.id
+
+                if op.data_venda is not None:
+                    hist = Historico()
+                    hist.carteira_id = op.carteira_id
+                    hist.data_referencia = op.data_venda
+                    hist.descricao = f'Venda de {op.ativo.codigo}'
+                    custos = 0 if op.compra_venda == 'VENDA' else op.custos - op.irpf
+                    hist.valor = op.pm_venda * op.qtd_venda - custos
+                    hist.save()
+                    op.compra_hist_id = hist.id
+
+            op.save()
