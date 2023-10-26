@@ -28,6 +28,7 @@
 
                 <th>Nt. Compra</th>
                 <th>Nt. Venda</th>
+                <th> </th>
             </tr>
         </thead>
         <tbody>
@@ -49,15 +50,19 @@
 
                 <td><a (click)="onFilterNotaCompra( row.nota_compra)"> {{ row.nota_compra }}</a></td>
                 <td><a (click)="onFilterNotaVenda( row.nota_compra)"> {{ row.nota_compra }}</a></td>
+                <td> <button mat-icon-button matTooltip="Editar" color="primary" aria-label="Editar"
+                        (click)="onEditar(row.id)">
+                        <mat-icon>edit</mat-icon>
+                    </button></td>
             </tr>
         </tbody>
         <tfoot>
             <tr>
                 <td colspan="4">Número de Operações {{summary.numero_operacoes}}</td>
-                <td colspan="2">Bruto {{summary.resultado  | currency}}</td>
+                <td colspan="2">Bruto {{summary.resultado | currency}}</td>
                 <td colspan="2">Custos {{summary.custos | currency}}</td>
                 <td colspan="2">IRPF {{summary.irpf | currency}}</td>
-                <td colspan="2">Líquido {{summary.liquido | currency}}</td>
+                <td colspan="3">Líquido {{summary.liquido | currency}}</td>
             </tr>
         </tfoot>
     </table>
@@ -113,7 +118,7 @@
                     <option value="2">Fundos Imobiliários</option>
                     <option value="3">Indice</option>
                 </select>
-            </div> 
+            </div>
             <div class="form-group-inline">
                 <label for="carteira_id"> Carteira </label>
                 <select formControlName="carteira_id" id="carteira_id">
@@ -129,3 +134,48 @@
         </footer>
     </div>
 </div>
+
+<app-modal #modal id="modalEdit">
+    <form [formGroup]="formOperacao" class="formOperacao">
+        <h2 class="title">Nova carteira</h2>
+
+        <div class="form-group-inline">
+            <div>
+                <label for="tipo">Ativo: </label>
+                <select id="tipo" formControlName="ativo_id">
+                    <option value="COMPRA">Compra</option>
+                    <option value="VENDA">Venda</option>
+                </select>
+            </div>
+            <div>
+                <label for="tipo">Carteira: </label>
+                <select id="tipo" formControlName="carteira_id">
+                    <option *ngFor="let option of carteiras" [value]="option.id">
+                        {{ option.nome }}
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="form-group-inline">
+            <label for="tipo">Compra ou Venda:</label>
+            <select id="tipo" formControlName="compra_venda">
+                <option value="COMPRA">Compra</option>
+                <option value="VENDA">Venda</option>
+            </select>
+        </div>
+
+    </form>
+    <hr>
+
+
+    <div class="contener-footer">
+        <div class="new-carteira-footer">
+            <footer class="container-buttons">
+                <button mat-raised-button color="accent" (click)="hideFormOperacao()">Cancelar</button>
+                <button mat-raised-button color="primary" (click)="saveOperacao()">Salvar</button>
+            </footer>
+        </div>
+    </div>
+
+</app-modal>
