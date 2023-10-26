@@ -12,10 +12,14 @@ resource = '/operacoes'
 operacao_router = Blueprint(name=name, import_name=name, url_prefix=resource)
 
 
-@operacao_router.route('/', methods=['GET'])
+@operacao_router.route('/', methods=['GET', 'PUT'])
 @format_response
 def load_dashboard_data():
-    return OperacaoController.fetch_dashboard_data()
+    map_controller = {
+        'GET': OperacaoController.fetch_dashboard_data,
+        'PUT': OperacaoController.update_operacao
+    }
+    return map_controller[request.method]()
 
 
 @operacao_router.route('/daytrade/statistics/', methods=['GET'])

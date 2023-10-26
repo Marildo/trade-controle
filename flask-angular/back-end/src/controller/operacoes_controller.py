@@ -10,7 +10,8 @@ from datetime import date, timedelta, datetime
 
 from flask import request
 from webargs.flaskparser import parser
-from webargs import fields, validate
+from webargs import validate
+from webargs import fields
 
 from model import TipoInvestimento
 from services import YFinanceService
@@ -303,6 +304,43 @@ class OperacaoController:
         operacao.ativo_id = old.ativo_id
         operacao.ativo = old.ativo
         return operacao
+
+    @classmethod
+    def update_operacao(cls):
+        input_schema = {
+            'id': fields.Int(required=True),
+            'ativo': fields.String(required=False),
+            'ativo_id': fields.Int(required=True),
+            'carteira': fields.String(required=False, allow_none=True),
+            'carteira_id': fields.Int(required=True),
+            'data_compra': fields.Date(required=False, allow_none=True),
+            'data_encerramento': fields.Date(required=False, allow_none=True),
+            'data_venda': fields.Date(required=False, allow_none=True),
+            'custos': fields.Float(required=False),
+            'pm_compra': fields.Float(required=False),
+            'pm_venda': fields.Float(required=False),
+            'qtd_compra': fields.Float(required=False),
+            'qtd_venda': fields.Float(required=False),
+            'resultado': fields.Float(required=False),
+            'irpf': fields.Float(required=False),
+            'compra_venda': fields.Str(required=False),
+            'nota_compra': fields.Int(required=False, allow_none=True),
+            'nota_venda': fields.Int(required=False, allow_none=True),
+            'nota_compra_id': fields.Int(required=False, allow_none=True),
+            'nota_venda_id': fields.Int(required=False, allow_none=True),
+            'compra_hist_id': fields.Int(required=False, allow_none=True),
+            'venda_hist_id': fields.Int(required=False, allow_none=True),
+            'encerrada': fields.Bool(required=False),
+            'daytrade': fields.Bool(required=False),
+        }
+        args = parser.parse(input_schema, request, location='json')
+        del args['ativo']
+        del args['carteira']
+        del args['nota_compra']
+        del args['nota_venda']
+        operacao = Operacao(**args)
+        operacao.update()
+        return {'status': 'Atualização realizada com sucesso'}
 
     @classmethod
     def fetch_detail(cls):

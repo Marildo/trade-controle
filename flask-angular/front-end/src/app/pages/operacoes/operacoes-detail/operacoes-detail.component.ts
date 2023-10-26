@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { MessageService } from 'primeng/api';
+import { ModalService } from 'src/app/components/modal/modal-service';
 
 
 import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
+import { CarteiraService } from '../../carteiras/carteira.service';
 
 @Component({
   selector: 'app-operacoes-detail',
@@ -14,14 +16,21 @@ import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.ser
 export class OperacoesDetailComponent {
 
   public items: any[];
+  public carteiras: any[];
+
   public summary: any;
   public formFiltrer: FormGroup;
+  public formOperacao: FormGroup;
   public hiddenFilter: boolean;
+  private modalEdit = "modalEdit"
 
   private filter = new Map();
 
-  constructor(private route: ActivatedRoute, private service: OperacoesService, private messageService: MessageService) {
+  constructor(private route: ActivatedRoute, 
+    private service: OperacoesService, private carteiraService: CarteiraService,
+    private messageService: MessageService, private modalService: ModalService) {
     this.items = [];
+    this.carteiras = [];
     this.hiddenFilter = true;
     this.summary = { 'numero_operacoes': 0 }
 
@@ -42,10 +51,37 @@ export class OperacoesDetailComponent {
       carteira_id: new FormControl(),
       tipo_investimento: new FormControl(),
     });
+
+    this.formOperacao = new FormGroup({
+      ativo: new FormControl(),
+      ativo_id: new FormControl(),
+      carteira: new FormControl(),
+      carteira_id: new FormControl(),
+      compra_hist_id: new FormControl(),
+      compra_venda: new FormControl(),
+      custos: new FormControl(),
+      data_compra: new FormControl(),
+      data_encerramento: new FormControl(),
+      data_venda: new FormControl(),
+      daytrade: new FormControl(),
+      encerrada: new FormControl(),
+      id: new FormControl(),
+      irpf: new FormControl(),
+      nota_compra: new FormControl(),
+      nota_compra_id: new FormControl(),
+      nota_venda: new FormControl(),
+      nota_venda_id: new FormControl(),
+      pm_compra: new FormControl(),
+      pm_venda: new FormControl(),
+      qtd_compra: new FormControl(),
+      qtd_venda: new FormControl(),
+      resultado: new FormControl(),
+      venda_hist_id: new FormControl(),
+    });
   }
 
   ngOnInit(): void {
-    const params = this.route.snapshot.queryParams;
+    const params = this.route.snapshot.queryParams;    
     if ('file_id' in params) {
       this.filter.set('file_id', params['file_id'])
       this.onLoad()
@@ -107,6 +143,35 @@ export class OperacoesDetailComponent {
     this.filter.clear()
     this.filter.set('nota_venda', nota)
     this.onLoad()
+  }
+
+  onEditar(id: string): void {
+    if (this.carteiras.length == 0){      
+      this.carteiraService.loadAll().subscribe(resp => this.carteiras = resp.data)     
+    }
+ 
+
+
+    const item = this.items.filter(f => f.id == id)[0]
+
+    this.formOperacao.setValue(item)
+    this.modalService.open(this.modalEdit)
+  }
+
+  hideFormOperacao(): void {
+    this.modalService.close(this.modalEdit)
+  }
+
+  saveOperacao(): void {
+    this.service.update(this.formOperacao.value).subscribe({
+      next : value=> {
+        this.modalService.close(this.modalEdit)
+      },
+      error(err) {
+          console.log(err)
+      },
+    })
+   
   }
 
   private onLoad(): void {

@@ -38,8 +38,8 @@ WITH
         SELECT  s.carteira_id, sum(qtd * a.cotacao) total FROM saldo_qtd s
         JOIN ativos a ON a.id = s.ativo_id
         WHERE qtd > 0 GROUP BY carteira_id
-    ),
-   
+    )
+       
     UPDATE carteiras c 
     JOIN total ON total.carteira_id = c.id
     SET c.saldo_ativos = total.total

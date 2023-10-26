@@ -293,13 +293,15 @@ class Operacao(BaseTable):
     compra_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
     venda_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         self.qtd_compra = 0.0
         self.qtd_venda = 0.0
         self.pm_venda = 0.0
         self.pm_compra = 0.0
         self.custos = 0.0
         self.irpf = 0.0
+        for key, value in kwargs.items():
+            setattr(self, key, value)
 
     @property
     def qtd_aberta(self) -> float:
