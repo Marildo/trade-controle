@@ -12,14 +12,17 @@ import { BaseAPIService } from 'src/app/service/api/base-api.service';
 })
 export class OperacoesService extends BaseAPIService {
 
+  public update(body: any): Observable<any> {
+    return this.put('operacoes/', body)
+  }
 
   public load_dashboard(): Observable<any> {
     return this.get('operacoes/')
   }
 
-  
+
   public load_statistics_daytrade(filter: Map<string, string>): Observable<any> {
-    return this.get('operacoes/daytrade/statistics/',filter)
+    return this.get('operacoes/daytrade/statistics/', filter)
   }
 
   public load_detail(filter: Map<string, string>): Observable<any> {
@@ -36,7 +39,7 @@ export class OperacoesService extends BaseAPIService {
   }
 
   search_files(): Observable<any> {
-    const url = '/notas/arquivos/search' 
+    const url = '/notas/arquivos/search'
     return this.put(url)
   }
 
@@ -46,9 +49,9 @@ export class OperacoesService extends BaseAPIService {
     let i = 0
     for (const file of files) {
       i++
-      formData.append('file'+i, file);  
+      formData.append('file' + i, file);
     }
-    return this.post('/notas/arquivos', formData, headers)    
+    return this.post('/notas/arquivos', formData, headers)
   }
 
   public process_file(file_id: string): Observable<any> {
