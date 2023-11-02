@@ -14,13 +14,11 @@ class CarteiraRepository:
         return data
 
     @classmethod
-    def totalize_saldo_caixa(cls):
-        sql = text(CarteiraSQL.totalize_saldo_caixa)
+    def totalize(cls):
         with db_connection.engine.begin() as conn:
+            sql = text(CarteiraSQL.totalize_saldo_ativos)
             conn.execute(sql)
-
-    @classmethod
-    def totalize_saldo_ativos(cls):
-        sql = text(CarteiraSQL.totalize_saldo_caixa)
-        with db_connection.engine.begin() as conn:
+            sql = text(CarteiraSQL.totalize_saldo_caixa)
+            conn.execute(sql)
+            sql = text(CarteiraSQL.totalize_resultado)
             conn.execute(sql)

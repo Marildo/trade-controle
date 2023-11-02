@@ -454,6 +454,8 @@ class OperacaoController:
         operacoes = Operacao().read_by_params(param)
 
         for op in operacoes:
+            if op.carteira_id is None:
+                continue
             if op.daytrade:
                 hist = Historico()
                 hist.carteira_id = op.carteira_id

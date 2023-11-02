@@ -44,3 +44,15 @@ WITH
     JOIN total ON total.carteira_id = c.id
     SET c.saldo_ativos = total.total
 """
+
+    totalize_resultado = """
+    WITH
+    resultado AS (      
+        SELECT  carteira_id, SUM(o.resultado - o.custos - o.irpf) resultado FROM operacoes o
+    GROUP BY carteira_id
+    )   
+    
+    UPDATE carteiras c 
+    JOIN resultado r ON r.carteira_id = c.id
+    SET c.resultado = r.resultado;
+"""

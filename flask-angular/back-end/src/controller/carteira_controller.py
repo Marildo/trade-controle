@@ -18,8 +18,7 @@ class CarteiraController:
 
     @classmethod
     def update_saldos(cls):
-        cls.repository.totalize_saldo_caixa()
-        cls.repository.totalize_saldo_ativos()
+        cls.repository.totalize()
 
     @classmethod
     def save(cls):
