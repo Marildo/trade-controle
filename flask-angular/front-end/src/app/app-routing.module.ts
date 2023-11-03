@@ -10,7 +10,6 @@ import { CarteiraMainComponent } from './pages/carteiras/carteira-main/carteira-
  
 const routes: Routes = [
   {path:'', component:DashboardComponent, pathMatch: 'full'},
-  {path:'carteiras', component:CarteiraMainComponent},
   {path: 'dividendos', component:DividendosComponent}
 ];
 

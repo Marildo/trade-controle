@@ -9,6 +9,7 @@ from webargs.flaskparser import parser
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
+from model.enums import TipoMovimentacao
 from services import YFinanceService
 from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal, Movimentacao
 from .schemas import CarteitaSchema, MovimentacaoSchema
@@ -160,13 +161,14 @@ class CarteiraController:
         input_schema = {
             'valor': fields.Float(required=True),
             'data_referencia': fields.Date(required=True),
-            'descricao': fields.String(required=False),
+            'descricao': fields.String(required=False, allow_none=True),
             'tipo': fields.String(required=True),
             'carteira_id': fields.Integer(required=True)
         }
         args = parser.parse(input_schema, request, location='json')
 
         mov = Movimentacao(**args)
+        mov.valor = mov.valor * (-1 if mov.tipo == TipoMovimentacao.APORTE else 1)
         mov.save()
 
         hist = Historico()

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 
 
 
-import { OperacoesRoutingModule } from './router/operacoes.routing.module';
+import { OperacoesRoutingModule } from './operacoes.routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { OperacoesMainComponent } from './operacoes-main/operacoes-main.component';
 import { OperacoesDashboardComponent } from './operacoes-dashboard/operacoes-dashboard.component';
