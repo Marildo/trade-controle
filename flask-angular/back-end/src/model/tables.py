@@ -171,7 +171,7 @@ class FileCorretagem(BaseTable):
     data_upload = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'))
     data_processamento = Column(DATETIME)
     notas = relationship("NotaCorretagem", uselist=True, backref='arquivos_corretagem')
-    __table_args__ = (Index('tipo', 'name', unique=True),)
+    __table_args__ = (Index('idx_nome', tipo, name, unique=True),)
 
     def is_exists(self) -> bool:
         with db_connection as conn:
@@ -226,13 +226,26 @@ class FileCorretagem(BaseTable):
 class Historico(BaseTable):
     __tablename__ = 'historicos'
     id = Column(INTEGER, primary_key=True)
-    valor = Column(FLOAT, default=0)
+    valor = Column(FLOAT, default=0, nullable=False)
     descricao = Column(VARCHAR(120))
     carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
     movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
     dividendo_id = Column(INTEGER, ForeignKey('dividendos.id'))
     data_referencia = Column(DATE)
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
+
+
+class HistoricoMensal(BaseTable):
+    __tablename__ = 'historicos_mensal'
+    id = Column(INTEGER, primary_key=True)
+    saldo_caixa = Column(FLOAT, default=0, nullable=False)
+    saldo_ativo = Column(FLOAT, default=0, nullable=False)
+    resultado_mensal = Column(FLOAT, default=0, nullable=False)
+    resultado = Column(FLOAT, default=0, nullable=False)
+    data_referencia = Column(DATE)
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
+    created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
+    __table_args__ = (Index('idx_referencia', carteira_id, data_referencia, unique=True),)
 
 
 class Movimentacao(BaseTable):

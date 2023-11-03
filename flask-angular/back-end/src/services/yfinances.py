@@ -1,8 +1,8 @@
 """
  @author Marildo Cesar 28/06/2023
 """
-import datetime
-from typing import List
+from datetime import date
+from typing import List, Dict
 import math
 import yfinance as yf
 
@@ -21,3 +21,9 @@ class YFinanceService:
                 ativo.cotacao = value
 
         return ativos
+
+    @staticmethod
+    def get_prices(codigo: str, start: date) -> Dict:
+        codigos = [f'{codigo}.SA']
+        data = yf.download(codigos, period='1d', start=start)['Adj Close']
+        return {k.date(): v for k, v in data.to_dict().items()}

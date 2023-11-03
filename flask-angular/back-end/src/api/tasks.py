@@ -19,3 +19,4 @@ class Tasks:
         OperacaoController().update_historico()
         OperacaoController().update_prices()
         CarteiraController.update_saldos()
+        CarteiraController.generate_historico()
