@@ -21,6 +21,9 @@ def format_response(func):
             result = func(*args, **kwargs)
             if isinstance(result, tuple):
                 data, status_code = result
+            if isinstance(result, int):
+                content['success'] = True
+                status_code = result
             else:
                 status_code = 200
                 content['success'] = True

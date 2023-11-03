@@ -22,7 +22,14 @@ def carteiras():
 def save():
     return CarteiraController.save()
 
+
 @carteira_router.route('/', methods=['PUT'])
 @format_response
 def update():
     return CarteiraController.update()
+
+
+@carteira_router.route('/movimentacoes', methods=['POST'])
+@format_response
+def add_movimentacao():
+    return CarteiraController.add_movimentacao()

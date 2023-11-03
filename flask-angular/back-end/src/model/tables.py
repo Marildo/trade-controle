@@ -255,6 +255,7 @@ class Movimentacao(BaseTable):
     valor = Column(FLOAT, default=0)
     tipo = Column(Enum(TipoMovimentacao))
     descricao = Column(VARCHAR(60))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
 
 
 class NotaCorretagem(BaseTable):

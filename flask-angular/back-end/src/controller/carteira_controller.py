@@ -6,10 +6,10 @@ from webargs.flaskparser import parser
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
-from model import CompraVenda
 from services import YFinanceService
-from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal
+from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal, Movimentacao
 from .schemas import CarteitaSchema
+from ..utils import str_util
 
 
 class CarteiraController:
@@ -143,3 +143,27 @@ class CarteiraController:
                         resultado_total - resultado_acc)
                 hist_mensal.save()
                 resultado_acc = resultado_mes if carteira.id != 1 else resultado_total
+
+    @classmethod
+    def add_movimentacao(cls):
+        input_schema = {
+            'valor': fields.Float(required=False),
+            'data_referencia': fields.Date(required=False),
+            'descricao': fields.String(required=False),
+            'tipo': fields.String(required=False),
+            'carteira_id': fields.Integer(required=True)
+        }
+        args = parser.parse(input_schema, request, location='json')
+
+        mov = Movimentacao(**args)
+        mov.save()
+
+        hist = Historico()
+        hist.carteira_id = mov.carteira_id
+        hist.movimento_id = mov.id
+        hist.data_referencia = mov.data_referencia
+        hist.descricao = f'{str_util.capitalize_plus(mov.tipo)} - {mov.descricao}'
+        hist.valor = mov.valor
+        hist.save()
+
+        return 201
