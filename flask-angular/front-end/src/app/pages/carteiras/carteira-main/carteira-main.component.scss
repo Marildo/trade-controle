@@ -1,4 +1,4 @@
-@import '../../../styles.scss';
+@import '../../../../styles.scss';
 
 header {
     display: flex;
@@ -39,20 +39,3 @@ header {
 .menu a.active {
     font-weight: bold;
 }
-
-
-.carteiras {
-    display: flex;
-}
-
-.cart {
-    border: 1px solid #c9c9c2;
-    padding: 5px;
-    margin: 5px;
-}
-
-.contener-footer{
-    display: flex;
-    justify-content: end;
-}
- 

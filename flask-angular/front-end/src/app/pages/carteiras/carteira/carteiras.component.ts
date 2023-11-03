@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CarteiraService } from './carteira.service';
+import { CarteiraService } from '../carteira.service';
 import { ModalService } from 'src/app/components/modal/modal-service';
 import { FormControl, FormGroup } from '@angular/forms';
 

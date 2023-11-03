@@ -13,7 +13,7 @@ import { MainComponent } from './template/main/main.component';
 import { NavComponent } from './template/nav/nav.component';
 import { ContentComponent } from './template/content/content.component';
 import { FooterComponent } from './template/footer/footer.component';
-import { CarteirasComponent } from './pages/carteiras/carteiras.component';
+import { CarteirasComponent } from './pages/carteiras/carteira/carteiras.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
@@ -25,6 +25,9 @@ import { OperacoesModule } from './pages/operacoes/operacoes.module';
 import { SharedModule } from './shared/shared.module';
 import { NgChartsModule } from 'ng2-charts';
 import { DividendosComponent } from './pages/dividendos/dividendos.component';
+import { CarteiraMainComponent } from './pages/carteiras/carteira-main/carteira-main.component';
+import { CarteiraMovimentacoesComponent } from './pages/carteiras/carteira-movimentacoes/carteira-movimentacoes.component';
+import { CarteirasModule } from './pages/carteiras/carteiras/carteiras.module';
 
 
 
@@ -44,6 +47,8 @@ registerLocaleData(localePt)
 
     DashboardComponent,
      DividendosComponent,
+     CarteiraMainComponent,
+     CarteiraMovimentacoesComponent,
   
 
   ],
@@ -60,6 +65,7 @@ registerLocaleData(localePt)
     AppRoutingModule,
 
     OperacoesModule,
+    CarteirasModule,
     NgChartsModule
   ],
   providers: [

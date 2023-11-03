@@ -1,0 +1,92 @@
+<nav>
+    <button mat-icon-button matTooltip="Nova Movimentação" color="primary" aria-label="Nova Movimentação"
+        (click)="showFormNew()">
+        <mat-icon>add_circle</mat-icon>
+    </button>
+</nav>
+
+<div class="contener">
+    <table>
+        <thead>
+            <tr>
+                <th>Carteira</th>
+                <th>Tipo</th>
+                <th>Data</th>
+
+                <th>Valor</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of movimentacoes">
+                <td>{{ row.carteira.nome }}</td>
+                <td>{{ row.tipo}}</td>
+                <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
+                <td>{{ row.valor | currency}}</td>
+                <td>{{ row.descricao}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+
+
+<app-modal #modal id="modalNewMov">
+    <form [formGroup]="formNovaMovimentacao">
+        <h2 class="title">Nova Movimentaão</h2>
+
+        <div class="form-group-inline">
+            <label for="nome">Data:</label>
+            <input type="date" id="data_referencia" formControlName="data_referencia" maxlength="40" required>
+        </div>
+
+        <div class="form-group-inline">
+            <label for="nome">Valor:</label>
+            <input type="number" id="valor" formControlName="valor" required>
+        </div>
+
+
+        <div class="form-group-inline">
+            <label for="carteira">Carteira: </label>
+            <select id="carteira" formControlName="carteira_id">
+                <option *ngFor="let option of carteiras" [value]="option.id">
+                    {{ option.nome }}
+                </option>
+            </select>
+        </div>
+
+
+        <div class="form-group-inline">
+            <label for="tipo">Tipo de Movimentação:</label>
+            <select id="tipo" formControlName="tipo">
+                <option value="APORTE">Aporte</option>
+                <option value="SAQUE">Saque</option>
+            </select>
+        </div>
+
+        <div class="form-group-inline">
+            <label for="descricao">Descrição:</label>
+            <input type="text" id="descricao" formControlName="descricao" maxlength="120">
+        </div>
+
+
+    </form>
+    <hr>
+
+
+    <div class="contener-footer">
+        <div class="new-carteira-footer">
+            <footer class="container-buttons">
+                <button mat-raised-button color="accent" (click)="hideFormMov()">Cancelar</button>
+                <button mat-raised-button color="primary" (click)="saveMovimentacao()">Salvar</button>
+            </footer>
+        </div>
+    </div>
+
+</app-modal>

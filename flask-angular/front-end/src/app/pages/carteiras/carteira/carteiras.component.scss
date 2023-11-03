@@ -1,0 +1,24 @@
+@import '../../../../styles.scss';
+
+nav {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    background-color: #eae5e5;
+}
+
+.carteiras {
+    display: flex;
+}
+
+.cart {
+    border: 1px solid #c9c9c2;
+    padding: 5px;
+    margin: 5px;
+}
+
+.contener-footer{
+    display: flex;
+    justify-content: end;
+}
+ 

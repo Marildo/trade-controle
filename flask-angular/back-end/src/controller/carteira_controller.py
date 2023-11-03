@@ -158,10 +158,10 @@ class CarteiraController:
     @classmethod
     def add_movimentacao(cls):
         input_schema = {
-            'valor': fields.Float(required=False),
-            'data_referencia': fields.Date(required=False),
+            'valor': fields.Float(required=True),
+            'data_referencia': fields.Date(required=True),
             'descricao': fields.String(required=False),
-            'tipo': fields.String(required=False),
+            'tipo': fields.String(required=True),
             'carteira_id': fields.Integer(required=True)
         }
         args = parser.parse(input_schema, request, location='json')

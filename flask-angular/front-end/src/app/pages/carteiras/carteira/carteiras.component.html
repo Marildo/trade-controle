@@ -1,36 +1,9 @@
-<!-- <app-tab>
-    <app-tab-item>
-        <app-tab-header>First tab</app-tab-header>
-        <app-tab-body>
-            IO am first content
-        </app-tab-body>
-    </app-tab-item>
-    <app-tab-item>
-        <app-tab-header>second tab</app-tab-header>
-        <app-tab-body>
-            I am second Content
-        </app-tab-body>
-    </app-tab-item>
-    <app-tab-item header="third tab">
-        <app-tab-header>third</app-tab-header>
-        <app-tab-body>
-            I am third content
-        </app-tab-body>
-    </app-tab-item>
-</app-tab> -->
-
-
-<header>
-    <mat-icon fontIcon="wallet" class="title"></mat-icon>
-    <h3 class="title"> Carteiras </h3>
-    <nav class="menu">
-        <ul>
-            <button mat-icon-button matTooltip="Nova Carteira" color="primary" aria-label="Limpar filtro"
-                (click)="showFormCarteira()">
-                <mat-icon>add_circle</mat-icon> </button>
-        </ul>
-    </nav>
-</header>
+<nav>
+    <button mat-icon-button matTooltip="Nova Carteira" color="primary" aria-label="Nova Carteira"
+        (click)="showFormCarteira()">
+        <mat-icon>add_circle</mat-icon>
+    </button>
+</nav>
 
 <div class="carteiras">
     <div *ngFor="let item of carteiras" class="cart">
@@ -62,14 +35,14 @@
             <label for="tipo">Tipo de Carteira:</label>
             <select id="tipo" formControlName="tipo">
                 <option value="VARIAVEL">Renda Variavél</option>
-                <option value="FIXA">Renda Fixa</option>            
+                <option value="FIXA">Renda Fixa</option>
             </select>
         </div>
 
         <div class="form-group-inline">
             <label for="daytrade">Day Trade:</label>
             <input type="checkbox" id="daytrade" formControlName="daytrade" value="1">
-            
+
         </div>
         <div class="form-group-inline">
             <label for="dividendos">Dividendos:</label>
