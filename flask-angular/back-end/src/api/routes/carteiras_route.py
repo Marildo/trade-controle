@@ -2,7 +2,6 @@
 
 from flask import Blueprint, request
 
-from src.exceptions import DuplicationProcessingException
 from .rest_response import format_response
 from ...controller import CarteiraController
 
@@ -29,7 +28,11 @@ def update():
     return CarteiraController.update()
 
 
-@carteira_router.route('/movimentacoes', methods=['POST'])
+@carteira_router.route('/movimentacoes', methods=['GET', 'POST'])
 @format_response
-def add_movimentacao():
-    return CarteiraController.add_movimentacao()
+def movimentaoes():
+    map_controller = {
+        'GET': CarteiraController.movimentacoes,
+        'POST': CarteiraController.add_movimentacao
+    }
+    return map_controller[request.method]()

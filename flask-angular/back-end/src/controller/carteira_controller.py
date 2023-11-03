@@ -1,5 +1,8 @@
 # @author Marildo Cesar 17/10/2023
-from webargs import fields, validate
+
+import threading
+
+from webargs import fields
 from flask import request
 from webargs.flaskparser import parser
 
@@ -8,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 
 from services import YFinanceService
 from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal, Movimentacao
-from .schemas import CarteitaSchema
+from .schemas import CarteitaSchema, MovimentacaoSchema
 from ..utils import str_util
 
 
@@ -24,6 +27,14 @@ class CarteiraController:
     @classmethod
     def update_saldos(cls):
         cls.repository.totalize()
+
+    @classmethod
+    def update_saldos_async(cls):
+        def task():
+            cls.repository.totalize()
+
+        thread = threading.Thread(target=task)
+        thread.start()
 
     @classmethod
     def save(cls):
@@ -166,4 +177,12 @@ class CarteiraController:
         hist.valor = mov.valor
         hist.save()
 
+        cls.update_saldos_async()
+
         return 201
+
+    @classmethod
+    def movimentacoes(cls):
+        data = cls.repository.get_movimentacoes()
+        response = MovimentacaoSchema().dump(data, many=True)
+        return response

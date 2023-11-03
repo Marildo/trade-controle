@@ -2,7 +2,7 @@
 from sqlalchemy import text
 
 from .. import db_connection
-from .. import Carteira
+from .. import Carteira, Movimentacao
 from ..scripts import CarteiraSQL
 
 
@@ -22,3 +22,8 @@ class CarteiraRepository:
             conn.execute(sql)
             sql = text(CarteiraSQL.totalize_resultado)
             conn.execute(sql)
+
+    @classmethod
+    def get_movimentacoes(cls):
+        data = Movimentacao().read_by_params({})
+        return data
