@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { CarteiraRoutingModule } from '../carteiras.routing.module';
+import { CarteiraRoutingModule } from './carteiras.routing.module';
 
 
 

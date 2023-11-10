@@ -45,9 +45,9 @@ class BMFDiaria(Investiment):
             while begin >= 0:
                 cutting = self.lines[begin: end]
                 _id += 1
-                ativo = self.__find_nome_ativo(cutting)
                 qtd = self.__find_qtd(cutting)
                 pm = self.__find_preco_medio(cutting)
+                ativo = self.__find_nome_ativo(pm)
                 tipo = cutting[0][0]
 
                 operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0, daytrade=True)
@@ -84,15 +84,11 @@ class BMFDiaria(Investiment):
         return custos_total
 
     @staticmethod
-    def __find_nome_ativo(cutting: List) -> str:
-        value = cutting[1][0]
-        if value in ('G', 'J', 'M', 'Q', 'V', 'Z'):
+    def __find_nome_ativo(preco_medio) -> str:
+        if preco_medio > 30000:         # se bolsa perder os 50.00 ja era
             return Investiment.MINI_INDICE
 
-        if value in ('X',):
-            return Investiment.MINI_DOLAR
-
-        raise Exception('Nome de ativo não mapeado')
+        return Investiment.MINI_DOLAR
 
     @staticmethod
     def __find_qtd(cutting: List) -> int:

@@ -1,9 +1,27 @@
 <nav>
+    <div class="patrimonio">
+        <div>
+            <span> Saldo Caixa:</span> {{summarized.saldo_caixa | currency}}
+        </div>
+        <div>
+            <span> Saldo Ativo:</span> {{summarized.saldo_ativos | currency}}
+        </div>
+
+        <div>
+            <span> Resultado acumulado:</span> {{summarized.resultado| currency}}
+        </div>
+
+        <div>
+            <span> Patrimônio Total:</span> {{summarized.total| currency}}
+        </div>
+    </div>
     <button mat-icon-button matTooltip="Nova Carteira" color="primary" aria-label="Nova Carteira"
         (click)="showFormCarteira()">
         <mat-icon>add_circle</mat-icon>
     </button>
 </nav>
+
+
 
 <div class="carteiras">
     <div *ngFor="let item of carteiras" class="cart">
@@ -12,7 +30,6 @@
         <div>Saldo caixa: {{item.saldo_caixa | currency}}</div>
         <div>Resultado: {{item.resultado | currency}}</div>
         <div>Total: {{item.saldo_caixa + item.saldo_ativos | currency}}</div>
-
     </div>
 </div>
 

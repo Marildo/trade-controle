@@ -27,7 +27,7 @@ import { NgChartsModule } from 'ng2-charts';
 import { DividendosComponent } from './pages/dividendos/dividendos.component';
 import { CarteiraMainComponent } from './pages/carteiras/carteira-main/carteira-main.component';
 import { CarteiraMovimentacoesComponent } from './pages/carteiras/carteira-movimentacoes/carteira-movimentacoes.component';
-import { CarteirasModule } from './pages/carteiras/carteiras/carteiras.module';
+import { CarteirasModule } from './pages/carteiras/carteiras.module';
 
 
 
