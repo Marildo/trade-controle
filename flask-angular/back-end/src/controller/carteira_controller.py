@@ -167,8 +167,13 @@ class CarteiraController:
         }
         args = parser.parse(input_schema, request, location='json')
 
+        signal_map = {
+            'SAQUE': -1,
+            'APORTE': 1
+        }
+
         mov = Movimentacao(**args)
-        mov.valor = mov.valor * (-1 if mov.tipo == TipoMovimentacao.APORTE else 1)
+        mov.valor = mov.valor * signal_map[mov.tipo]
         mov.save()
 
         hist = Historico()
