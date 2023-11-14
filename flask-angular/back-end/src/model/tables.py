@@ -5,7 +5,8 @@
 from typing import List, Dict
 from datetime import date
 
-from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, Enum,
+from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
+                        Enum,
                         ForeignKey, text, func)
 from sqlalchemy.orm import relationship, Mapper
 from sqlalchemy import event
@@ -226,7 +227,7 @@ class FileCorretagem(BaseTable):
 class Historico(BaseTable):
     __tablename__ = 'historicos'
     id = Column(INTEGER, primary_key=True)
-    valor = Column(FLOAT, default=0, nullable=False)
+    valor = Column(DECIMAL(10, 2), default=0, nullable=False)
     descricao = Column(VARCHAR(120))
     carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
     movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
@@ -252,7 +253,7 @@ class Movimentacao(BaseTable):
     __tablename__ = 'movimentacaoes'
     id = Column(INTEGER, primary_key=True)
     data_referencia = Column(DATE)
-    valor = Column(FLOAT, default=0)
+    valor = Column(DECIMAL(10, 2), default=0)
     tipo = Column(Enum(TipoMovimentacao))
     descricao = Column(VARCHAR(60))
     carteira = relationship("Carteira")
