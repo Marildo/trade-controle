@@ -229,7 +229,7 @@ class Historico(BaseTable):
     id = Column(INTEGER, primary_key=True)
     valor = Column(DECIMAL(10, 2), default=0, nullable=False)
     descricao = Column(VARCHAR(120))
-    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira_historico'))
     movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
     dividendo_id = Column(INTEGER, ForeignKey('dividendos.id'))
     data_referencia = Column(DATE)
@@ -244,7 +244,7 @@ class HistoricoMensal(BaseTable):
     resultado_mensal = Column(FLOAT, default=0, nullable=False)
     resultado = Column(FLOAT, default=0, nullable=False)
     data_referencia = Column(DATE)
-    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira'))
+    carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira_hist_mensal'))
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
     __table_args__ = (Index('idx_referencia', carteira_id, data_referencia, unique=True),)
 

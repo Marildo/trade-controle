@@ -2,7 +2,7 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
 
-from model import Dividendos
+from ...model import Dividendos
 
 from .ativo_schema import AtivoSchema
 

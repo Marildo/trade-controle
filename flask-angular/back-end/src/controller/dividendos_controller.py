@@ -2,9 +2,9 @@
 from typing import NamedTuple
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
-from src.services.fiis import load_dividendos
+from ..services.fiis import load_dividendos
 from ..services.status_invest import StatusInvest
-from model import DividendosRepository, Dividendos
+from ..model import DividendosRepository, Dividendos
 from .schemas import DividendosSchema
 from .carteira_controller import CarteiraController
 

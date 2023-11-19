@@ -1,6 +1,8 @@
 """
  @author Marildo Cesar 22/04/2023
 """
+
+import logging
 from abc import ABC, abstractmethod
 
 from sqlalchemy import create_engine
@@ -11,7 +13,9 @@ from sqlalchemy.orm.session import SessionTransaction
 class BaseConnection(ABC):
 
     def __init__(self):
-        self._engine = create_engine(self._get_url(), echo=False)
+        url = self._get_url()
+        print(url)
+        self._engine = create_engine(url, echo=False)
         maker = sessionmaker(expire_on_commit=False)
         self._session = maker(bind=self._engine, autocommit=False)
 

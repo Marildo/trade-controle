@@ -5,7 +5,7 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 
-from src.model import Operacao
+from ...model import Operacao
 
 from .ativo_schema import AtivoSchema
 

@@ -3,7 +3,7 @@
 """
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from src.model import Ativo
+from ...model import Ativo
 
 
 class AtivoSchema(SQLAlchemyAutoSchema):

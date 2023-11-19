@@ -2,7 +2,7 @@
  @author Marildo Cesar 02/07/2023
 """
 
-from src.controller import AtivoController
+from .ativos_controller import AtivoController
 
 
 class IndexController:

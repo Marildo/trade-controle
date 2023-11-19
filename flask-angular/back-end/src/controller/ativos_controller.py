@@ -1,12 +1,11 @@
 """
  @author Marildo Cesar 25/04/2023
 """
-import datetime
-from typing import Dict, List, Tuple, Optional
 
+from typing import Tuple, Optional
 
-from settings import logger
-from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento, Operacao
+from src.settings import logger
+from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
 
 from src.services import StatusInvest
 

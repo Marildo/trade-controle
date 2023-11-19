@@ -5,9 +5,8 @@
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 from marshmallow import fields
 
-from src.utils.str_util import capitalize_plus
-from src.model import FileCorretagem, NotaStatusProcess
-from .notas_schema import NotaSchema
+from ...utils.str_util import capitalize_plus
+from ...model import FileCorretagem
 
 
 class ArquivoSchema(SQLAlchemyAutoSchema):

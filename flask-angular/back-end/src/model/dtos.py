@@ -3,7 +3,7 @@
 """
 from typing import List, Dict
 from datetime import date
-from model.enums import TipoNota
+from .enums import TipoNota
 
 
 class Nota:

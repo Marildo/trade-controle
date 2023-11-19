@@ -13,12 +13,12 @@ from webargs.flaskparser import parser
 from webargs import validate
 from webargs import fields
 
-from services import YFinanceService
-from src.settings import logger
-from src.utils.dict_util import rows_to_dicts
+from ..services import YFinanceService
+from ..settings import logger
+from ..utils.dict_util import rows_to_dicts
 from ..model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota, Historico
-from src.model.dtos import Nota
-from .ativos import AtivoController
+from ..model.dtos import Nota
+from .ativos_controller import AtivoController
 from .carteira_controller import CarteiraController
 
 

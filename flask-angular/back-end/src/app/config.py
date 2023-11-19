@@ -1,19 +1,16 @@
 """
  @author Marildo Cesar 03/05/2023
 """
-import datetime
 
-from flask import Flask
 from flask_cors import CORS
 
 from .routes import index_router, nota_router, operacao_router, dividendo_router, carteira_router
-
 from .tasks import Tasks
 
 
-class App:
-    def __init__(self):
-        self.__app = Flask(__name__)
+class ConfigApp:
+    def __init__(self, app):
+        self.__app = app
         self.__config_cors()
         self.__register_routes()
         Tasks().start()
@@ -32,6 +29,3 @@ class App:
                      "origins": "*"
                  }
              })
-
-    def get_app(self):
-        return self.__app

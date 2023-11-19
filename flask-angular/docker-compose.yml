@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  mysql_service:
+    image: mysql:8.2
+    container_name: mysql_db
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=root12345678
+      - MYSQL_DATABASE=invest_controll
+      - MYSQL_USER=user_api
+      - MYSQL_PASSWORD=api54321
+    ports:
+      - 3301:3306  
+    volumes:
+      - E:/data/docker_volumes/mysql/mysql_tdc02:/var/lib/mysql 
+    networks:
+      - tdc-network            
+
+  backend:
+    container_name: backend
+    restart: always
+    build:
+      context: back-end
+    ports:
+      - "7300:7300"
+    environment:
+      - DATABASE_HOST=mysql_service
+      - DATABASE_PASSWORD=api54321
+      - DATABASE_USER=user_api
+      - DATABASE_PORT=3306
+    depends_on:
+      - mysql_service
+    networks:
+      - tdc-network      
+
+
+
+  # frontend:
+  #   image: nginx:latest
+  #   restart: always
+  #   volumes:
+  #     - ./nginx/tdc.conf:/etc/nginx/nginx.conf:ro
+  #     - ./nginx/index.html:/usr/share/nginx/html/index.html
+  #   depends_on:
+  #     - backend
+  #   ports:
+  #     - "80:80"
+  #     - "7500:5000"
+  #   networks:
+  #     - tdc
+
+
+networks:
+  tdc-network:
+    driver: bridge
+

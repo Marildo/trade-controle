@@ -9,8 +9,7 @@ from webargs.flaskparser import parser
 from datetime import date, timedelta
 from dateutil.relativedelta import relativedelta
 
-from model.enums import TipoMovimentacao
-from services import YFinanceService
+from ..services import YFinanceService
 from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal, Movimentacao
 from .schemas import CarteitaSchema, MovimentacaoSchema
 from ..utils import str_util

@@ -8,7 +8,7 @@ from functools import wraps
 from flask import make_response, jsonify
 from werkzeug.exceptions import BadRequest, NotFound, UnprocessableEntity
 from webargs import ValidationError
-from settings import logger
+from src.settings import logger
 
 
 def format_response(func):

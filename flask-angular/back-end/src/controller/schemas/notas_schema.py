@@ -4,7 +4,7 @@
 
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
 
-from src.model import NotaCorretagem
+from ...model import NotaCorretagem
 
 
 class NotaSchema(SQLAlchemyAutoSchema):

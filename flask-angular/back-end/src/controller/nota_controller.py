@@ -8,19 +8,19 @@ from pathlib import Path
 
 from flask import request
 from webargs.flaskparser import parser
-from webargs import fields, validate
+from webargs import fields
 
 from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 
-from src.settings import config
-from src.model.enums import NotaStatusProcess, TipoNota
-from src.model import FileCorretagem, NotaCorretagem
-from src.exceptions import DuplicationProcessingException
+from ..settings import config
+from ..model.enums import NotaStatusProcess, TipoNota
+from ..model import FileCorretagem, NotaCorretagem
+from ..exceptions import DuplicationProcessingException
 
-from src.services import ReadPDFCorretagem, ToroService
-from utils.dict_util import rows_to_dicts
-from utils.str_util import capitalize_plus
+from ..services import ReadPDFCorretagem, ToroService
+from ..utils.dict_util import rows_to_dicts
+from ..utils.str_util import capitalize_plus
 
 from .schemas import ArquivoSchema
 from .operacoes_controller import OperacaoController

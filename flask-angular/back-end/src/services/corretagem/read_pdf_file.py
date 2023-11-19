@@ -2,7 +2,7 @@
  @author Marildo Cesar 23/04/2023
 """
 
-from typing import Dict, List
+from typing import  List
 
 from fitz import Document
 

@@ -3,7 +3,7 @@
 from flask import Blueprint, request
 
 from .rest_response import format_response
-from ...controller import CarteiraController
+from src.controller import CarteiraController
 
 name = 'CarteiraRouter'
 resource = '/carteiras'
