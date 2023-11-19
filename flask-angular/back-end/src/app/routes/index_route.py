@@ -14,5 +14,8 @@ index_router = Blueprint(name=name, import_name=name, url_prefix=resource)
 @index_router.route('', methods=['GET'])
 @format_response
 def index():
-    response = {"Data": datetime.today()}
+    response = {
+        "Data": datetime.today(), 
+        "Author": "Marildo César"
+        }
     return response

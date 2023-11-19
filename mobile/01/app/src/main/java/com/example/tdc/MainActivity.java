@@ -4,12 +4,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
+import java.io.IOException;
 import java.util.List;
 
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
+import retrofit2.HttpException;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +30,38 @@ public class MainActivity extends AppCompatActivity {
         tv_loading = findViewById(R.id.tv_loading);
         this.loadCarteiras();
         this.searchNotas();
+    }
+
+    public void recarregarCarteiras(View view) {
+
+        this.loadCarteirasWIthRaw();
+        this.tv_loading.setText("Carteiras carregadas com sucesso!");
+    }
+
+    private void loadCarteirasWIthRaw() {
+        Request.Builder reqBuilder = new Request.Builder().get();
+        reqBuilder.url("http://192.168.1.2/api/carteiras/");
+        reqBuilder.addHeader("Accept", "application/json; charset=utf-8");
+        reqBuilder.addHeader("Content-Type", "application/json");
+
+        Request request = reqBuilder.build();
+
+
+        OkHttpClient client = new OkHttpClient();
+
+        client.newCall(request).enqueue(new okhttp3.Callback() {
+            @Override
+            public void onFailure(okhttp3.Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(okhttp3.Call call, okhttp3.Response response) throws IOException {
+                var body =response.body();
+                System.out.println(body.string());
+            }
+        });
+
     }
 
     public void loadCarteiras() {
@@ -63,7 +101,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ResponseData> call, Throwable t) {
+                ResponseBody errorBody = ((HttpException) t).response().errorBody();
+                try {
+                    String body = errorBody.string();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+
                 tv_loading.setText("Response not successful. Code: " + t.getMessage());
+                t.printStackTrace();
             }
         });
     }

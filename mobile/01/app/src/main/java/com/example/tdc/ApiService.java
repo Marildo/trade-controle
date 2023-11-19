@@ -8,9 +8,9 @@ import retrofit2.http.PUT;
 
 public interface ApiService {
 
-    @GET("carteiras")
+    @GET("carteiras/")
     Call<ResponseData> getCarteiras();
 
-    @PUT("/notas/arquivos/search")
+    @PUT("notas/arquivos/search/")
     Call<EmptyResponse> searchNotas();
 }
