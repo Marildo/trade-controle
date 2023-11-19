@@ -1,0 +1,91 @@
+package com.example.tdc;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class MainActivity extends AppCompatActivity {
+
+    private TextView tv_loading;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        tv_loading = findViewById(R.id.tv_loading);
+        this.loadCarteiras();
+        this.searchNotas();
+    }
+
+    public void loadCarteiras() {
+        ApiService apiService = ApiClient.getApiService();
+
+
+        Call<ResponseData> call = apiService.getCarteiras();
+        call.enqueue(new Callback<ResponseData>() {
+
+
+            @Override
+            public void onResponse(Call<ResponseData> call, Response<ResponseData> response) {
+
+                Double saldo_caixa = 0.0;
+                Double saldo_ativos = 0.0;
+                Double resultado = 0.0;
+                List<Carteira> carteiras = response.body().getData();
+                for (Carteira carteira : carteiras) {
+                    saldo_caixa += carteira.getSaldoCaixa();
+                    saldo_ativos += carteira.getSaldoAtivos();
+                    resultado += carteira.getResultado();
+                }
+
+                TextView tv_saldo_caixa = findViewById(R.id.tv_saldo_caixa);
+                tv_saldo_caixa.setText(saldo_caixa.toString());
+
+                TextView tv_saldo_ativos = findViewById(R.id.tv_saldo_ativo);
+                tv_saldo_ativos.setText(saldo_ativos.toString());
+
+                TextView tv_patrimonio = findViewById(R.id.tv_patrimonio);
+                Double patrimonio = saldo_ativos + saldo_caixa;
+                tv_patrimonio.setText(patrimonio.toString());
+
+                TextView tv_resultado = findViewById(R.id.tv_resultado);
+                tv_resultado.setText(resultado.toString());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseData> call, Throwable t) {
+                tv_loading.setText("Response not successful. Code: " + t.getMessage());
+            }
+        });
+    }
+
+    public void searchNotas() {
+        tv_loading.setText("Procurando por notas");
+        ApiService apiService = ApiClient.getApiService();
+        Call<EmptyResponse> call = apiService.searchNotas();
+        call.enqueue(new Callback<EmptyResponse>() {
+            @Override
+            public void onResponse(Call<EmptyResponse> call, Response<EmptyResponse> response) {
+                if (response.code() == 200) {
+                    tv_loading.setText("Notas carregadas com sucesso");
+                    loadCarteiras();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<EmptyResponse> call, Throwable t) {
+                tv_loading.setText("Falha ai carregar notas. " + t.getMessage());
+                t.printStackTrace();
+            }
+        });
+    }
+}
