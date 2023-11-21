@@ -10,22 +10,37 @@ from .tasks import Tasks
 
 class ConfigApp:
     def __init__(self, app):
-        self.__app = app
-        self.__config_cors()
-        self.__register_routes()
+        self.__config_cors(app)
+        self.__register_routes(app)
+        self.__register_events(app)
         Tasks().start()
 
-    def __register_routes(self):
-        self.__app.register_blueprint(index_router)
-        self.__app.register_blueprint(nota_router)
-        self.__app.register_blueprint(operacao_router)
-        self.__app.register_blueprint(dividendo_router)
-        self.__app.register_blueprint(carteira_router)
+    @staticmethod
+    def __register_routes(app):
+        app.register_blueprint(index_router)
+        app.register_blueprint(nota_router)
+        app.register_blueprint(operacao_router)
+        app.register_blueprint(dividendo_router)
+        app.register_blueprint(carteira_router)
 
-    def __config_cors(self):
-        CORS(self.__app,
+    @staticmethod
+    def __config_cors(app):
+        CORS(app,
              resources={
                  r"*": {
                      "origins": "*"
                  }
              })
+
+    @staticmethod
+    def __register_events(app):
+        @app.after_request
+        def set_response_headers(response):
+            response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+            response.headers["Pragma"] = "no-cache"
+            response.headers["Expires"] = "0"
+            return response
+
+        @app.before_request
+        def before_request():
+            pass

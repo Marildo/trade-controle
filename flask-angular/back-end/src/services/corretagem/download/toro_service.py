@@ -2,18 +2,15 @@
  @author Marildo Cesar 24/06/2023
 """
 
-import os.path
+from datetime import date
+from io import BytesIO
+from typing import Dict, List
 
 import requests
-import json
-
-from typing import Dict, List
-from io import BytesIO
-from datetime import date, datetime
 from dateutil import parser
 from werkzeug.datastructures import FileStorage
 
-from src.settings import config
+from src.settings import config, logger
 
 
 class ToroService:
@@ -36,8 +33,8 @@ class ToroService:
 
         url = "https://webapieqr.toroinvestimentos.com.br/auth/authentication/login"
         data = {
-            'username': config.load_value('USER_NAME'),
-            'password': config.load_value('PWD'),
+            'username': config.load_value('TR_USER_NAME'),
+            'password': config.load_value('TR_PASSWORD'),
             'client_id': 'Hub',
             'grant_type': 'password',
             'X-UserIP': '172.16.7.143',
@@ -46,6 +43,7 @@ class ToroService:
             'X-TOKEN_CATEGORY': 'Monthly'
         }
         payload = '&'.join([f'{k}={v}' for k, v in data.items()])
+        logger.info(payload)
         headers = {'Content-Type': 'text/plain'}
         response = requests.request("POST", url, headers=headers, data=payload)
         response.raise_for_status()

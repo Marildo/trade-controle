@@ -14,7 +14,6 @@ class BaseConnection(ABC):
 
     def __init__(self):
         url = self._get_url()
-        print(url)
         self._engine = create_engine(url, echo=False)
         maker = sessionmaker(expire_on_commit=False)
         self._session = maker(bind=self._engine, autocommit=False)
