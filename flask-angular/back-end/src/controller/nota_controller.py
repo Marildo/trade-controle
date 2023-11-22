@@ -76,11 +76,13 @@ class NotaController:
             reader = ReadPDFCorretagem()
             reader.read(path_file)
             notas = reader.notas()
+            total_operacoes = sum([len(n.operacoes) for n in notas])
+            if total_operacoes == 0:
+                raise Exception("Nota invalida")
             for n in notas:
                 n.file = filecorr
 
             OperacaoController.save_operacoes(notas)
-
             if notas:
                 filecorr.status = NotaStatusProcess.FINALIZADO
                 filecorr.tipo = notas[0].tipo_nota
@@ -123,10 +125,10 @@ class NotaController:
         return response
 
     @classmethod
-    def search_corretagens(cls):
-        result = []
+    def search_corretagens(cls) -> dict:
+        notas = []
         start_date = NotaCorretagem.get_last_date_processed()[0]
-       # start_date = datetime.today().replace(day=25).date()
+        # start_date = datetime.today().replace(day=25).date()
         service = ToroService()
         files = service.process_corretagem(start_date)
         for file in files:
@@ -135,6 +137,9 @@ class NotaController:
                 data = dict(status=resp['status'], file=file.filename, id=resp['id'])
             except DuplicationProcessingException as ex:
                 data = dict(status=ex.message, id=ex.id, file=file.filename)
-            result.append(data)
+            notas.append(data)
 
-        return result
+        return {
+            'numero_notas': len(notas),
+            'notas': notas
+        }
