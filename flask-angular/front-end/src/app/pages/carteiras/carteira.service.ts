@@ -32,4 +32,8 @@ export class CarteiraService extends BaseAPIService {
     return this.get(this.path + 'movimentacoes')
   }
 
+  public load_historicos(): Observable<any> {
+    return this.get(this.path + 'historicos')
+  }
+
 }

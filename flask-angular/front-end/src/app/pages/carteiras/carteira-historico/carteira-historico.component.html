@@ -1,0 +1,27 @@
+<div class="contener">
+    <table>
+        <thead>
+            <tr>
+                <th>Carteira</th>
+                <th>Data</th>
+                <th>Valor</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of historicos">
+                <td>{{ row.carteira.nome }}</td>
+                <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
+                <td>{{ row.valor | currency}}</td>
+                <td>{{ row.descricao}}</td>
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+
+
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

@@ -232,6 +232,7 @@ class Historico(BaseTable):
     movimento_id = Column(INTEGER, ForeignKey('movimentacaoes.id'))
     dividendo_id = Column(INTEGER, ForeignKey('dividendos.id'))
     data_referencia = Column(DATE)
+    carteira = relationship("Carteira")
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
 
 

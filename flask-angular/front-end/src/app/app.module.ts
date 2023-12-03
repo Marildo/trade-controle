@@ -2,6 +2,10 @@ import { NgModule, DEFAULT_CURRENCY_CODE, LOCALE_ID } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
+
+import { NgChartsModule } from 'ng2-charts';
 
 
 import { AppRoutingModule } from './app-routing.module';
@@ -13,22 +17,17 @@ import { MainComponent } from './template/main/main.component';
 import { NavComponent } from './template/nav/nav.component';
 import { ContentComponent } from './template/content/content.component';
 import { FooterComponent } from './template/footer/footer.component';
-import { CarteirasComponent } from './pages/carteiras/carteira/carteiras.component';
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 
 
-import { registerLocaleData } from '@angular/common';
-import localePt from '@angular/common/locales/pt';
+
 
 
 import { OperacoesModule } from './pages/operacoes/operacoes.module';
-import { SharedModule } from './shared/shared.module';
-import { NgChartsModule } from 'ng2-charts';
-import { DividendosComponent } from './pages/dividendos/dividendos.component';
-import { CarteiraMainComponent } from './pages/carteiras/carteira-main/carteira-main.component';
-import { CarteiraMovimentacoesComponent } from './pages/carteiras/carteira-movimentacoes/carteira-movimentacoes.component';
 import { CarteirasModule } from './pages/carteiras/carteiras.module';
+import { SharedModule } from './shared/shared.module';
 
+import { DividendosComponent } from './pages/dividendos/dividendos.component';
 
 
 
@@ -43,13 +42,8 @@ registerLocaleData(localePt)
     FooterComponent,
 
 
-    CarteirasComponent,
-
     DashboardComponent,
-     DividendosComponent,
-     CarteiraMainComponent,
-     CarteiraMovimentacoesComponent,
-  
+    DividendosComponent,  
 
   ],
   imports: [
@@ -58,11 +52,9 @@ registerLocaleData(localePt)
     HttpClientModule,
 
 
+    AppRoutingModule,
     SharedModule,
 
-
-
-    AppRoutingModule,
 
     OperacoesModule,
     CarteirasModule,
