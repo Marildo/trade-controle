@@ -128,6 +128,7 @@ class Carteira(BaseTable):
     tipo = Column(Enum(TipoCarteira))
     daytrade = Column(BOOLEAN, default=False, nullable=False)
     dividendos = Column(BOOLEAN, default=False, nullable=False)
+    fiss = Column(BOOLEAN, default=False, nullable=False)
     buyhold = Column(BOOLEAN, default=False, nullable=False)
 
 
@@ -177,9 +178,7 @@ class FileCorretagem(BaseTable):
     def is_exists(self) -> bool:
         with db_connection as conn:
             query = (conn.session.query(FileCorretagem)
-                     .filter(FileCorretagem.name == self.name,
-                             # FileCorretagem.status != NotaStatusProcess.ERROR
-                             )
+                     .filter(FileCorretagem.name == self.name)
                      )
             return query.first()
 
@@ -278,7 +277,9 @@ class NotaCorretagem(BaseTable):
     @staticmethod
     def get_last_date_processed():
         with db_connection as conn:
-            query = conn.session.query(func.max(NotaCorretagem.data_referencia))
+            query = (conn.session.
+                     query(func.max(NotaCorretagem.data_referencia))
+                     .filter(NotaCorretagem.finalizada == 1))
             return query.one()
 
 

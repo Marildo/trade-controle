@@ -11,7 +11,7 @@ from dateutil.relativedelta import relativedelta
 
 from ..services import YFinanceService
 from ..model import CarteiraRepository, Carteira, Dividendos, Historico, Operacao, HistoricoMensal, Movimentacao
-from .schemas import CarteitaSchema, MovimentacaoSchema
+from .schemas import CarteitaSchema, MovimentacaoSchema, HistoricoSchema
 from ..utils import str_util
 
 
@@ -191,4 +191,11 @@ class CarteiraController:
     def movimentacoes(cls):
         data = cls.repository.get_movimentacoes()
         response = MovimentacaoSchema().dump(data, many=True)
+        return response
+
+    @classmethod
+    def historicos(cls):
+        data = cls.repository.get_historicos()
+        data.sort(key=lambda x: x.data_referencia, reverse=True)
+        response = HistoricoSchema().dump(data, many=True)
         return response

@@ -36,3 +36,13 @@ def movimentaoes():
         'POST': CarteiraController.add_movimentacao
     }
     return map_controller[request.method]()
+
+
+@carteira_router.route('/historicos', methods=['GET', 'POST'])
+@format_response
+def historicos():
+    map_controller = {
+        'GET': CarteiraController.historicos,
+        'POST': CarteiraController.add_movimentacao
+    }
+    return map_controller[request.method]()

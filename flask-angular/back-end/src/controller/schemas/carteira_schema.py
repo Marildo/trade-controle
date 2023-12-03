@@ -3,7 +3,7 @@
 """
 from marshmallow import fields
 from marshmallow_sqlalchemy import SQLAlchemyAutoSchema
-from ...model import Carteira, Movimentacao
+from ...model import Carteira, Movimentacao, Historico
 
 
 class CarteitaSchema(SQLAlchemyAutoSchema):
@@ -17,3 +17,11 @@ class MovimentacaoSchema(SQLAlchemyAutoSchema):
 
     carteira = fields.Nested(CarteitaSchema(), only=('id', 'nome'))
     tipo = fields.Function(lambda obj: str(obj.tipo.name).capitalize())
+
+
+class HistoricoSchema(SQLAlchemyAutoSchema):
+    class Meta:
+        model = Historico
+
+    carteira = fields.Nested(CarteitaSchema(), only=('id', 'nome'))
+

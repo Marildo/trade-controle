@@ -2,7 +2,7 @@
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from src.controller import OperacaoController, CarteiraController
-
+from ..settings import logger
 
 class Tasks:
 
@@ -16,6 +16,7 @@ class Tasks:
 
     @classmethod
     def __tasks(cls):
+        logger.info("Starting tasks")
         OperacaoController().update_historico()
         OperacaoController().update_prices()
         CarteiraController.update_saldos()

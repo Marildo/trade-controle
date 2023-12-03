@@ -36,7 +36,7 @@ class NotaController:
 
         stored = file_corr.is_exists()
         if stored:
-            if stored.status == NotaStatusProcess.ERROR:
+            if stored.status in (NotaStatusProcess.ERROR, NotaStatusProcess.PROCESSANDO):
                 return cls.process_nota(stored.id)
             else:
                 raise DuplicationProcessingException(stored.id)

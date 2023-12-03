@@ -17,6 +17,7 @@ from ..services import YFinanceService
 from ..settings import logger
 from ..utils.dict_util import rows_to_dicts
 from ..model import db_connection, Operacao, NotaCorretagem, CompraVenda, TipoNota, Historico
+from ..model import CarteiraRepository, TipoInvestimento
 from ..model.dtos import Nota
 from .ativos_controller import AtivoController
 from .carteira_controller import CarteiraController
@@ -83,6 +84,7 @@ class OperacaoController:
                 if not operacoes:
                     operacao = cls.__new_operacao(op, nota_corr)
                     operacao.ativo = ativo
+                    cls.__set_carteria(operacao)
                     session.add(operacao)
                     session.flush()
                 else:
@@ -302,6 +304,13 @@ class OperacaoController:
         operacao.ativo_id = old.ativo_id
         operacao.ativo = old.ativo
         return operacao
+
+    @classmethod
+    def __set_carteria(cls, operacao: Operacao):
+        carteiras = CarteiraRepository().get_carteiras()
+        if operacao.ativo.tipo_investimento == TipoInvestimento.FIIS:
+            carteira = [c for c in carteiras if c.fiss]
+            operacao.carteira_id = carteira[0].id
 
     @classmethod
     def update_operacao(cls):

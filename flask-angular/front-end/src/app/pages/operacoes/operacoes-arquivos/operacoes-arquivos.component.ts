@@ -112,7 +112,7 @@ export class OperacoesArquivosComponent {
     this.service.search_files()
       .subscribe({
         next: (resp) => {
-          this.uploadedFiles = resp.data
+          this.uploadedFiles = resp.data.notas
           this.modalService.open(this.modalArquivos)
         },
         error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 })

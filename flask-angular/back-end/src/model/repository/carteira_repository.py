@@ -2,7 +2,7 @@
 from sqlalchemy import text
 
 from .. import db_connection
-from .. import Carteira, Movimentacao
+from .. import Carteira, Movimentacao, Historico
 from ..scripts import CarteiraSQL
 
 
@@ -26,4 +26,9 @@ class CarteiraRepository:
     @classmethod
     def get_movimentacoes(cls):
         data = Movimentacao().read_by_params({})
+        return data
+
+    @classmethod
+    def get_historicos(cls):
+        data = Historico().read_by_params({})
         return data
