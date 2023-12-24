@@ -28,6 +28,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 
 
-### ng2-charts [https://github.com/valor-software/ng2-charts]
+### [ng2-charts](https://github.com/valor-software/ng2-charts)
 
-### Mat icons [https://fonts.google.com/icons?hl=pt-br]
+### [Mat icons](https://fonts.google.com/icons?hl=pt-br)

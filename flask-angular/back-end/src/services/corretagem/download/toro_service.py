@@ -15,8 +15,9 @@ from src.settings import config, logger
 
 class ToroService:
 
-    def __init__(self):
+    def __init__(self, single_date: bool = False):
         self.__token = None
+        self.single_date = single_date
 
     def process_corretagem(self, start_date: date) -> List[FileStorage]:
         list_dates = self.__list_date(start_date)
@@ -35,10 +36,10 @@ class ToroService:
         data = {
             'username': config.load_value('TR_USER_NAME'),
             'password': config.load_value('TR_PASSWORD'),
+            'X-TOKEN': config.load_value('TR_X-TOKEN'),
             'client_id': 'Hub',
             'grant_type': 'password',
             'X-UserIP': '172.16.7.143',
-            'X-TOKEN': '36127',
             'X-TOKEN_TYPE': 'TokenTime',
             'X-TOKEN_CATEGORY': 'Monthly'
         }
@@ -72,6 +73,13 @@ class ToroService:
         data = response.json()['value']
         for item in data:
             item['referenceDate'] = parser.parse(item['referenceDate']).date()
-        data = [i for i in data if i['referenceDate'] > start_date]
-        data = sorted(data, key=lambda x: x['referenceDate'])
-        return data
+
+        dates = []
+        for i in data:
+            if i['referenceDate'] > start_date:
+                dates.append(i)
+                if self.single_date:
+                    break
+
+        dates = sorted(dates, key=lambda x: x['referenceDate'])
+        return dates

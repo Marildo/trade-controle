@@ -40,7 +40,7 @@
                 <th>Data processamento</th>
                 <th>Status</th>
                 <th>Tipo</th>
-                <th></th>
+                <th></th>                
             </tr>
         </thead>
         <tbody>
@@ -55,6 +55,12 @@
                     <button mat-icon-button matTooltip="Processar arquivo" color="primary"
                         aria-label="Processar arquivo" (click)="onProcessFile(row.id)">
                         <mat-icon>cloud_sync</mat-icon>
+                    </button>
+                </td>
+                <td [hidden]=" row.status != 'Finalizado'">
+                    <button mat-icon-button matTooltip="Reprocessar Nota" color="primary"
+                        aria-label="Reporcessar Nota" (click)="onReprocessFile(row.id)">
+                        <mat-icon>restart_alt</mat-icon>
                     </button>
                 </td>
                 <td [hidden]=" row.status != 'Finalizado'">

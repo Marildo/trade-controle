@@ -50,10 +50,11 @@ def file_upload():
     return result
 
 
-@nota_router.route('/arquivos/<int:_id>', methods=['PUT'])
+@nota_router.route('/arquivos/<int:_id>', methods=['PUT', 'PATCH'])
 @format_response
 def file_proccess(_id: int):
-    return NotaController.process_nota(_id)
+    map_controller = {'PUT': NotaController.process_nota, 'PATCH': NotaController.reprocess_nota}
+    return map_controller[request.method](_id)
 
 
 @nota_router.route('/arquivos/search', methods=['PUT'])

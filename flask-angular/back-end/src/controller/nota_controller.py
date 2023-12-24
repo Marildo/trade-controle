@@ -65,23 +65,30 @@ class NotaController:
         if filecorr.status is NotaStatusProcess.FINALIZADO:
             return NotaController.load_notas(file_id)
 
+        return cls.__process_notas(filecorr, file_id)
+
+    @classmethod
+    def __load_notas_from_arquivos(cls, filecorr):
+        filecorr.status = NotaStatusProcess.PROCESSANDO
+        filecorr.data_processamento = datetime.today()
+        filecorr.update()
+        sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M')
+        filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
+        path_file = str(Path(config.get_path_notas()).joinpath(filename))
+        reader = ReadPDFCorretagem()
+        reader.read(path_file)
+        notas = reader.notas()
+        total_operacoes = sum([len(n.operacoes) for n in notas])
+        if total_operacoes == 0:
+            raise Exception("Nota inválida")
+        for n in notas:
+            n.file = filecorr
+        return notas
+
+    @classmethod
+    def __process_notas(cls, filecorr, file_id):
         try:
-            filecorr.status = NotaStatusProcess.PROCESSANDO
-            filecorr.data_processamento = datetime.today()
-            filecorr.update()
-
-            sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M')
-            filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
-            path_file = str(Path(config.get_path_notas()).joinpath(filename))
-            reader = ReadPDFCorretagem()
-            reader.read(path_file)
-            notas = reader.notas()
-            total_operacoes = sum([len(n.operacoes) for n in notas])
-            if total_operacoes == 0:
-                raise Exception("Nota invalida")
-            for n in notas:
-                n.file = filecorr
-
+            notas = cls.__load_notas_from_arquivos(filecorr)
             OperacaoController.save_operacoes(notas)
             if notas:
                 filecorr.status = NotaStatusProcess.FINALIZADO
@@ -94,6 +101,13 @@ class NotaController:
             filecorr.status = NotaStatusProcess.ERROR
             filecorr.update()
             raise ex
+
+    @classmethod
+    def reprocess_nota(cls, file_id: int):
+        filecorr = FileCorretagem().read_by_id(file_id)
+        #reference_date = filecorr.notas[0].data_referencia
+
+        return cls.__process_notas(filecorr, file_id)
 
     @staticmethod
     def read_by_params() -> List:

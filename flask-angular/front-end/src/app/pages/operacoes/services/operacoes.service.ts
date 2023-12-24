@@ -58,4 +58,9 @@ export class OperacoesService extends BaseAPIService {
     const url = '/notas/arquivos/' + file_id
     return this.put(url)
   }
+
+  public reprocess_file(file_id: string): Observable<any> {
+    const url = '/notas/arquivos/' + file_id
+    return this.patch(url)
+  }
 }

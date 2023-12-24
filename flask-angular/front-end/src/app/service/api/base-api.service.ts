@@ -75,6 +75,21 @@ export class BaseAPIService {
       )
   }
 
+  public patch(url: string, body: any | null = null, headers: HttpHeaders | null = null): Observable<any> {
+    this.loader.show()
+    const full_url = this.baseURL + url
+    const options = { headers: headers != null ? headers : this.headers }
+    return this.http.patch<any>(full_url, body, options)
+      .pipe(
+        take(1),
+        tap( (resp:any) => {
+          console.log(resp)
+          this.loader.hide()
+        }),
+        catchError(this.handleError)
+      )
+  }
+
 
   handleError(response: HttpErrorResponse) {
     console.log(response.error.data)

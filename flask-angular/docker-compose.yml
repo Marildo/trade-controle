@@ -24,6 +24,7 @@ services:
       context: back-end
     volumes:
       - ./back-end/src:/backend/src
+      - ./back-end/notas_pdf:/backend/notas_pdf
     ports:
       - "7300"
     environment:
@@ -35,8 +36,6 @@ services:
       - mysql_service
     networks:
       - tdc-network      
-
-
 
   frontend:
     image: nginx:latest

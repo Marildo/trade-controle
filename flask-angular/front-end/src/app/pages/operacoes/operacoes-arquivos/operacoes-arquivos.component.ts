@@ -144,6 +144,19 @@ export class OperacoesArquivosComponent {
       })
   }
 
+  onReprocessFile(id: string): void {
+    this.service.reprocess_file(id)
+      .subscribe({
+        next: (resp) => {
+          this.onView(id)
+        },
+        error: (e) => {
+          this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 });
+        }
+      })
+  }
+
+
   onCloseModalArquivos() {
     this.modalService.close(this.modalArquivos)
   }
