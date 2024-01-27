@@ -36,7 +36,7 @@ class ToroService:
         data = {
             'username': config.load_value('TR_USER_NAME'),
             'password': config.load_value('TR_PASSWORD'),
-            'X-TOKEN': config.load_value('TR_X-TOKEN'),
+            'X-TOKEN': config.load_value('TR_X_TOKEN'),
             'client_id': 'Hub',
             'grant_type': 'password',
             'X-UserIP': '172.16.7.143',

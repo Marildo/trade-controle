@@ -30,5 +30,7 @@ class CarteiraRepository:
 
     @classmethod
     def get_historicos(cls):
-        data = Historico().read_by_params({})
-        return data
+        with db_connection.engine.begin() as conn:
+            sql = text(CarteiraSQL.historico_sumarizado)
+            query = conn.execute(sql)
+        return query.all()

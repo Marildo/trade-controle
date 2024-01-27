@@ -196,6 +196,11 @@ class CarteiraController:
     @classmethod
     def historicos(cls):
         data = cls.repository.get_historicos()
-        data.sort(key=lambda x: x.data_referencia, reverse=True)
-        response = HistoricoSchema().dump(data, many=True)
+        response = []
+        for row in data:
+            item = {}
+            for f in row._fields:
+                item[f] = str(getattr(row, f))
+            response.append(item)
+
         return response

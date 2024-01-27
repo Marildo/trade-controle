@@ -42,8 +42,7 @@ WITH
        
     UPDATE carteiras c 
     JOIN total ON total.carteira_id = c.id
-    SET c.saldo_ativos = total.total
-"""
+    SET c.saldo_ativos = total.total """
 
     totalize_resultado = """
     WITH
@@ -54,5 +53,11 @@ WITH
     
     UPDATE carteiras c 
     JOIN resultado r ON r.carteira_id = c.id
-    SET c.resultado = r.resultado;
-"""
+    SET c.resultado = r.resultado """
+
+    historico_sumarizado = """
+    SELECT carteira_id, c.nome carteira, h.data_referencia, h.descricao, SUM(valor) valor
+    FROM historicos h
+    JOIN carteiras c ON c.id = h.carteira_id
+    GROUP BY carteira_id, c.nome, h.data_referencia, h.descricao
+    ORDER BY h.data_referencia DESC """
