@@ -441,17 +441,20 @@ class OperacaoController:
             time_diff = diff.total_seconds() / 3600
             return time_diff
 
-        operacoes = Operacao().read_by_params(dict(encerrada=False))
+        operacoes = Operacao().read_by_params(dict(encerrada=False, daytrade=False))
         ativos = list(set([o.ativo for o in operacoes]))
         ativos = [i for i in ativos if dif_time(datetime.today(), i.update_at) > 1]
         if ativos:
             yfinance = YFinanceService()
-            yfinance.update_price(ativos)
-            for at in ativos:
-                at.save()
-                for item in [o for o in operacoes if o.ativo == at]:
-                    item.resultado = item.calc_resultado()
-                    item.save()
+            try:
+                yfinance.update_price(ativos)
+                for at in ativos:
+                    at.save()
+                    for item in [o for o in operacoes if o.ativo == at]:
+                        item.resultado = item.calc_resultado()
+                        item.save()
+            except Exception as ex:
+                logger.error(ex)
 
     @classmethod
     def update_historico(cls):

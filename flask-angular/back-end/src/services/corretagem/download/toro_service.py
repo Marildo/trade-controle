@@ -76,7 +76,7 @@ class ToroService:
 
         dates = []
         for i in data:
-            if i['referenceDate'] > start_date:
+            if start_date < i['referenceDate'] < date.today():
                 dates.append(i)
                 if self.single_date:
                     break
