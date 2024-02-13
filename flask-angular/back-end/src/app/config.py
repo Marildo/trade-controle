@@ -4,7 +4,7 @@
 
 from flask_cors import CORS
 
-from .routes import index_router, nota_router, operacao_router, dividendo_router, carteira_router
+from .routes import index_router, nota_router, operacao_router, dividendo_router, carteira_router, ativos_router
 from .tasks import Tasks
 
 
@@ -17,6 +17,7 @@ class ConfigApp:
 
     @staticmethod
     def __register_routes(app):
+        app.register_blueprint(ativos_router)
         app.register_blueprint(index_router)
         app.register_blueprint(nota_router)
         app.register_blueprint(operacao_router)

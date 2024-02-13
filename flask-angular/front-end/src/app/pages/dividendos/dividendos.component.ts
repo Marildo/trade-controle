@@ -30,7 +30,6 @@ export class DividendosComponent {
 
   constructor(private service: DividendosService) {
     this.loadAll()
-
   }
 
   private loadAll() {

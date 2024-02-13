@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ModalService } from 'src/app/components/modal/modal-service';
+import { OperacoesService } from '../operacoes.service';
 
-import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
+ 
 
 
 @Component({

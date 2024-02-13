@@ -4,7 +4,6 @@ import { RouterModule, Routes } from '@angular/router';
  
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { DividendosComponent } from './pages/dividendos/dividendos.component';
-import { CarteiraMainComponent } from './pages/carteiras/carteira-main/carteira-main.component';
 
 
  

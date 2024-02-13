@@ -5,7 +5,7 @@ import { MessageService } from 'primeng/api';
 import { ModalService } from 'src/app/components/modal/modal-service';
 
 
-import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
+import { OperacoesService } from 'src/app/pages/operacoes/operacoes.service';
 import { CarteiraService } from '../../carteiras/carteira.service';
 
 @Component({

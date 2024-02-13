@@ -1,0 +1,206 @@
+# @author Marildo Cesar 09/02/2024
+
+import os
+import json
+import threading
+from collections import OrderedDict
+from datetime import date, timedelta
+import time
+
+from flask import request, make_response, send_file
+from marshmallow import fields
+from webargs.flaskparser import parser
+
+import numpy
+import pandas
+
+from src.services import YFinanceService
+from src.utils import rest_util
+from src.utils.json_util import CustomJsonEncoder
+
+
+class BacktestController:
+
+    @classmethod
+    def run(cls, export_csv: bool):
+        input_schema = {
+            'ativos': fields.Str(required=True),
+            'start_date': fields.Date(required=True),
+            'end_date': fields.Date(required=False),
+            'var_percent': fields.Float(required=True),
+            'stop': fields.Float(required=True),
+            'capital': fields.Float(required=True),
+            'costs': fields.Float(required=True),
+            'expect_mat': fields.Float(required=True),
+            'volume_min': fields.Float(required=False),
+        }
+
+        location = rest_util.get_location(request)
+        args = dict(parser.parse(input_schema, request, location=location))
+        args.setdefault('end_date', date.today() - timedelta(days=1))
+        args.setdefault('volume_min', 1_500_000)
+
+        print(args)
+
+        ativos = str(args['ativos'])
+        if ativos.__contains__(';'):
+            ativos = ativos.split(';')
+        elif ativos.__contains__(','):
+            ativos = ativos.split(',')
+        else:
+            ativos = ativos.split('\n')
+
+        var_percent = args['var_percent']
+        start = args['start_date']
+        end = args['end_date']
+        stop = args['stop']
+        custos = args['costs']
+        capital = args['capital']
+        expect_mat = args['expect_mat']
+        volume_min = args['volume_min']
+
+        data = []
+        i = 0
+        for ativo in ativos:
+            i += 1
+            ativo = ativo.strip()
+            if not ativo:
+                continue
+            print(ativo, f'{i}/{len(ativos)}')
+            historico = YFinanceService().get_data(ativo, start, end)
+            result = cls._cal_buy_in_x_negative(historico, var_percent, stop, capital, custos)
+            expect_mat_test = expect_mat == 0 or expect_mat <= result['expectativa_matematica']
+            valume_min_test = volume_min == 0 or volume_min <= result['media_volume']
+            if expect_mat_test and valume_min_test:
+                result['ativo'] = ativo
+                data.append(result)
+
+        data.sort(key=lambda x: x['expectativa_matematica'], reverse=True)
+
+        if export_csv:
+            for d in data:
+                del d['trades']
+
+            df = pandas.DataFrame.from_dict(data)
+            csv_file = f'/backtest_varPercent{var_percent}_stop{stop}_{start}_{end}.csv'
+            df.to_csv(csv_file, index=False)
+
+            def delete_file():
+                time.sleep(5)
+                os.remove(csv_file)
+
+            t = threading.Thread(target=delete_file)
+            t.start()
+
+            return send_file(csv_file, as_attachment=True)
+        else:
+            ativos = [i['ativo'] for i in data]
+            content = OrderedDict()
+            content['success'] = True
+            content['data'] = {
+                'ativos': ativos,
+                'items': data
+            }
+
+            json_resp = json.dumps(content, cls=CustomJsonEncoder, ensure_ascii=False)
+            response = make_response(json_resp, 200)
+            response.headers['Content-Type'] = 'application/json'
+            return response
+
+    @classmethod
+    def _cal_buy_in_x_negative(cls, historico, down_percent: float, stop: float, capital: float, custos: float):
+        trades = []
+        last_trade = None
+        for i in range(1, len(historico)):  # começar na segunda linha
+            abertura = round(historico['Open'].iloc[i], 2)
+            minima = round(historico['Low'].iloc[i], 2)
+            fechamento = round(historico['Close'].iloc[i], 2)
+            volume = historico['Volume'].iloc[i]
+            data = historico.index[i]
+            day = date(year=data.year, month=data.month, day=data.day)
+            fechamento_anterior = round(historico['Close'].iloc[i - 1], 2)
+            start_mov = abertura if abertura > fechamento_anterior else fechamento_anterior
+
+            variacao_x = round(fechamento_anterior * (100 - abs(down_percent)) * 0.01, 2)
+            if minima <= variacao_x:
+                last_trade = day
+                preco_compra = variacao_x if abertura > variacao_x else abertura
+                preco_stop = preco_compra * ((100 - stop) * 0.01) if stop != 0 else 0
+                stoped = fechamento < preco_stop or minima < preco_stop
+                preco_venda = preco_stop if stoped else fechamento
+
+                resultado = round((preco_venda - preco_compra) / preco_compra * 100, 2)
+                res_value = round(capital * (resultado * 0.01), 2)
+                ir = res_value * 0.01 if res_value > 0 else 0
+                resultado_liquido = res_value - custos - ir
+                capital += res_value - custos - ir
+                trades.append({
+                    'preco_venda': preco_venda,
+                    'preco_compra': preco_compra,
+                    'resultado': resultado_liquido,
+                    'resultado_percentual': resultado,
+                    'date': day,
+                    'fechamento_anterior': fechamento_anterior,
+                    'abertura': abertura,
+                    'minima': minima,
+                    'start_mov': start_mov,
+                    'stoped': stoped,
+                    'capital_acumulado': round(capital, 2),
+                    'volume': volume
+                })
+
+        resultados = [i['resultado'] for i in trades]
+
+        ganhos = [r for r in resultados if r > 0]
+        perdas = [r for r in resultados if r <= 0]
+
+        media_ganhos = round(sum(ganhos) / len(ganhos) if ganhos else 0, 2)
+        media_perdas = round(sum(perdas) / len(perdas) if perdas else 0, 2)
+        media_resultados = round(sum(resultados) / len(resultados) if resultados else 0, 2)
+        media_volume = float(numpy.mean([i['volume'] for i in trades])) if trades else 0
+
+        percentual_ganho = round((len(ganhos) / len(resultados)) * 100 if resultados else 0, 2)
+        percentual_perda = round((len(perdas) / len(resultados)) * 100 if resultados else 0, 2)
+
+        seq_ganhos = 0
+        seq_perdas = 0
+        total_stops = 0
+
+        g = 0
+        p = 0
+        for i in trades:
+            if i['resultado'] > 0:
+                g += 1
+                p = 0
+            else:
+                p += 1
+                g = 0
+                if i['stoped']:
+                    total_stops += 1
+
+            if p > seq_perdas:
+                seq_perdas = p
+
+            if g > seq_ganhos:
+                seq_ganhos = g
+
+        result = {
+            'ativo': '',
+            'total_trades': len(trades),
+            'trades_gain': len(ganhos),
+            'trades_loss': len(perdas),
+            'total_stops': total_stops,
+            'expectativa_matematica': media_resultados,
+            'percentual_ganho': percentual_ganho,
+            'percentual_perda': percentual_perda,
+            'media_ganhos': media_ganhos,
+            'media_perdas': media_perdas,
+            'media_volume': media_volume,
+            'sequencia_perdas': seq_perdas,
+            'sequencia_ganhos': seq_ganhos,
+            'capital_final': round(capital, 2),
+            'last_trade': last_trade,
+            'trades': trades,
+        }
+
+        return result

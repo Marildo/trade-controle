@@ -4,6 +4,7 @@
 
 from .ativos_controller import AtivoController
 from .operacoes_controller import OperacaoController
+from .backtest_controller import BacktestController
 from .nota_controller import NotaController
 from .index_controller import IndexController
 from .dividendos_controller import DividendosController

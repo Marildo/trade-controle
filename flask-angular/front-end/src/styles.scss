@@ -27,6 +27,16 @@ $tt-gray-light: #ced4da;
   font-weight: 500;
 }
 
+.title-nav {
+  color: $tt-blue-dark;
+  font-size: 1.2em;
+  font-weight: 500;
+
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+}
+
 .subtitle {
   color: $tt-blue-media;
   font-size: 1.2em;
@@ -52,6 +62,12 @@ $tt-gray-light: #ced4da;
   margin: 0.3rem;
 }
 
+.form-group-item{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
 .form-group-inline label {
   color: rgb(30, 36, 39);
 }
@@ -70,6 +86,13 @@ $tt-gray-light: #ced4da;
 .container-end {
   display: flex;
   justify-content: flex-end;
+  align-items: center;
+  margin-top: 5px;
+}
+
+.container-space-between {
+  display: flex;
+  justify-content: space-between;
   margin-top: 5px;
 }
 
@@ -99,4 +122,16 @@ td {
 tfoot {
   font-weight: bold;
   background-color: #f2f2f2;
+}
+
+.small_number {
+  width: 50px;
+}
+
+.medium_number {
+  width: 75px;
+}
+
+.date {
+  width: 100px;
 }

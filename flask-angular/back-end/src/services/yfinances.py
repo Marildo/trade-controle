@@ -1,10 +1,13 @@
 """
  @author Marildo Cesar 28/06/2023
 """
-from datetime import date
+
+from datetime import date, timedelta
+
 from typing import List, Dict
 import math
 import yfinance as yf
+from pandas import DataFrame
 
 
 class YFinanceService:
@@ -27,3 +30,9 @@ class YFinanceService:
         codigos = [f'{codigo}.SA']
         data = yf.download(codigos, period='1d', start=start)['Adj Close']
         return {k.date(): v for k, v in data.to_dict().items()}
+
+    @staticmethod
+    def get_data(codigo: str, start: date, end: date) -> DataFrame:
+        codigos = [f'{codigo}.SA']
+        data = yf.download(codigos, period='1d', start=start, end=end, timeout=60)
+        return data

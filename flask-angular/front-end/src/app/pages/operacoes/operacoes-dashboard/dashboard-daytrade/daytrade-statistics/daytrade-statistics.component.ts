@@ -3,8 +3,9 @@ import { formatCurrency } from '@angular/common';
 
 import { ChartType } from 'chart.js';
 
-import { OperacoesService } from '../../../services/operacoes.service';
+ 
 import { NgxGaugeType } from 'ngx-gauge/gauge/gauge';
+import { OperacoesService } from '../../../operacoes.service';
 
 interface TradingStats {
   avg_gain: number;

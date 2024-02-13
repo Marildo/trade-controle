@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
-import { OperacoesService } from 'src/app/pages/operacoes/services/operacoes.service';
+import { OperacoesService } from '../operacoes.service';
+ 
 
 
 @Component({

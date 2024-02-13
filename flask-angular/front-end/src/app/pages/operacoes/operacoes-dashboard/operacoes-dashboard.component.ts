@@ -1,5 +1,5 @@
 import { Component, OnInit, EventEmitter } from '@angular/core';
-import { OperacoesService } from '../services/operacoes.service';
+import { OperacoesService } from '../operacoes.service';
 
 @Component({
   selector: 'app-operacoes-dashboard',

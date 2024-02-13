@@ -1,0 +1,158 @@
+<main>
+    <form class="form-group-inline" [formGroup]="formBacktest">
+
+
+        <div class="form-group-item">
+            <label for="ativos">Ativos </label>
+            <input type="area" name="ativos" formControlName="ativos" value="IGTI3, KEPL3">
+        </div>
+
+        <div class="form-group-item">
+            <label for="start_date">Inicio </label>
+            <input class="date" type="date" id="start_date" formControlName="start_date">
+        </div>
+
+        <div class="form-group-item">
+            <label for="end_date">Fim </label>
+            <input class="date" type="date" formControlName="end_date">
+        </div>
+
+        <div class="form-group-item">
+            <label for="var_percent"> % Variação </label>
+            <input class="medium_number" type="number" id="var_percent" formControlName="var_percent" value="2.5">
+
+        </div>
+
+        <div class="form-group-item">
+            <label for="stop">% Stop </label>
+            <input class="medium_number" type="number" id="stop" formControlName="stop" value="4">
+        </div>
+
+
+        <div class="form-group-item">
+            <label for="expect_mat">Exp. Matemática </label>
+            <input class="medium_number" type="number" id="expect_mat" formControlName="expect_mat" value="0.1">
+        </div>
+
+        <div class="form-group-item">
+            <label for="capital">Capital </label>
+            <input class="medium_number" type="number" id="capital" formControlName="capital" value="1000">
+        </div>
+
+        <div class="form-group-item">
+            <label for="costs">Custos </label>
+            <input class="medium_number" type="number" id="costs" formControlName="costs" value="1.5">
+        </div>
+
+        <div class="form-group-item">
+            <label for="volume_min">Volume Mín. </label>
+            <input class="medium_number" type="number" id="volume_min" formControlName="volume_min">
+        </div>
+
+        <div>
+            <button  mat-icon-button matTooltip="Executar backtest" color="primary" (click)="onRun()">
+                <mat-icon>play_circle</mat-icon>
+            </button>
+            <button mat-icon-button matTooltip="Executar e exportar resultado" color="primary" (click)="onRunToCSV()">
+                <mat-icon>download_for_offline</mat-icon>
+            </button>
+        </div>
+    </form>
+
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ativo</th>
+                    <th>Nº Trades </th>
+                    <th>Gains</th>
+                    <th>Loss</th>
+                    <th>Stops</th>
+                    <th>Exp. Mat.</th>
+                    <th>Méd. Gain</th>
+                    <th>Méd. Loss</th>
+                    <th>Méd. Volume</th>
+                    <th>Seq. Gain</th>
+                    <th>Seq. Loss</th>
+                    <th>Capital Final</th>
+                    <th>Último</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of items">
+                    <td>{{row.ativo}}</td>
+                    <td>{{row.total_trades}}</td>
+                    <td>{{row.percentual_ganho}} % <span class="percent"> {{row.trades_gain}} </span></td>
+                    <td>{{row.percentual_perda}} % <span class="percent"> {{row.trades_loss }} </span></td>
+                    <td>{{row.total_stops}}</td>
+                    <td>{{row.expectativa_matematica}}%</td>
+                    <td>{{row.media_ganhos | currency}}</td>
+                    <td>{{row.media_perdas | currency}}</td>
+                    <td>{{row.media_volume | number}}</td>
+                    <td>{{row.sequencia_ganhos}}</td>
+                    <td>{{row.sequencia_perdas}}</td>
+                    <td>{{row.capital_final | currency}}</td>
+                    <td>{{row.last_trade | date:'dd/MM/yyy'}}</td>
+                    <td>
+                        <button mat-icon-button matTooltip="Visualizar Trades" color="primary"
+                            aria-label="Visualizar Transações" (click)="onViewTrades(row.ativo)">
+                            <mat-icon>preview</mat-icon>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+</main>
+
+
+<app-modal #modal id="modalTrades">
+    <div class="modal-trades">
+        <div class="container-space-between">
+            <span class="title">Trades</span>
+            <button mat-icon-button color="primary" aria-label="Visualizar Transações" (click)="onCloseTrade()">
+                <mat-icon>close</mat-icon>
+            </button>
+        </div>
+        <div>
+            {{selected.ativo}} - Exp. Mat {{selected.expectativa_matematica}}
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Pr. Compra</th>
+                    <th>Pr. Venda</th>
+                    <th>Resultado</th>
+                    <th>Fech. Anterior</th>
+                    <th>Abertura</th>
+                    <th>Mímima</th>
+                    <th>Volume</th>
+                    <th>Stop</th>
+                    <th>Cap. Acumulado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let row of selected.trades">
+                    <td>{{row.date | date:'dd/MM/yyy'}}</td>
+                    <td>{{row.preco_compra | currency}}</td>
+                    <td>{{row.preco_venda | currency}}</td>
+                    <td>{{row.resultado | currency}} <span class="percent"> {{row.resultado_percentual}}% </span></td>
+                    <td>{{row.fechamento_anterior | currency}}</td>
+                    <td>{{row.abertura | currency}}</td>
+                    <td>{{row.minima | currency}}</td>
+                    <td>{{row.volume | number}}</td>
+                    <td>{{row.stoped}}</td>
+                    <td>{{row.capital_acumulado | currency}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</app-modal>

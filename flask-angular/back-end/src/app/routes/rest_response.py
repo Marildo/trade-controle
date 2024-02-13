@@ -5,7 +5,7 @@ import traceback
 from collections import OrderedDict
 from functools import wraps
 
-from flask import make_response, jsonify
+from flask import make_response, jsonify, Response
 from werkzeug.exceptions import BadRequest, NotFound, UnprocessableEntity
 from webargs import ValidationError
 from src.settings import logger
@@ -19,9 +19,11 @@ def format_response(func):
         data = None
         try:
             result = func(*args, **kwargs)
-            if isinstance(result, tuple):
+            if isinstance(result, Response):
+                return result
+            elif isinstance(result, tuple):
                 data, status_code = result
-            if isinstance(result, int):
+            elif isinstance(result, int):
                 content['success'] = True
                 status_code = result
             else:

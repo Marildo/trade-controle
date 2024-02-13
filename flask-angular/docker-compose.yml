@@ -11,11 +11,11 @@ services:
       - MYSQL_USER=user_api
       - MYSQL_PASSWORD=api54321
     ports:
-      - 3301:3306  
+      - "3301:3306"
     volumes:
-      - E:/data/docker_volumes/mysql/mysql_tdc02:/var/lib/mysql 
+      - E:/data/docker_volumes/mysql/mysql_tdc02:/var/lib/mysql
     networks:
-      - tdc-network            
+      - tdc-network
 
   backend:
     container_name: backend
@@ -26,21 +26,22 @@ services:
       - ./back-end/src:/backend/src
       - ./back-end/notas_pdf:/backend/notas_pdf
     ports:
-      - "7300"
+      - "7300:7300"
     environment:
       - TR_X_TOKEN=71429
       - DATABASE_HOST=mysql_service
       - DATABASE_PASSWORD=api54321
       - DATABASE_USER=user_api
       - DATABASE_PORT=3306
+      - PATH_NOTAS=/backend/notas_pdf
     depends_on:
       - mysql_service
     networks:
-      - tdc-network      
+      - tdc-network
 
 
   frontend:
-    image: nginx:latest
+    image: nginx:stable-alpine
     container_name: frontend
     restart: always
     volumes:
@@ -53,7 +54,7 @@ services:
       - "80:80"
       # - "7300:7300"
     networks:
-      - tdc-network     
+      - tdc-network
 
 
 networks:
