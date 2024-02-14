@@ -7,6 +7,8 @@ import { ModalService } from 'src/app/components/modal/modal-service';
 
 import { OperacoesService } from 'src/app/pages/operacoes/operacoes.service';
 import { CarteiraService } from '../../carteiras/carteira.service';
+import { SetupService } from 'src/app/service/api/setup.service';
+import { AtivoService } from 'src/app/service/api/ativo.service';
 
 @Component({
   selector: 'app-operacoes-detail',
@@ -17,6 +19,8 @@ export class OperacoesDetailComponent {
 
   public items: any[];
   public carteiras: any[];
+  public setups: any[];
+  public ativos: any[];
 
   public summary: any;
   public formFiltrer: FormGroup;
@@ -26,11 +30,16 @@ export class OperacoesDetailComponent {
 
   private filter = new Map();
 
-  constructor(private route: ActivatedRoute, 
-    private service: OperacoesService, private carteiraService: CarteiraService,
+  constructor(private route: ActivatedRoute,
+    private service: OperacoesService,
+    private carteiraService: CarteiraService,
+    private setupService: SetupService,
+    private ativoService: AtivoService,
     private messageService: MessageService, private modalService: ModalService) {
     this.items = [];
     this.carteiras = [];
+    this.setups = [];
+    this.ativos = [];
     this.hiddenFilter = true;
     this.summary = { 'numero_operacoes': 0 }
 
@@ -77,11 +86,13 @@ export class OperacoesDetailComponent {
       qtd_venda: new FormControl(),
       resultado: new FormControl(),
       venda_hist_id: new FormControl(),
+      setup: new FormControl(),
+      setup_id: new FormControl(),
     });
   }
 
   ngOnInit(): void {
-    const params = this.route.snapshot.queryParams;    
+    const params = this.route.snapshot.queryParams;
     if ('file_id' in params) {
       this.filter.set('file_id', params['file_id'])
       this.onLoad()
@@ -146,10 +157,16 @@ export class OperacoesDetailComponent {
   }
 
   onEditar(id: string): void {
-    if (this.carteiras.length == 0){      
-      this.carteiraService.loadAll().subscribe(resp => this.carteiras = resp.data)     
+    if (this.carteiras.length == 0) {
+      this.carteiraService.loadAll().subscribe(resp => {
+        this.carteiras = resp.data
+        this.ativoService.loadAll().subscribe(resp => {
+          this.ativos = resp.data
+          this.setupService.loadAll().subscribe(resp => this.setups = resp.data)
+        })
+      })
     }
- 
+
 
 
     const item = this.items.filter(f => f.id == id)[0]
@@ -164,14 +181,14 @@ export class OperacoesDetailComponent {
 
   saveOperacao(): void {
     this.service.update(this.formOperacao.value).subscribe({
-      next : value=> {
+      next: value => {
         this.modalService.close(this.modalEdit)
       },
       error(err) {
-          console.log(err)
+        console.log(err)
       },
     })
-   
+
   }
 
   private onLoad(): void {

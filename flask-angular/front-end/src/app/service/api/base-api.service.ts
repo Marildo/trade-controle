@@ -96,4 +96,5 @@ export class BaseAPIService {
     this.loader.hide()
     return throwError(response.error.data);
   }
+  
 }

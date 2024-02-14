@@ -8,9 +8,16 @@ from src.settings import logger
 from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
 
 from src.services import StatusInvest
+from .schemas import AtivoSchema
 
 
 class AtivoController:
+
+    @classmethod
+    def readAll(cls):
+        data = Ativo().read_by_params({})
+        response = AtivoSchema().dump(data, many=True)
+        return response
 
     @classmethod  # Dando BO quando cria e ja tenta utilizar
     def find_by_or_save(cls, source_nome: str):

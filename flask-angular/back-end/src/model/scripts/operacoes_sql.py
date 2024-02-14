@@ -8,13 +8,15 @@ class OperacoesSql:
         a.codigo ativo,
         c.nome carteira,
         nc.comprovante nota_compra,
-        nv.comprovante nota_venda
+        nv.comprovante nota_venda,
+        s.nome setup
     FROM
         operacoes o
         JOIN ativos a ON a.id = o.ativo_id
         LEFT JOIN notas_corretagem nc ON nc.id = o.nota_compra_id
         LEFT JOIN notas_corretagem nv ON nv.id = o.nota_venda_id
         LEFT JOIN carteiras c ON c.id = o.carteira_id
+        LEFT JOIN setups s on s.id = o.setup_id
         WHERE 1=1
     '''
 

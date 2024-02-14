@@ -9,3 +9,4 @@ from .nota_controller import NotaController
 from .index_controller import IndexController
 from .dividendos_controller import DividendosController
 from .carteira_controller import CarteiraController
+from .setup_controller import SetupController

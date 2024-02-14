@@ -20,3 +20,5 @@ class OperacaoSchema(SQLAlchemyAutoSchema):
 
     ativo = fields.Nested(AtivoSchema(),
                           exclude=('descricao', 'parent_id', 'tipo_ativo', 'tipo_investimento', 'update_at'))
+
+

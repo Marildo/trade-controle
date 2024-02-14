@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AtivoService } from '../ativo.service';
+import { AtivoService } from '../../../service/api/ativo.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { ModalService } from 'src/app/components/modal/modal-service';
 

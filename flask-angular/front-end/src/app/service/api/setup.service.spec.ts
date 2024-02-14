@@ -1,13 +1,13 @@
 import { TestBed } from '@angular/core/testing';
 
-import { AtivoService } from '../../service/api/ativo.service';
+import { SetupService } from './setup.service';
 
-describe('AtivoService', () => {
-  let service: AtivoService;
+describe('SetupService', () => {
+  let service: SetupService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({});
-    service = TestBed.inject(AtivoService);
+    service = TestBed.inject(SetupService);
   });
 
   it('should be created', () => {

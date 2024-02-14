@@ -6,8 +6,6 @@ from ..scripts import OperacoesSql
 
 
 class OperacoesRepository:
-    pass
-
     # TODO -  remover
     @classmethod
     def query_compras_without_historic(cls):

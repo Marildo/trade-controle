@@ -337,6 +337,8 @@ class OperacaoController:
             'nota_venda_id': fields.Int(required=False, allow_none=True),
             'compra_hist_id': fields.Int(required=False, allow_none=True),
             'venda_hist_id': fields.Int(required=False, allow_none=True),
+            'setup_id': fields.Int(required=False, allow_none=True),
+            'setup': fields.Str(required=False, allow_none=True),
             'encerrada': fields.Bool(required=False),
             'daytrade': fields.Bool(required=False),
         }
@@ -345,6 +347,7 @@ class OperacaoController:
         del args['carteira']
         del args['nota_compra']
         del args['nota_venda']
+        del args['setup']
         operacao = Operacao(**args)
         operacao.update()
         return {'status': 'Atualização realizada com sucesso'}

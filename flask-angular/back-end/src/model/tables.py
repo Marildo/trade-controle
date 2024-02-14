@@ -284,6 +284,14 @@ class NotaCorretagem(BaseTable):
             return query.one()
 
 
+class Setup(BaseTable):
+    __tablename__ = 'setups'
+
+    id = Column(INTEGER, primary_key=True)
+    nome = Column(VARCHAR(180), nullable=False)
+    descricao = Column(VARCHAR(510), nullable=False)
+
+
 class Operacao(BaseTable):
     __tablename__ = 'operacoes'
 
@@ -311,6 +319,8 @@ class Operacao(BaseTable):
     nota_venda = relationship("NotaCorretagem", foreign_keys=[nota_venda_id], lazy=True)
     compra_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
     venda_hist_id = Column(INTEGER, ForeignKey('historicos.id'))
+    setup_id = Column(INTEGER, ForeignKey('setups.id'))
+    setup = relationship("Setup")
 
     def __init__(self, *args, **kwargs):
         self.qtd_compra = 0.0
