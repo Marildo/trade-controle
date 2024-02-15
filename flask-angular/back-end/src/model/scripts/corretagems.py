@@ -20,7 +20,7 @@ class ArquivosCorretagemSQL:
         )
         
         DELETE FROM o USING operacoes o JOIN tmp on tmp.op_id = o.id;
-        DELETE FROM h USING historico h JOIN tmp on tmp.compra_hist_id = h.id;
-        DELETE FROM h USING historico h JOIN tmp on tmp.venda_hist_id = h.id;
+        DELETE FROM h USING historicos h JOIN tmp on tmp.compra_hist_id = h.id;
+        DELETE FROM h USING historicos h JOIN tmp on tmp.venda_hist_id = h.id;
         DELETE FROM h USING notas_corretagem nc JOIN tmp on tmp.file_id = nc.file_id;
     '''

@@ -30,6 +30,11 @@ class BaseTable(Base):
             conn.session.merge(self)
             conn.session.commit()
 
+    def detele(self):
+        with db_connection as conn:
+            conn.session.delete(self)
+            conn.session.commit()
+
     def read_by_id(self, _id: int):
         with db_connection as conn:
             _class = type(self)

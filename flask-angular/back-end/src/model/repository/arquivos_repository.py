@@ -8,7 +8,7 @@ from ..scripts import DividendosSql
 class ArquivosRepository:
 
     @staticmethod
-    def delete_operacoes_from_file_id(file_id:int):
+    def delete_operacoes_from_file_id(file_id: int):
         sql = text(DividendosSql.load_ativos)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql)

@@ -28,7 +28,7 @@ services:
     ports:
       - "7300:7300"
     environment:
-      - TR_X_TOKEN=71429
+      - TR_X_TOKEN=37333
       - DATABASE_HOST=mysql_service
       - DATABASE_PASSWORD=api54321
       - DATABASE_USER=user_api

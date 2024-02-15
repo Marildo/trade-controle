@@ -13,6 +13,7 @@ from webargs import fields
 from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 
+from ..exceptions import EmptyFileException
 from ..settings import config
 from ..model.enums import NotaStatusProcess, TipoNota
 from ..model import FileCorretagem, NotaCorretagem
@@ -58,8 +59,7 @@ class NotaController:
             diff = (datetime.today() - filecorr.data_processamento).seconds / 60
             if diff < 0.3:  # TODO VOLTA O LIMITE
                 raise BadRequest(
-                    'Arquivo já está processando, aguarde o final do processamento ou tente novamente' +
-                    f' em  {3 - int(diff)} minutos'
+                    'Arquivo já está processando, aguarde o final do processamento ou tente novamente' + f' em  {3 - int(diff)} minutos'
                 )
 
         if filecorr.status is NotaStatusProcess.FINALIZADO:
@@ -68,7 +68,7 @@ class NotaController:
         return cls.__process_notas(filecorr, file_id)
 
     @classmethod
-    def __load_notas_from_arquivos(cls, filecorr):
+    def __load_notas_from_arquivos(cls, filecorr: FileCorretagem):
         filecorr.status = NotaStatusProcess.PROCESSANDO
         filecorr.data_processamento = datetime.today()
         filecorr.update()
@@ -80,13 +80,13 @@ class NotaController:
         notas = reader.notas()
         total_operacoes = sum([len(n.operacoes) for n in notas])
         if total_operacoes == 0:
-            raise Exception("Nota inválida")
+            raise EmptyFileException("Nota inválida")
         for n in notas:
             n.file = filecorr
         return notas
 
     @classmethod
-    def __process_notas(cls, filecorr, file_id):
+    def __process_notas(cls, filecorr: FileCorretagem, file_id):
         try:
             notas = cls.__load_notas_from_arquivos(filecorr)
             OperacaoController.save_operacoes(notas)
@@ -97,6 +97,9 @@ class NotaController:
                 filecorr.update()
 
             return cls.load_notas(file_id)
+        except EmptyFileException as ex:
+            filecorr.detele()
+            raise ex
         except Exception as ex:
             filecorr.status = NotaStatusProcess.ERROR
             filecorr.update()
@@ -105,7 +108,7 @@ class NotaController:
     @classmethod
     def reprocess_nota(cls, file_id: int):
         filecorr = FileCorretagem().read_by_id(file_id)
-        #reference_date = filecorr.notas[0].data_referencia
+        # reference_date = filecorr.notas[0].data_referencia
 
         return cls.__process_notas(filecorr, file_id)
 

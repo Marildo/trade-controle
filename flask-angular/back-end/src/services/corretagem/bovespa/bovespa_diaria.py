@@ -66,7 +66,13 @@ class BovespaDiaria(Investiment):
                         operacao['daytrade'] = True
                         find_pair[0]['daytrade'] = True
 
-                    operacoes.append(operacao)
+                    find_equal = [item for item in operacoes if item['ativo'] == ativo
+                                  and item['tipo'] == tipo
+                                  and item['preco'] == pm]
+                    if find_equal:
+                        find_equal[0]['qtd'] += qtd
+                    else:
+                        operacoes.append(operacao)
 
                     begin_int = self.__locate_index('BOVESPA 1', cutting, begin_int + 2) - 1
                     end_int = begin_int + 7
@@ -122,7 +128,7 @@ class BovespaDiaria(Investiment):
         split = value.split('-')
         codigo = split[0].strip()
         codigo = codigo[:-1] if codigo[-1] == 'F' and len(codigo) == 6 else codigo
-        #tipo = split[-1].split(' ')[0]
+        # tipo = split[-1].split(' ')[0]
         value = f'{codigo}/ '
         return value
 
