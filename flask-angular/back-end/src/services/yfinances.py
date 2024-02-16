@@ -17,10 +17,11 @@ class YFinanceService:
         codigos = [f'{item.codigo}.SA' for item in ativos]
         response = yf.download(codigos, period='1d')['Adj Close']
         for i in range(len(ativos)):
-            values = response[codigos[i]]
-            value = values[0]
+            # values = response[codigos[i]]
+            # value = values[0]
+            ativo = ativos[i]
+            value = response[f'{ativo.codigo}.SA'].values[0]
             if not math.isnan(value):
-                ativo = ativos[i]
                 ativo.cotacao = value
 
         return ativos
