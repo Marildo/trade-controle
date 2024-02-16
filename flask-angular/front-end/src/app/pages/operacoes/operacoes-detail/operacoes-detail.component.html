@@ -28,6 +28,7 @@
 
                 <th>Nt. Compra</th>
                 <th>Nt. Venda</th>
+                <th>Setup</th>
                 <th> </th>
             </tr>
         </thead>
@@ -50,6 +51,7 @@
 
                 <td><a (click)="onFilterNotaCompra(row.nota_compra)"> {{ row.nota_compra }}</a></td>
                 <td><a (click)="onFilterNotaVenda(row.nota_venda)"> {{ row.nota_venda }}</a></td>
+                <td>{{ row.setup }}</td>
                 <td> <button mat-icon-button matTooltip="Editar" color="primary" aria-label="Editar"
                         (click)="onEditar(row.id)">
                         <mat-icon>edit</mat-icon>

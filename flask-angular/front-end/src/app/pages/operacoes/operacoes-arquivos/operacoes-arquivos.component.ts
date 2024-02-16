@@ -114,7 +114,12 @@ export class OperacoesArquivosComponent {
       .subscribe({
         next: (resp) => {
           this.uploadedFiles = resp.data.notas
-          this.modalService.open(this.modalArquivos)
+          if(this.uploadedFiles.length > 0){
+            this.modalService.open(this.modalArquivos)
+          }else{
+            this.messageService.add({ severity: 'info', summary: 'Informação', detail: 'Nenhum nota de corretagem foi localizada.', life: 5000 })
+          }
+          
         },
         error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 })
       })

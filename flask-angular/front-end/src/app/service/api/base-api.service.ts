@@ -26,22 +26,22 @@ export class BaseAPIService {
     const full_url = this.baseURL + url
     let params = new HttpParams();
     const isNullOrEmpty = (str: string | null | undefined): boolean => str === null || str === undefined || str === '';
-    filter.forEach((v,k) => {
-      if (! isNullOrEmpty(v)){
-        console.log(k,v)
-        params = params.set(k,v);
+    filter.forEach((v, k) => {
+      if (!isNullOrEmpty(v)) {
+        console.log(k, v)
+        params = params.set(k, v);
       }
-    });    
+    });
 
-    const options = { headers: headers != null ? headers : this.headers, params }   
+    const options = { headers: headers != null ? headers : this.headers, params }
     return this.http.get<any>(full_url, options)
       .pipe(
         take(1),
-        tap( (resp:any) => {
-          console.log(resp)
-          this.loader.hide()
-        }),
-        catchError(this.handleError)
+        tap({
+          next: (data) => console.log(data),
+          error: (error) => console.log(error),
+          complete: () => this.loader.hide()
+        })
       )
   }
 
@@ -52,11 +52,11 @@ export class BaseAPIService {
     return this.http.post<any>(full_url, body, options)
       .pipe(
         take(1),
-        tap( (resp:any) => {
-          console.log(resp)
-          this.loader.hide()
-        }),
-        catchError(this.handleError)
+        tap({
+          next: (data) => console.log(data),
+          error: (error) => console.log(error),
+          complete: () => this.loader.hide()
+        })
       )
   }
 
@@ -67,11 +67,11 @@ export class BaseAPIService {
     return this.http.put<any>(full_url, body, options)
       .pipe(
         take(1),
-        tap( (resp:any) => {
-          console.log(resp)
-          this.loader.hide()
-        }),
-        catchError(this.handleError)
+        tap({
+          next: (data) => console.log(data),
+          error: (error) => console.log(error),
+          complete: () => this.loader.hide()
+        })
       )
   }
 
@@ -82,19 +82,14 @@ export class BaseAPIService {
     return this.http.patch<any>(full_url, body, options)
       .pipe(
         take(1),
-        tap( (resp:any) => {
-          console.log(resp)
-          this.loader.hide()
-        }),
-        catchError(this.handleError)
+        tap({
+          next: (data) => console.log(data),
+          error: (error) => console.log(error),
+          complete: () => this.loader.hide()
+        })
       )
   }
 
-
-  handleError(response: HttpErrorResponse) {
-    console.log(response.error.data)
-    this.loader.hide()
-    return throwError(response.error.data);
-  }
-  
 }
+
+
