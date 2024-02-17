@@ -39,7 +39,10 @@ export class BaseAPIService {
         take(1),
         tap({
           next: (data) => console.log(data),
-          error: (error) => console.log(error),
+          error: (error) => {
+            console.log(error)
+            this.loader.hide()
+          },
           complete: () => this.loader.hide()
         })
       )
@@ -54,7 +57,10 @@ export class BaseAPIService {
         take(1),
         tap({
           next: (data) => console.log(data),
-          error: (error) => console.log(error),
+          error: (error) => {
+            console.log(error)
+            this.loader.hide()
+          },
           complete: () => this.loader.hide()
         })
       )
@@ -69,7 +75,10 @@ export class BaseAPIService {
         take(1),
         tap({
           next: (data) => console.log(data),
-          error: (error) => console.log(error),
+          error: (error) => {
+            console.log(error)
+            this.loader.hide()
+          },
           complete: () => this.loader.hide()
         })
       )
@@ -84,7 +93,10 @@ export class BaseAPIService {
         take(1),
         tap({
           next: (data) => console.log(data),
-          error: (error) => console.log(error),
+          error: (error) => {
+            console.log(error)
+            this.loader.hide()
+          },
           complete: () => this.loader.hide()
         })
       )
