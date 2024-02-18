@@ -1,7 +1,7 @@
 """
  @author Marildo Cesar 06/05/2023
 """
-
+import os
 from typing import List
 from datetime import datetime
 from pathlib import Path
@@ -80,7 +80,8 @@ class NotaController:
         notas = reader.notas()
         total_operacoes = sum([len(n.operacoes) for n in notas])
         if total_operacoes == 0:
-            raise EmptyFileException("Nota inválida")
+            os.remove(path_file)
+            raise EmptyFileException("Nota de corretagem sem items, tente fazer a importação novamente em 24 horas")
         for n in notas:
             n.file = filecorr
         return notas

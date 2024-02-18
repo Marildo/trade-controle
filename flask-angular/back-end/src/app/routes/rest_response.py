@@ -8,6 +8,8 @@ from functools import wraps
 from flask import make_response, jsonify, Response
 from werkzeug.exceptions import BadRequest, NotFound, UnprocessableEntity
 from webargs import ValidationError
+
+from exceptions import EmptyFileException
 from src.settings import logger
 
 
@@ -30,7 +32,7 @@ def format_response(func):
                 status_code = 200
                 content['success'] = True
                 data = result
-        except (BadRequest, NotFound, ValidationError) as ex:
+        except (BadRequest, NotFound, ValidationError, EmptyFileException) as ex:
             status_code = ex.code
             data = {'error': __format_badrequest(ex)}
         except UnprocessableEntity as ex:
