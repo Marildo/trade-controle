@@ -59,8 +59,7 @@ class NotaController:
             diff = (datetime.today() - filecorr.data_processamento).seconds / 60
             if diff < 0.3:  # TODO VOLTA O LIMITE
                 raise BadRequest(
-                    'Arquivo já está processando, aguarde o final do processamento ou tente novamente' + f' em  {3 - int(diff)} minutos'
-                )
+                    f'Arquivo já está processando, aguarde o final do processamento ou tente novamente em  {3 - int(diff)} minutos')
 
         if filecorr.status is NotaStatusProcess.FINALIZADO:
             return NotaController.load_notas(file_id)

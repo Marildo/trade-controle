@@ -9,8 +9,8 @@ from flask import make_response, jsonify, Response
 from werkzeug.exceptions import BadRequest, NotFound, UnprocessableEntity
 from webargs import ValidationError
 
-from exceptions import EmptyFileException
-from src.settings import logger
+from ...exceptions import EmptyFileException
+from ...settings import logger
 
 
 def format_response(func):
