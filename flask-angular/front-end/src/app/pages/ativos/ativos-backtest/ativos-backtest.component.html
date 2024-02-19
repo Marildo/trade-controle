@@ -4,7 +4,10 @@
 
         <div class="form-group-item">
             <label for="ativos">Ativos </label>
-            <input type="area" name="ativos" formControlName="ativos" value="IGTI3, KEPL3">
+            <input type="area" name="ativos" formControlName="ativos" list="ativos">
+            <datalist id="ativos">
+                <option  *ngFor="let item of ativos_choice"  value="{{item}}"></option>
+              </datalist>
         </div>
 
         <div class="form-group-item">

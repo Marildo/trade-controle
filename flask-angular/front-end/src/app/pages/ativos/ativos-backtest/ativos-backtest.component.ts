@@ -14,13 +14,15 @@ export class AtivosBacktestComponent implements OnInit {
   public formBacktest: FormGroup;
   public items: any[];
   public ativos: any[];
+  public ativos_choice:any[];
   public selected: any;
-  private codigos = 'ENEV3, IGTI3, TASA4, STBP3, KEPL3, ALOS3, HAPV3, PRIO3, MBLY3, TECN3, JHSF3, TIMS3, RAIL3, EQTL3, AURE3, MEAL3, SOMA3, GGPS3, INTB3, CSMG3, NEOE3, CMIG3, HBSA3, TRIS3, VIVA3, TTEN3, ELET6, HYPE3, OPCT3, TRAD3, MRFG3, CURY3, RADL3, KLBN4, BMGB4, VIVT3, PGMN3, SRNA3, RENT3, RDOR3, GMAT3, BPAN4, ASAI3, NTCO3, LAVV3, CPLE3, NGRD3, CLSA3, LREN3, ALPA4, ODPV3, RANI3, FESA4, WEGE3, VBBR3, EVEN3, ZAMP3, SIMH3, EGIE3, CCRO3, VAMO3, UGPA3, MULT3, SMFT3, WIZC3, CMIG4, CRFB3, POMO4, SMTO3, FLRY3, LJQQ3, AMBP3, GRND3'
-  //private codigos = ' MULT3,ASAI3,';
+  //private codigos = 'ENEV3, IGTI3, TASA4, STBP3, KEPL3, ALOS3, HAPV3, PRIO3, MBLY3, TECN3, JHSF3, TIMS3, RAIL3, EQTL3, AURE3, MEAL3, SOMA3, GGPS3, INTB3, CSMG3, NEOE3, CMIG3, HBSA3, TRIS3, VIVA3, TTEN3, ELET6, HYPE3, OPCT3, TRAD3, MRFG3, CURY3, RADL3, KLBN4, BMGB4, VIVT3, PGMN3, SRNA3, RENT3, RDOR3, GMAT3, BPAN4, ASAI3, NTCO3, LAVV3, CPLE3, NGRD3, CLSA3, LREN3, ALPA4, ODPV3, RANI3, FESA4, WEGE3, VBBR3, EVEN3, ZAMP3, SIMH3, EGIE3, CCRO3, VAMO3, UGPA3, MULT3, SMFT3, WIZC3, CMIG4, CRFB3, POMO4, SMTO3, FLRY3, LJQQ3, AMBP3, GRND3'
+  private codigos = [];//'ENEV3; PRIO3; JHSF3; TIMS3; EQTL3';
 
   constructor(private service: AtivoService, private modalService: ModalService) {
     this.items = [];
     this.ativos = [];
+    this.ativos_choice = [];
     this.selected = {};
 
 
@@ -41,6 +43,13 @@ export class AtivosBacktestComponent implements OnInit {
   ngOnInit(): void {
     this.formBacktest.value.ativos = 'ENEV3; PRIO3; JHSF3; TIMS3; EQTL3'
     this.onRun()
+
+    this.service.loadAll().subscribe({
+      next: (resp) => {
+       this.ativos_choice = resp.data.map((i: any) => i.codigo);  
+       this.ativos_choice.sort()
+      }        
+    })
   }
 
 

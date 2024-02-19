@@ -121,7 +121,7 @@ export class OperacoesArquivosComponent {
           }
           
         },
-        error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.data.error, life: 5000 })
+        error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.data.error.message, life: 5000 })
       })
   }
 
