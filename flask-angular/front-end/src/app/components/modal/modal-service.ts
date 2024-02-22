@@ -11,7 +11,7 @@ export class ModalService {
 
   add(modal: ModalComponent) {
     if (!modal.id || this.modals.find(x => x.id === modal.id)) {
-      throw new Error('Id do modal deve ser unico');
+      throw new Error('Id do modal deve ser unico. '+modal.id);
     }
     this.modals.push(modal);
   }

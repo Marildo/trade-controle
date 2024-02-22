@@ -22,7 +22,8 @@ class StatusInvest:
         data = [i for i in data if i['type'] in (1, 2)]
         result = []
 
-        logger.info(f'Se{name}')
+        logger.info(f'Search {name}')
+        print(f'Search {name}')
 
         for item in data:
             ativo = dict(

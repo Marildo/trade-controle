@@ -17,13 +17,3 @@ def ativos():
     return AtivoController.readAll()
 
 
-@ativos_router.route('/backtest', methods=['POST'])
-@format_response
-def backtest():
-    return BacktestController.run(False)
-
-
-@ativos_router.route('/backtest/csv', methods=['POST'])
-@format_response
-def backtest_csv():
-    return BacktestController.run(True)

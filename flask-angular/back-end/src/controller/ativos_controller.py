@@ -78,6 +78,10 @@ class AtivoController:
             if ativo:
                 return ativo[0]
 
+            ativo = Ativo.find_by_codigo(nome)
+            if ativo:
+                return ativo
+
         raise Exception(f'{source_nome} not found')
 
     @staticmethod
@@ -101,20 +105,20 @@ class AtivoController:
             'OMEGAENERGIA': 'OMEGA ENERGIA',
             'B3': 'B3SA3',
         }
-        _map_type = {
-            'LAME3': 'ON'
-        }
+        _map_type = {'LAME3': 'ON'
+                     }
         mapead = False
-        nome, tipo = (full_name
-                      .replace('S/A', '').replace('S.A.', '').replace('S.A', '').replace(' SA/', '/')
-                      .replace(' PART/', '/')
-                      .replace(' METZ/', '/').replace(' MET/', '/')
-                      .replace(' ATZ', '')
-                      .replace(' BR/', '/')
-                      .replace(' N2', '')
-                      .replace(' EDJ', '').replace(' EJS', '').replace(' ERS', '')
-                      .replace(' ED', '').replace(' EJ', '').replace(' ER', '').replace(' EC', '').replace(' CI', '')
-                      ).split('/')
+        splited_name = (full_name
+                        .replace('S/A', '').replace('S.A.', '').replace('S.A', '').replace(' SA/', '/')
+                        .replace(' PART/', '/')
+                        .replace(' METZ/', '/').replace(' MET/', '/')
+                        .replace(' ATZ', '')
+                        .replace(' BR/', '/')
+                        .replace(' N2', '')
+                        .replace(' EDJ', '').replace(' EJS', '').replace(' ERS', '')
+                        .replace(' ED', '').replace(' EJ', '').replace(' ER', '').replace(' EC', '').replace(' CI', '')
+                        ).split('/')
+        nome, tipo = splited_name if len(splited_name) > 1 else (splited_name[0], '')
         if nome in _map_name:
             nome = _map_name[nome]
             mapead = True

@@ -6,6 +6,7 @@ import threading
 from collections import OrderedDict
 from datetime import date, timedelta
 import time
+from typing import List
 
 from flask import request, make_response, send_file
 from marshmallow import fields
@@ -17,6 +18,8 @@ import pandas
 from src.services import YFinanceService
 from src.utils import rest_util
 from src.utils.json_util import CustomJsonEncoder
+
+from .ativos_controller import AtivoController
 
 
 class BacktestController:
@@ -59,6 +62,7 @@ class BacktestController:
         expect_mat = args['expect_mat']
         volume_min = args['volume_min']
 
+        at_ctl = AtivoController()
         data = []
         i = 0
         for ativo in ativos:
@@ -66,7 +70,10 @@ class BacktestController:
             ativo = ativo.strip()
             if not ativo:
                 continue
-            print(ativo, f'{i}/{len(ativos)}')
+            at = at_ctl.find_by_or_save(ativo)
+            if not at:
+                continue
+            print(ativo, f'{i}/{len(ativos)}', end='')
             historico = YFinanceService().get_data(ativo, start, end)
             result = cls._cal_buy_in_x_negative(historico, var_percent, stop, capital, custos)
             expect_mat_test = expect_mat == 0 or expect_mat <= result['expectativa_matematica']
@@ -110,8 +117,11 @@ class BacktestController:
     @classmethod
     def _cal_buy_in_x_negative(cls, historico, down_percent: float, stop: float, capital: float, custos: float):
         trades = []
+        percent = ()
         last_trade = None
-        for i in range(1, len(historico)):  # começar na segunda linha
+        print('Loaded hist... ', end='processing... ')
+        length = len(historico)
+        for i in range(1, length):  # começar na segunda linha
             abertura = round(historico['Open'].iloc[i], 2)
             minima = round(historico['Low'].iloc[i], 2)
             fechamento = round(historico['Close'].iloc[i], 2)
@@ -148,6 +158,10 @@ class BacktestController:
                     'capital_acumulado': round(capital, 2),
                     'volume': volume
                 })
+                p = int((i + 1) * 100 / length)
+                if p % 10 == 0 and p not in percent:
+                    print(f' {p}%', end='')
+                    percent += (p,)
 
         resultados = [i['resultado'] for i in trades]
 
@@ -165,6 +179,8 @@ class BacktestController:
         seq_ganhos = 0
         seq_perdas = 0
         total_stops = 0
+
+        print(' total_trades: ', len(trades))
 
         g = 0
         p = 0

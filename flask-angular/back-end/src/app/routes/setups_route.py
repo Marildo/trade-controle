@@ -1,6 +1,7 @@
 # @author Marildo Cesar 14/02/2024
 from flask import Blueprint, request
 
+from ...controller import BacktestController
 from ...controller import SetupController
 
 from .rest_response import format_response
@@ -20,3 +21,15 @@ def summary():
 @format_response
 def process():
     return SetupController.save(request)
+
+
+@setups_router.route('/backtest', methods=['POST'])
+@format_response
+def backtest():
+    return BacktestController.run(False)
+
+
+@setups_router.route('/backtest/csv', methods=['POST'])
+@format_response
+def backtest_csv():
+    return BacktestController.run(True)

@@ -28,7 +28,9 @@ import { CarteirasModule } from './pages/carteiras/carteiras.module';
 import { SharedModule } from './shared/shared.module';
 
 import { DividendosComponent } from './pages/dividendos/dividendos.component';
-import { AtivosModule } from './service/api/ativos.module';
+import { AtivosModule } from './pages/ativos/ativos.module';
+import { SetupsModule } from './pages/setups/setups.module';
+ 
 
 
 
@@ -45,6 +47,7 @@ registerLocaleData(localePt)
 
     DashboardComponent,
     DividendosComponent,
+
   ],
   imports: [
     BrowserModule,
@@ -59,6 +62,7 @@ registerLocaleData(localePt)
     OperacoesModule,
     CarteirasModule,
     AtivosModule,
+    SetupsModule,
 
     NgChartsModule
   ],

@@ -19,7 +19,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let row of movimentacoes">
-                <td>{{ row.carteira }}</td>
+                <td>{{ row.carteira.nome }}</td>
                 <td>{{ row.tipo}}</td>
                 <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
                 <td>{{ row.valor | currency}}</td>
