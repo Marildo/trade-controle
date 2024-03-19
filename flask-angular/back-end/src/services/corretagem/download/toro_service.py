@@ -36,16 +36,22 @@ class ToroService:
         data = {
             'username': config.load_value('TR_USER_NAME'),
             'password': config.load_value('TR_PASSWORD'),
-            'X-TOKEN': config.load_value('TR_X_TOKEN'),
             'client_id': 'Hub',
             'grant_type': 'password',
-            'X-UserIP': '172.16.7.143',
+            'X-TOKEN': config.load_value('TR_X_TOKEN'),
             'X-TOKEN_TYPE': 'TokenTime',
             'X-TOKEN_CATEGORY': 'Monthly'
         }
         payload = '&'.join([f'{k}={v}' for k, v in data.items()])
         logger.info(payload)
-        headers = {'Content-Type': 'text/plain'}
+
+        headers = {
+            'Content-Type': 'application/json; charset=UTF-8',
+            # 'X-Sessionid': 'd547e759-8dd1-4a0d-96b8-8af75ba64c07',
+            # 'X-Toro-Platform-Identifier': '1d4bc2e8ec8a9f8f3b94580bbfd97e16',
+            'X-Toro-Platform-Origin': 'HubToro'
+        }
+
         response = requests.request("POST", url, headers=headers, data=payload)
         response.raise_for_status()
         data = response.json()

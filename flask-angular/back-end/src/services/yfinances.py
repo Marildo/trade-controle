@@ -33,7 +33,7 @@ class YFinanceService:
         return {k.date(): v for k, v in data.to_dict().items()}
 
     @staticmethod
-    def get_data(codigo: str, start: date, end: date) -> DataFrame:
+    def get_historic(codigo: str, start: date, end: date, interval: str) -> DataFrame:
         codigos = [f'{codigo}.SA']
-        data = yf.download(codigos, period='1d', start=start, end=end, timeout=60)
+        data = yf.download(codigos,   start=start, end=end, timeout=60, interval=interval)
         return data
