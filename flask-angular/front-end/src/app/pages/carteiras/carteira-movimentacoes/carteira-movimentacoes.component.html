@@ -1,8 +1,22 @@
 <nav>
-    <button mat-icon-button matTooltip="Nova Movimentação" color="primary" aria-label="Nova Movimentação"
-        (click)="showFormNew()">
-        <mat-icon>add_circle</mat-icon>
+    <div class="form-group-inline">
+        <label> Data movimentação:
+            <input type="date" [(ngModel)]="start_date"> a <input type="date" [(ngModel)]="end_date">
+        </label>
+    </div>
+    <button mat-button color="primary" matTooltip="Filtrar" color="primary" aria-label="Filtrar"
+        (click)="onLoad()">
+        <mat-icon>filter_alt</mat-icon>
     </button>
+
+    <button mat-button color="primary" (click)="showFormNew()">
+        <mat-icon>add_circle</mat-icon>
+        Nova Movimentação
+    </button>
+
+
+
+
 </nav>
 
 <div class="contener">
@@ -28,8 +42,10 @@
         </tbody>
         <tfoot>
             <tr>
-
-
+                <td></td>
+                <td></td>
+                <td></td>
+                <td colspan="2">{{ total | currency}}</td>
             </tr>
         </tfoot>
     </table>

@@ -14,6 +14,9 @@ export class CarteiraMovimentacoesComponent implements OnInit {
   public movimentacoes: any[] = []
   public carteiras: any[] = []
   public formNovaMovimentacao: FormGroup;
+  public start_date!: any;
+  public end_date!: any;
+  public total = 0;
 
   constructor(private service: CarteiraService, private modalService: ModalService) {
     this.formNovaMovimentacao = new FormGroup({
@@ -23,6 +26,11 @@ export class CarteiraMovimentacoesComponent implements OnInit {
       valor: new FormControl(0.0),
       carteira_id: new FormControl(),
     });
+
+
+    const today = new Date()
+    this.start_date = new Date(today.setDate(0)).toISOString().split('T')[0];
+    this.end_date = new Date().toISOString().split('T')[0];
   }
 
 
@@ -31,12 +39,19 @@ export class CarteiraMovimentacoesComponent implements OnInit {
   }
 
 
-  private onLoad() {
-    this.service.load_movimentacoes().subscribe({
-      next: (resp) => this.movimentacoes = resp.data,
+   onLoad() {
+    const filter = new Map();
+    filter.set('start_date', this.start_date)
+    filter.set('end_date', this.end_date)
+    this.service.load_movimentacoes(filter).subscribe({
+      next: (resp) => {
+        this.movimentacoes = resp.data;
+        this.total = this.movimentacoes.reduce((soma,item) => soma + item.valor, 0)
+      },
       error: (e) => console.error(e),
     })
   }
+
 
   saveMovimentacao() {
     this.service.saveMovimentacao(this.formNovaMovimentacao.value).subscribe({

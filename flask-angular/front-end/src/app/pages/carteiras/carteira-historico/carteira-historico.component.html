@@ -10,7 +10,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let row of historicos">
-                <td>{{ row.carteira.nome }}</td>
+                <td>{{ row.carteira }}</td>
                 <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
                 <td>{{ row.valor | currency}}</td>
                 <td>{{ row.descricao}}</td>

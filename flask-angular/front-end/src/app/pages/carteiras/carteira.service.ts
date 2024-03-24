@@ -28,8 +28,8 @@ export class CarteiraService extends BaseAPIService {
     return this.post(this.path + 'movimentacoes', body)
   }
 
-  public load_movimentacoes(): Observable<any> {
-    return this.get(this.path + 'movimentacoes')
+  public load_movimentacoes(filter: Map<string, string>): Observable<any> {
+    return this.get(this.path + 'movimentacoes', filter)
   }
 
   public load_historicos(): Observable<any> {

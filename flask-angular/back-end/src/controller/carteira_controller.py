@@ -188,8 +188,8 @@ class CarteiraController:
         return 201
 
     @classmethod
-    def movimentacoes(cls):
-        data = cls.repository.get_movimentacoes()
+    def movimentacoes(cls, params: dict):
+        data = cls.repository.get_movimentacoes(params)
         response = MovimentacaoSchema().dump(data, many=True)
         return response
 

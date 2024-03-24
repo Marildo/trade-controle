@@ -17,6 +17,7 @@ class MovimentacaoSchema(SQLAlchemyAutoSchema):
 
     carteira = fields.Nested(CarteitaSchema(), only=('id', 'nome'))
     tipo = fields.Function(lambda obj: str(obj.tipo.name).capitalize())
+    valor = fields.Float()
 
 
 class HistoricoSchema(SQLAlchemyAutoSchema):

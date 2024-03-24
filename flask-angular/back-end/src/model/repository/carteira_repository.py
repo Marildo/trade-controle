@@ -1,5 +1,5 @@
 # @author Marildo Cesar 17/10/2023
-from sqlalchemy import text
+from sqlalchemy import text, desc
 
 from .. import db_connection
 from .. import Carteira, Movimentacao, Historico
@@ -24,8 +24,18 @@ class CarteiraRepository:
             conn.execute(sql)
 
     @classmethod
-    def get_movimentacoes(cls):
-        data = Movimentacao().read_by_params({})
+    def get_movimentacoes(cls, params: dict):
+        filters = (
+            Movimentacao.data_referencia >= params['start_date'],
+            Movimentacao.data_referencia <= params['end_date']
+        )
+        with db_connection as conn:
+            query = (conn.session.query(Movimentacao)
+                     .filter(*filters)
+                     .order_by(desc(Movimentacao.data_referencia))
+                     )
+            data = query.all()
+
         return data
 
     @classmethod
