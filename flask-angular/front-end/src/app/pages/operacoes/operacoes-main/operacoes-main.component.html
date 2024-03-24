@@ -1,12 +1,20 @@
-<header class="">
-    <mat-icon fontIcon="autorenew" class="title"></mat-icon>
-    <h3 class="title"> Operações </h3>
-    <nav class="menu">
+<header class="page-menu-container">
+    <nav class="page-menu">
         <ul>
-            <li><a routerLink="dashboard" routerLinkActive="active"> Dashboard </a> </li>
-            <li><a routerLink="resumo" routerLinkActive="active" >  Resumo </a> </li>
-            <li><a routerLink="detalhe" routerLinkActive="active" > Detalhe </a> </li>
-            <li><a routerLink="arquivos" routerLinkActive="active" > Arquivos de Corretagem </a> </li>
+            <li> <a routerLink="dashboard" class="page-menu-title"> <mat-icon fontIcon="autorenew"
+                        color="accent"></mat-icon> <span>Operações</span> </a> </li>
+            <li>
+                <a routerLink="dashboard" routerLinkActive="active"> <mat-icon fontIcon="dashboard"></mat-icon>
+                    Dashboard </a>
+            </li>
+            <li><a routerLink="resumo" routerLinkActive="active"> <mat-icon fontIcon="view_list"></mat-icon> Resumo </a>
+            </li>
+            <li><a routerLink="detalhe" routerLinkActive="active"> <mat-icon fontIcon="format_list_bulleted"></mat-icon>
+                    Detalhe </a> </li>
+            <li><a routerLink="arquivos" routerLinkActive="active"> <mat-icon
+                        fontIcon="request_page"></mat-icon>Arquivos de Corretagem
+                </a> </li>
+
         </ul>
     </nav>
 </header>
