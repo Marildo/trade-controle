@@ -188,10 +188,17 @@ class CarteiraController:
         return 201
 
     @classmethod
-    def movimentacoes(cls, params: dict):
+    def movimentacoes(cls):
+        params = request.args
         data = cls.repository.get_movimentacoes(params)
         response = MovimentacaoSchema().dump(data, many=True)
         return response
+
+    @classmethod
+    def delete_movimentacao(cls, id_mov: int):
+        cls.repository.delete_movimentacao(id_mov)
+        cls.update_saldos_async()
+        return 200
 
     @classmethod
     def historicos(cls):

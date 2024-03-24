@@ -33,9 +33,15 @@ def update():
 def movimentaoes():
     map_controller = {
         'GET': CarteiraController.movimentacoes,
-        'POST': CarteiraController.add_movimentacao
+        'POST': CarteiraController.add_movimentacao,
     }
-    return map_controller[request.method](request.args)
+    return map_controller[request.method]()
+
+
+@carteira_router.route('/movimentacoes/<int:id_mov>', methods=['DELETE'])
+@format_response
+def delete_movimentacao(id_mov):
+    CarteiraController.delete_movimentacao(id_mov)
 
 
 @carteira_router.route('/historicos', methods=['GET', 'POST'])

@@ -29,6 +29,7 @@
 
                 <th>Valor</th>
                 <th>Descrição</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -38,6 +39,10 @@
                 <td>{{ row.data_referencia | date:'dd/MM/yyy'}}</td>
                 <td>{{ row.valor | currency}}</td>
                 <td>{{ row.descricao}}</td>
+                <td>  <button mat-icon-button matTooltip="Excluir movimentação" color="primary"
+                    aria-label="Excluir movimentação" (click)="delete_movimentacao(row.id)">
+                    <mat-icon>delete</mat-icon>
+                </button></td>
             </tr>
         </tbody>
         <tfoot>

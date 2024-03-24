@@ -39,6 +39,14 @@ class CarteiraRepository:
         return data
 
     @classmethod
+    def delete_movimentacao(cls, id_mov):
+        with db_connection as conn:
+            hist = conn.session.query(Historico).filter(Historico.movimento_id == id_mov).one()
+            conn.session.delete(hist)
+            item = conn.session.query(Movimentacao).filter(Movimentacao.id == id_mov).one()
+            conn.session.delete(item)
+
+    @classmethod
     def get_historicos(cls):
         with db_connection.engine.begin() as conn:
             sql = text(CarteiraSQL.historico_sumarizado)

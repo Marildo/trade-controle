@@ -36,4 +36,8 @@ export class CarteiraService extends BaseAPIService {
     return this.get(this.path + 'historicos')
   }
 
+  public delete_movimentacao(id:number): Observable<any> {
+    return this.delete(this.path + 'movimentacoes', id)
+  }
+
 }

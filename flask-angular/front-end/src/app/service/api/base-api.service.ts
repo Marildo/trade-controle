@@ -102,6 +102,24 @@ export class BaseAPIService {
       )
   }
 
+  public delete(url: string, id: number, headers: HttpHeaders | null = null): Observable<any> {
+    this.loader.show()
+    const full_url = this.baseURL + url + '/' + id
+    const options = { headers: headers != null ? headers : this.headers }
+    return this.http.delete<any>(full_url, options)
+      .pipe(
+        take(1),
+        tap({
+          next: (data) => console.log(data),
+          error: (error) => {
+            console.error(error)
+            this.loader.hide()
+          },
+          complete: () => this.loader.hide()
+        })
+      )
+  }
+
 }
 
 

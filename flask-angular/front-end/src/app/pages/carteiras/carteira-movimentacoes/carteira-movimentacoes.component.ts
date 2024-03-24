@@ -34,19 +34,19 @@ export class CarteiraMovimentacoesComponent implements OnInit {
   }
 
 
-  ngOnInit(): void {    
+  ngOnInit(): void {
     this.onLoad()
   }
 
 
-   onLoad() {
+  onLoad() {
     const filter = new Map();
     filter.set('start_date', this.start_date)
     filter.set('end_date', this.end_date)
     this.service.load_movimentacoes(filter).subscribe({
       next: (resp) => {
         this.movimentacoes = resp.data;
-        this.total = this.movimentacoes.reduce((soma,item) => soma + item.valor, 0)
+        this.total = this.movimentacoes.reduce((soma, item) => soma + item.valor, 0)
       },
       error: (e) => console.error(e),
     })
@@ -63,11 +63,19 @@ export class CarteiraMovimentacoesComponent implements OnInit {
     })
   }
 
+
+  delete_movimentacao(id: number) {
+    this.service.delete_movimentacao(id).subscribe({
+      complete: () => this.onLoad(),
+      error: console.error
+    })
+  }
+
   showFormNew() {
-    if (this.carteiras.length == 0){
+    if (this.carteiras.length == 0) {
       this.service.loadAll().subscribe(resp => this.carteiras = resp.data)
     }
-    
+
     this.modalService.open('modalNewMov')
   }
 
