@@ -133,7 +133,7 @@ export class OperacoesArquivosComponent {
             this.uploadedFiles = resp.data
             this.modalService.open(this.modalArquivos)
           },
-          error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 })
+          error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.data.error.message, life: 5000 })
         })
     }
   }

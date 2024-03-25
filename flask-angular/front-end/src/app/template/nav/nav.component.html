@@ -1,29 +1,35 @@
 <header>
-    <div class="menu-master">
-        <h3 class="title">Meus Investimentos</h3>
-        <nav>
-            <ul>
-                <li><a routerLink="/"> <mat-icon fontIcon="dashboard"></mat-icon>
-                        Dashboard</a>
-                </li>
-                <li><a routerLink="/carteiras"> <mat-icon fontIcon="wallet"></mat-icon>
-                        &nbsp;Carteiras</a>
-                </li>
-                <li><a routerLink="/operacoes"> <mat-icon fontIcon="autorenew"></mat-icon>
-                        Operações</a>
-                </li>
-                <li><a routerLink="/dividendos"> <mat-icon fontIcon="payments"></mat-icon>
-                        &nbsp;Dividendos</a>
-                </li>
-                <li><a routerLink="/ativos"> <mat-icon fontIcon="bookmarks"></mat-icon>
-                        &nbsp;Ativos</a>
-                </li>
-                <li><a routerLink="/setups"> <mat-icon fontIcon="settings_applications"></mat-icon>
-                        &nbsp;Setups</a>
-                </li>
+        <div class="menu-master">
+                <h3 class="title">Meus Investimentos</h3>
+                <nav>
+                        <ul>
+                                <li><a routerLink="/dashboard" routerLinkActive="active">
+                                                <mat-icon fontIcon="dashboard"></mat-icon>
+                                                Dashboard</a>
+                                </li>
+                                <li><a routerLink="/carteiras" routerLinkActive="active">
+                                                <mat-icon fontIcon="wallet"></mat-icon>
+                                                &nbsp;Carteiras</a>
+                                </li>
+                                <li><a routerLink="/operacoes" routerLinkActive="active">
+                                                <mat-icon fontIcon="autorenew"></mat-icon>
+                                                Operações</a>
+                                </li>
+                                <li><a routerLink="/dividendos" routerLinkActive="active">
+                                                <mat-icon fontIcon="payments"></mat-icon>
+                                                &nbsp;Dividendos</a>
+                                </li>
+                                <li><a routerLink="/ativos" routerLinkActive="active">
+                                                <mat-icon fontIcon="bookmarks"></mat-icon>
+                                                &nbsp;Ativos</a>
+                                </li>
+                                <li><a routerLink="/setups" routerLinkActive="active"> <mat-icon
+                                                        fontIcon="settings_applications"></mat-icon>
+                                                &nbsp;Setups</a>
+                                </li>
 
-            </ul>
-        </nav>
-    </div>
-    <app-loader class="loader"></app-loader>
+                        </ul>
+                </nav>
+        </div>
+        <app-loader class="loader"></app-loader>
 </header>

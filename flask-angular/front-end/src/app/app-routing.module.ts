@@ -8,8 +8,9 @@ import { DividendosComponent } from './pages/dividendos/dividendos.component';
 
  
 const routes: Routes = [
-  {path:'', component:DashboardComponent, pathMatch: 'full'},
-  {path: 'dividendos', component:DividendosComponent}
+  {path:'dashboard', component:DashboardComponent, pathMatch: 'full'},
+  {path: 'dividendos', component:DividendosComponent},
+
 ];
 
 @NgModule({
