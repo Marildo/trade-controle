@@ -183,6 +183,8 @@ export class OperacoesDetailComponent {
     this.service.update(this.formOperacao.value).subscribe({
       next: value => {
         this.modalService.close(this.modalEdit)
+        this.onLoad()
+
       },
       error(err) {
         console.log(err)

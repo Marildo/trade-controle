@@ -16,7 +16,7 @@ from werkzeug.exceptions import BadRequest
 from ..exceptions import EmptyFileException
 from ..settings import config
 from ..model.enums import NotaStatusProcess, TipoNota
-from ..model import FileCorretagem, NotaCorretagem
+from ..model import FileCorretagem, NotaCorretagem, ArquivosRepository
 from ..exceptions import DuplicationProcessingException
 
 from ..services import ReadPDFCorretagem, ToroService
@@ -108,7 +108,7 @@ class NotaController:
     @classmethod
     def reprocess_nota(cls, file_id: int):
         filecorr = FileCorretagem().read_by_id(file_id)
-        # reference_date = filecorr.notas[0].data_referencia
+        ArquivosRepository.delete_operacoes_from_file_id(file_id)
 
         return cls.__process_notas(filecorr, file_id)
 
@@ -145,7 +145,6 @@ class NotaController:
     def search_corretagens(cls) -> dict:
         notas = []
         start_date = NotaCorretagem.get_last_date_processed()[0]
-        # start_date = datetime.today().replace(day=25).date()
         service = ToroService()
         files = service.process_corretagem(start_date)
         for file in files:

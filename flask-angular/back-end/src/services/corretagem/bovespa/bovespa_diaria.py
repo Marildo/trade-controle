@@ -81,6 +81,15 @@ class BovespaDiaria(Investiment):
                 end = self.__locate_index('C/V', self.lines, begin + 2) - 1
 
             if operacoes:
+                codigos = set([i['ativo'] for i in operacoes])
+                for item in codigos:
+                    ops_curr = [i for i in operacoes if i['ativo'] == item]
+                    total_compras = sum([i['qtd'] for i in ops_curr if i['tipo'] == 'C'])
+                    total_vendas = sum([i['qtd'] for i in ops_curr if i['tipo'] == 'V'])
+                    if total_vendas == total_compras:
+                        for op in ops_curr:
+                            op['daytrade'] = True
+
                 self._add_notas(comprovante, data_operacao, tipo_nota, operacoes, irfp, custos)
 
     @staticmethod
@@ -99,7 +108,7 @@ class BovespaDiaria(Investiment):
         index = self.__locate_index('Comprovante', self.lines) + 1
         return int(onnly_numbers(self.lines[index]))
 
-    def __get_irrf(self, operacoes: List) -> float:
+    def __get_irrf(self) -> float:
         result = 0
         index = self.__locate_index('IRRF Day Trade', self.lines)
         if index > 0:
@@ -113,7 +122,7 @@ class BovespaDiaria(Investiment):
 
         return result
 
-    def __get_custos(self, operacoes: List) -> float:
+    def __get_custos(self) -> float:
         emulomentos = self.__find_emulumentos(self.lines)
         taxa_liquidacao = self.__find_taxa_liquidacao(self.lines)
         clearing = self.__find_clearing(self.lines)
@@ -128,7 +137,6 @@ class BovespaDiaria(Investiment):
         split = value.split('-')
         codigo = split[0].strip()
         codigo = codigo[:-1] if codigo[-1] == 'F' and len(codigo) == 6 else codigo
-        # tipo = split[-1].split(' ')[0]
         value = f'{codigo}/ '
         return value
 
