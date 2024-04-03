@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 
-
-import { OperacoesRoutingModule } from './operacoes.routing.module';
 import { SharedModule } from 'src/app/shared/shared.module';
+import { OperacoesRoutingModule } from './operacoes.routing.module';
 import { OperacoesMainComponent } from './operacoes-main/operacoes-main.component';
 import { OperacoesDashboardComponent } from './operacoes-dashboard/operacoes-dashboard.component';
 import { OperacoesSummaryComponent } from './operacoes-summary/operacoes-summary.component';

@@ -19,6 +19,8 @@ h3 {
 $tt-blue-dark: rgb(16, 69, 133);
 $tt-blue-media: rgb(83, 131, 190);
 $tt-blue-light: #c5e6fa;
+
+$tt-gray: #7a7d7d;
 $tt-gray-light: #ced4da;
 
 .title {
@@ -43,6 +45,11 @@ $tt-gray-light: #ced4da;
   font-weight: 500;
   margin: 0;
   padding: 0;
+}
+
+.text-info{
+  color: $tt-gray;
+  font-size: 0.6em;
 }
 
 .form-group {

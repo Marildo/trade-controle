@@ -1,13 +1,13 @@
 """
  @author Marildo Cesar 25/04/2023
 """
-
+from datetime import datetime
 from typing import Tuple, Optional
 
 from src.settings import logger
 from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
 
-from src.services import StatusInvest
+from src.services import StatusInvest, YFinanceService
 from .schemas import AtivoSchema
 
 
@@ -126,3 +126,14 @@ class AtivoController:
             tipo = _map_type[nome]
 
         return nome.strip(), tipo.strip(), mapead
+
+    def updateIndices(self):
+        def dif_time(dt0, dt1):
+            diff = dt0 - dt1
+            time_diff = diff.total_seconds() / 3600
+            return time_diff
+
+        ativos = Ativo.find_like_name('INDICE')
+        ativos = [i for i in ativos if dif_time(datetime.today(), i.update_at) > 1]
+        for a in ativos:
+            YFinanceService.update_indices(a)

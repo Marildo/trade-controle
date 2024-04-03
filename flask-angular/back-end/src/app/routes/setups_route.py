@@ -23,6 +23,12 @@ def process():
     return SetupController.save(request)
 
 
+@setups_router.route('/indfut', methods=['GET'])
+@format_response
+def ind_fut():
+    return SetupController.ind_fut(request)
+
+
 @setups_router.route('/backtest', methods=['POST'])
 @format_response
 def backtest():

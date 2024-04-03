@@ -38,4 +38,8 @@ export class SetupService extends BaseAPIService {
     );
     
   }
+
+  public indiceFut(): Observable<any> {
+    return this.get(this.path + '/indfut')
+  }
 }

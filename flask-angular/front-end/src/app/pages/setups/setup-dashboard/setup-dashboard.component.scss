@@ -1,0 +1,46 @@
+main{
+    padding: 0.5em;
+}
+
+.indice {
+    margin: 0;
+}
+
+.data-box {
+    padding-bottom: 0.8em;
+}
+
+.data-box table th {
+  padding: 0.2em;
+  text-align: center;
+  border-bottom: 0;
+}
+
+.data-box table td span {
+    color: blue;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.data-item {
+   margin-left: 3em;
+}
+.data-item ul li {
+    list-style:  none;
+}
+
+
+.expectation{
+    background-color: rgb(231, 249, 239);
+}
+
+.previous{
+    background-color: rgb(235, 237, 242);
+}
+
+.positive {
+    color: green;
+}
+
+.negative {
+    color: red;
+}

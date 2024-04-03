@@ -98,6 +98,8 @@ class Ativo(BaseTable):
     descricao = Column(VARCHAR(90))
     cotacao = Column(FLOAT(precision=3))
     variacao = Column(FLOAT(precision=3))
+    maxima = Column(FLOAT(precision=3))
+    minima = Column(FLOAT(precision=3))
     tipo_ativo = Column(VARCHAR(6), nullable=True)
     tipo_investimento = Column(Enum(TipoInvestimento))
     update_at = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))

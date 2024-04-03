@@ -1,1 +1,84 @@
-<p>setup-dashboard works!</p>
+<main class="container">
+
+    <div class="data-box">
+        <h2 class="indice">{{indiceData.win.code}}<span class="text-info"> Vencimento: {{indiceData.win.expiration |
+                date:'dd/MM/yyy'}} ({{indiceData.win.expiration_days}} dias)</span></h2>
+        <div class="data-row">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="4" class="expectation"> Expectativa </th>
+                        <th colspan="3" class="previous"> Anterior </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="expectation"> Abertura <span> {{indiceData.win.expectation.open}} </span></td>
+                        <td class="expectation"> Justo <span> {{indiceData.win.expectation.fair}} </span></td>
+                        <td class="expectation"> Máxima <span> {{indiceData.win.expectation.high}} </span></td>
+                        <td class="expectation"> Mímima <span> {{indiceData.win.expectation.low}} </span></td>
+
+                        <td class="previous">Fechamento <span> {{indiceData.win.close}} </span></td>
+                        <td class="previous">Máxima <span> {{indiceData.win.high}} </span></td>
+                        <td class="previous">Mímima <span> {{indiceData.win.low}} </span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <hr>
+
+    <div class="data-box">
+        <h2 class="indice">IBOVE
+            <span class="text-info" class="{{indiceData.IBOVE.day_variation >= 0 ?'positive':'negative'}}">
+                {{indiceData.IBOVE.day_variation | number}}%</span>
+        </h2>
+        <div class="data-row">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="4" class="previous"> Anterior </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="previous">Fechamento <span> {{indiceData.IBOVE.close}} </span></td>
+                        <td class="previous">Máxima <span> {{indiceData.IBOVE.high}} </span></td>
+                        <td class="previous">Mímima <span> {{indiceData.IBOVE.low}} </span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <hr>
+
+    <div class="data-box">
+        <h2 class="indice">SP500 FUT
+            <span class="text-info" class="{{indiceData.SP500FUT.day_variation >= 0 ?'positive':'negative'}}">
+                {{indiceData.SP500FUT.day_variation | number}}%</span>
+        </h2>
+        <div class="data-row">
+            <table>
+                <thead>
+                    <tr>
+                        <th colspan="4" class="previous"> Anterior </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="previous">Fechamento <span> {{indiceData.SP500FUT.close}} </span></td>
+                        <td class="previous">Máxima <span> {{indiceData.SP500FUT.high}} </span></td>
+                        <td class="previous">Mímima <span> {{indiceData.SP500FUT.low}} </span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2> <span class="text-info"> {{update_at | date:'dd/MM/yyy hh:mm:ss'}}</span></h2>
+
+
+</main>

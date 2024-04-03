@@ -1,7 +1,7 @@
 # @author Marildo Cesar 24/10/2023
 from apscheduler.schedulers.background import BackgroundScheduler
 
-from src.controller import OperacaoController, CarteiraController
+from src.controller import OperacaoController, CarteiraController, AtivoController
 from ..settings import logger
 
 class Tasks:
@@ -19,5 +19,6 @@ class Tasks:
         logger.info("Starting tasks")
         OperacaoController().update_historico()
         OperacaoController().update_prices()
+        AtivoController().updateIndices()
         CarteiraController.update_saldos()
         CarteiraController.generate_historico()

@@ -17,5 +17,11 @@ def test_update_prices():
     YFinanceService.update_price(data)
 
 
+def test_update_indices():
+    datas = Ativo.find_like_name('INDICE')
+    for d in datas:
+        YFinanceService.update_indices(d)
+
+
 if __name__ == '__main__':
     pytest.main()
