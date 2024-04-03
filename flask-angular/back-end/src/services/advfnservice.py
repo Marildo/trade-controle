@@ -2,6 +2,8 @@
 
 import requests
 from bs4 import BeautifulSoup
+
+
 class ADVFNService:
 
     def __init__(self):
@@ -48,10 +50,13 @@ class ADVFNService:
             td = tr.select('td')[2]
             value = td.text
 
-        return float(value.replace('.', '').replace(',', '.'))
+        di = float(value.replace('.', '').replace(',', '.'))
+        code = tr.select('td')[0].text
+
+        return {'code': code, 'value': di}
 
     def get_ibove_variation(self):
-        url = f"bolsa-de-valores/bmf/indice-bovespa-IBOV/cotacao"
+        url = "bolsa-de-valores/bmf/indice-bovespa-IBOV/cotacao"
         response = self.__execute(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
@@ -66,10 +71,10 @@ class ADVFNService:
         response = requests.get(url, headers=headers)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        node = soup.select(
-            '#quote-page-strip > div.QuoteStrip-dataContainer > div.QuoteStrip-lastTimeAndPriceContainer > div.QuoteStrip-lastPriceStripContainer')[
-            0]
+        sl = '#quote-page-strip > div.QuoteStrip-dataContainer > div.QuoteStrip-lastTimeAndPriceContainer ' \
+             '> div.QuoteStrip-lastPriceStripContainer'
+        node = soup.select(sl)[0]
         spans = node.findAll('span')
         value = spans[3].text
-        value = value.replace(',', '.').replace('(', '').replace(')', '').replace('%', '')
+        value = value.replace(',', '.').replace('(', '').replace(')', '').replace('%', '').replace(' UNCH', '0')
         return float(value)

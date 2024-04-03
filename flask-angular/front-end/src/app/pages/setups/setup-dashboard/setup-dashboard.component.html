@@ -78,7 +78,16 @@
         </div>
     </div>
 
-    <h2> <span class="text-info"> {{update_at | date:'dd/MM/yyy hh:mm:ss'}}</span></h2>
+    <hr>
+
+    <div class="data-box">
+        <h2 class="indice">{{indiceData.DI.code}}
+            <span class="text-info"> {{indiceData.DI.value | number}}</span>
+        </h2>
+    </div>
 
 
 </main>
+<footer>
+    <h2> <span class="text-info"> {{update_at | date:'dd/MM/yyy hh:mm:ss'}}</span></h2>
+</footer>

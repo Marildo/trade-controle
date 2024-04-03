@@ -119,7 +119,7 @@ class SetupController:
         low = marred_five(sp500fut['low'] / sp500fut['close'] * open)
 
         dividendos_anuais = 3.795 * 0.01
-        di = data['DI'] * 0.01
+        di = data['DI']['value'] * 0.01
 
         fee_by_time = win['expiration_days'] * 1 / DIAS_UTEIS_BRASIL
         fee = (di - dividendos_anuais) * fee_by_time
