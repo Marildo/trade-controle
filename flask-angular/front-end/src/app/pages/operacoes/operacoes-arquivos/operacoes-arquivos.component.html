@@ -22,11 +22,12 @@
         <mat-icon>filter_alt</mat-icon>
     </button>
 
-    <button mat-button color="primary"  matTooltip="Buscar na corretora"   (click)="onSearchCorretora()">
-        <mat-icon>find_replace</mat-icon> 
+    <button mat-button color="primary" matTooltip="Buscar na corretora" (click)="onSearchCorretora()">
+        <mat-icon>find_replace</mat-icon>
     </button>
 
-    <button mat-button color="primary" aria-label="Enviar arquivo"  matTooltip="Enviar arquivo" (click)="hiddenForm=false">
+    <button mat-button color="primary" aria-label="Enviar arquivo" matTooltip="Enviar arquivo"
+        (click)="hiddenForm=false">
         <mat-icon>file_upload</mat-icon>
     </button>
 </nav>
@@ -40,7 +41,7 @@
                 <th>Data processamento</th>
                 <th>Status</th>
                 <th>Tipo</th>
-                <th></th>                
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -58,8 +59,8 @@
                     </button>
                 </td>
                 <td [hidden]=" row.status != 'Finalizado'">
-                    <button mat-icon-button matTooltip="Reprocessar Nota" color="primary"
-                        aria-label="Reporcessar Nota" (click)="onReprocessFile(row.id)">
+                    <button mat-icon-button matTooltip="Reprocessar Nota" color="primary" aria-label="Reporcessar Nota"
+                        (click)="onReprocessFile(row.id)">
                         <mat-icon>restart_alt</mat-icon>
                     </button>
                 </td>
@@ -72,14 +73,21 @@
             </tr>
         </tbody>
     </table>
-    <div class="form-up" [hidden]="hiddenForm">
+    <div class="form-up" [hidden]="hiddenForm" (drop)="onDrop($event)" (dragover)="onDragOver($event)">
         <input type="file" (change)="onSelectFile($event)" accept=".pdf" class="form-group" multiple="True" />
+        <div class="drop-area">
+            <p>Arraste e solte os arquivos aqui</p>
+        </div>
+        <ul>
+            <li *ngFor="let file of selectedFiles">
+                {{ file.name }}
+            </li>
+        </ul>
         <footer class="container-buttons">
             <button mat-raised-button color="accent" (click)="hiddenForm=true">Cancelar</button>
             <button mat-raised-button color="primary" [disabled]="!selectedFiles" (click)="onUploadFile()">Enviar
                 arquivo</button>
         </footer>
-
     </div>
 </div>
 
@@ -110,5 +118,5 @@
     </table>
     <div class="container-end">
         <button mat-raised-button color="accent" (click)="onCloseModalArquivos()">Fechar</button>
-    </div> 
+    </div>
 </app-modal>

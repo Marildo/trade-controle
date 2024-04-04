@@ -36,8 +36,8 @@ class BovespaDiaria(Investiment):
             # print(page.number, data_operacao, comprovante)
 
             if page.number == 0:
-                custos = self.__get_custos(operacoes)
-                irfp = self.__get_irrf(operacoes)
+                custos = self.__get_custos()
+                irfp = self.__get_irrf()
 
             begin = self.__locate_index('C/V', self.lines)
             end = self.__locate_index('C/V', self.lines, begin + 2) - 1

@@ -3,7 +3,7 @@
   justify-content: space-around;
 }
 
-nav{
+nav {
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -27,8 +27,21 @@ a {
   box-sizing: border-box;
   border: 1px solid #c6c3c3;
 }
- 
 
-.table-arquivos{
+.drop-area {
+  background-color: #edebeb;
+  color: blue;
+  padding: 30px;
+  text-align: center;
+  cursor: pointer;
+}
+
+
+.form-up li {
+  list-style: none;
+
+}
+
+.table-arquivos {
   width: 90vw;
 }

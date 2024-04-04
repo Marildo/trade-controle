@@ -4,7 +4,7 @@ import { MessageService } from 'primeng/api';
 import { ModalService } from 'src/app/components/modal/modal-service';
 import { OperacoesService } from '../operacoes.service';
 
- 
+
 
 
 @Component({
@@ -13,6 +13,7 @@ import { OperacoesService } from '../operacoes.service';
   styleUrls: ['./operacoes-arquivos.component.scss']
 })
 export class OperacoesArquivosComponent {
+
   private modalArquivos = 'modalArquivos'
 
   public hiddenForm = true;
@@ -21,7 +22,7 @@ export class OperacoesArquivosComponent {
 
 
 
-  public selectedFiles!: File[] | null;
+  public selectedFiles: File[] = [];
 
   public tipoNota!: string;
   public start_processamento!: any;
@@ -114,12 +115,12 @@ export class OperacoesArquivosComponent {
       .subscribe({
         next: (resp) => {
           this.uploadedFiles = resp.data.notas
-          if(this.uploadedFiles.length > 0){
+          if (this.uploadedFiles.length > 0) {
             this.modalService.open(this.modalArquivos)
-          }else{
+          } else {
             this.messageService.add({ severity: 'info', summary: 'Informação', detail: 'Nenhum nota de corretagem foi localizada.', life: 5000 })
           }
-          
+
         },
         error: e => this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.data.error.message, life: 5000 })
       })
@@ -160,6 +161,18 @@ export class OperacoesArquivosComponent {
           this.messageService.add({ severity: 'error', summary: 'Erro', detail: e.error.message, life: 5000 });
         }
       })
+  }
+
+  onDrop(event: DragEvent) {
+    event.preventDefault();
+    const files: any = event.dataTransfer?.files;
+    for (let i = 0; i < files.length; i++) {
+      this.selectedFiles.push(files[i]);
+    }
+  }
+
+  onDragOver(event: DragEvent) {
+    event.preventDefault();
   }
 
 
