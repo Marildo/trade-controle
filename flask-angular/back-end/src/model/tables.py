@@ -8,6 +8,7 @@ from datetime import date
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
                         Enum,
                         ForeignKey, text, func)
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship, Mapper
 from sqlalchemy import event
 
@@ -20,10 +21,13 @@ from .scripts import OperacoesSql, ArquivosCorretagemSQL
 class BaseTable(Base):
     __abstract__ = True
 
-    def save(self):
+    def save(self, ignore_duplicate: bool = False):
         with db_connection as conn:
-            conn.session.add(self)
-            conn.session.commit()
+            try:
+                conn.session.add(self)
+                conn.session.commit()
+            except IntegrityError:
+                conn.session.rollback()
 
     def update(self):
         with db_connection as conn:
@@ -98,8 +102,8 @@ class Ativo(BaseTable):
     descricao = Column(VARCHAR(90))
     cotacao = Column(FLOAT(precision=3))
     variacao = Column(FLOAT(precision=3))
-    maxima = Column(FLOAT(precision=3))
-    minima = Column(FLOAT(precision=3))
+    maxima = Column(FLOAT(precision=2))
+    minima = Column(FLOAT(precision=2))
     tipo_ativo = Column(VARCHAR(6), nullable=True)
     tipo_investimento = Column(Enum(TipoInvestimento))
     update_at = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
@@ -228,6 +232,16 @@ class FileCorretagem(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, filters_map)
             return query.fetchall()
+
+
+class HistoricoAtivos(BaseTable):
+    __tablename__ = 'historico_ativos'
+    abertura = Column(FLOAT(precision=2))
+    fechamento = Column(FLOAT(precision=2))
+    maxima = Column(FLOAT(precision=2))
+    minima = Column(FLOAT(precision=2))
+    data = Column(DATE, primary_key=True)
+    ativo_id = Column(INTEGER, ForeignKey('ativos.id'), primary_key=True)
 
 
 class Historico(BaseTable):

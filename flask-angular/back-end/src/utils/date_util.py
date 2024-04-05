@@ -15,6 +15,29 @@ def str_date(value: str) -> date:
     return parse_date(value, dayfirst=True).date()
 
 
+def ptbr_to_date(value: str) -> date:
+
+    months_map = {
+        'Jan': 1,
+        'Feb': 2,
+        'Mar': 3,
+        'Abr': 4,
+        'May': 5,
+        'Jun': 6,
+        'Jul': 7,
+        'Aug': 8,
+        'Sep': 9,
+        'Oct': 10,
+        'Nov': 11,
+        'Dec': 12
+    }
+    day, month_name, year = value.split()
+    month_number = months_map[month_name]
+    day = int(day)
+    year = int(year)
+    return date(year, month_number, day)
+
+
 def uteis_days(start_date: date, end_date: date, holidays: list):
     """
     Calcula o número de dias úteis entre duas datas.

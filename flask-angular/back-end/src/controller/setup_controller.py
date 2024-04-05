@@ -8,7 +8,7 @@ from marshmallow import fields
 from src.services import ADVFNService
 from src.utils.number_util import marred_five
 from src.utils.date_util import uteis_days
-from ..model import Setup, Ativo
+from ..model import Setup, Ativo, HistoricoAtivos
 from .schemas import SetupSchema
 
 
@@ -40,23 +40,39 @@ class SetupController:
         code, expiration = cls.__get_wind_fut(date.today())
         winfut_values = advfn.get_winfut_values(code)
         data['win'] = winfut_values
-        data['win']['code'] = code
-        data['win']['expiration'] = str(expiration)
-        data['win']['expiration_days'] = uteis_days(date.today(), expiration, holidays)
+        wind = data['win']
+        wind['code'] = code
+        wind['expiration'] = str(expiration)
+        wind['expiration_days'] = uteis_days(date.today(), expiration, holidays)
+
+        win_id = 900000
+        win_hist = HistoricoAtivos()
+        win_hist.ativo_id = win_id
+        win_hist.abertura = wind['open']
+        win_hist.fechamento = wind['close']
+        win_hist.maxima = wind['high']
+        win_hist.minima = wind['low']
+        win_hist.data = wind['date']
+        win_hist.save(ignore_duplicate=True)
+
+        if wind['date'] == date.today():
+            hist = HistoricoAtivos().read_by_params({'ativo_id': win_id})[-2]
+            wind['open'] = hist.abertura
+            wind['close'] = hist.fechamento
+            wind['high'] = hist.maxima
+            wind['low'] = hist.minima
 
         ibove = Ativo().read_by_id(810000)
-        data['IBOVE'] = {}
+        data['IBOVE'] = advfn.get_ibove_current()
         data['IBOVE']['close'] = ibove.cotacao
         data['IBOVE']['high'] = ibove.maxima
         data['IBOVE']['low'] = ibove.minima
-        data['IBOVE']['day_variation'] = advfn.get_ibove_variation()
 
         sp500futfut = Ativo().read_by_id(910000)
-        data['SP500FUT'] = {}
+        data['SP500FUT'] = advfn.get_sp500fut_variation()
         data['SP500FUT']['close'] = sp500futfut.cotacao
         data['SP500FUT']['high'] = sp500futfut.maxima
         data['SP500FUT']['low'] = sp500futfut.minima
-        data['SP500FUT']['day_variation'] = advfn.get_sp500fut_variation()
 
         data['DI'] = advfn.get_di()
 
@@ -123,6 +139,7 @@ class SetupController:
 
         fee_by_time = win['expiration_days'] * 1 / DIAS_UTEIS_BRASIL
         fee = (di - dividendos_anuais) * fee_by_time
-        fair = marred_five(data['IBOVE']['close'] * EULER ** fee)
+        FPAC = marred_five(data['IBOVE']['close'] * EULER ** fee)  # fair price at closing
+        FPC = marred_five(data['IBOVE']['current'] * EULER ** fee)
 
-        return {'open': open, 'high': high, 'low': low, 'fair': fair}
+        return {'open': open, 'high': high, 'low': low, 'FPAC': FPAC, 'FPC': FPC}

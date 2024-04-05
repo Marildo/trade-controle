@@ -1,7 +1,10 @@
 # @author Marildo Cesar 31/03/2024
 
+from datetime import date
 import requests
 from bs4 import BeautifulSoup
+
+from src.utils.date_util import ptbr_to_date
 
 
 class ADVFNService:
@@ -23,8 +26,17 @@ class ADVFNService:
         soup = BeautifulSoup(response.text, 'html.parser')
 
         # Encontrando o elemento com base nos id
+        variarion = soup.select('#quoteElementPiece7')[0].text
+        if variarion.find('%') < 0:
+            variarion = ''
+        variarion = float(variarion.replace('%', '').replace(',', '.'))
+
         close = soup.select('#quoteElementPiece8')[0].text
         close = int(float(close.replace('.', '').replace(',', '.')))
+
+        _open = soup.select('#quoteElementPiece10')[0].text
+        _open = _open if _open else '0'
+        _open = int(float(_open.replace('.', '').replace(',', '.')))
 
         low = soup.select('#quoteElementPiece11')[0].text
         low = low if low else '0'
@@ -34,7 +46,13 @@ class ADVFNService:
         high = high if high else '0'
         high = int(float(high.replace('.', '').replace(',', '.')))
 
-        return {'close': close, 'low': low, 'high': high}
+        datec = soup.select('#quote-header > div > div.price-container > div.delayed-indicator > div > div > span')[0].text
+        try:
+            datec = ptbr_to_date(datec)
+        except:
+            datec = date.today()
+
+        return {'day_variation': variarion, 'open': _open, 'close': close, 'low': low, 'high': high, 'date': datec, 'current': close}
 
     def get_di(self):
         url = "/investimentos/futuros/di-depositos-interfinanceiros/cotacoes"
@@ -55,7 +73,7 @@ class ADVFNService:
 
         return {'code': code, 'value': di}
 
-    def get_ibove_variation(self):
+    def get_ibove_current(self):
         url = "bolsa-de-valores/bmf/indice-bovespa-IBOV/cotacao"
         response = self.__execute(url)
         soup = BeautifulSoup(response.text, 'html.parser')
@@ -63,7 +81,15 @@ class ADVFNService:
         # Encontrando o elemento com base nos id
         variation = soup.select('#quoteElementPiece4')[0].text
         variation = float(variation.replace('.', '').replace(',', '.').replace("%", ''))
-        return variation
+
+        current = soup.select('#quoteElementPiece5')[0].text
+        current = float(current.replace('.', '').replace(',', '.'))
+
+        data = {
+            'day_variation': variation,
+            'current': current
+        }
+        return data
 
     def get_sp500fut_variation(self):
         url = "https://www.cnbc.com/quotes/@SP.1"
@@ -75,6 +101,17 @@ class ADVFNService:
              '> div.QuoteStrip-lastPriceStripContainer'
         node = soup.select(sl)[0]
         spans = node.findAll('span')
-        value = spans[3].text
-        value = value.replace(',', '.').replace('(', '').replace(')', '').replace('%', '').replace(' UNCH', '0')
-        return float(value)
+        day_variation = spans[3].text
+        day_variation = day_variation.replace(',', '.').replace('(', '').replace(')', '').replace('%', '').replace(' UNCH', '0')
+
+        sl = '#quote-page-strip > div.QuoteStrip-dataContainer > div.QuoteStrip-lastTimeAndPriceContainer > ' \
+             'div.QuoteStrip-lastPriceStripContainer > span.QuoteStrip-lastPrice'
+        node = soup.select(sl)[0]
+        current = node.text
+        current = current.replace(',', '')
+        data = {
+            'day_variation': float(day_variation),
+            'current': float(current)
+        }
+
+        return data

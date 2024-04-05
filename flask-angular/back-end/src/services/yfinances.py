@@ -104,3 +104,9 @@ class YFinanceService:
         variation = sp500_data['variation'].iloc[-1]
         data['current_variation'] = variation
         return data
+
+    def get_historico_indice(self):
+        start = date.today() - timedelta(days=150)
+        data = yf.download( '', period='1d', start=start)
+        data['variation'] = round(data['Adj Close'].pct_change() * 100, 2)
+        ativo.cotacao = data['Adj Close'].iloc[-1]
