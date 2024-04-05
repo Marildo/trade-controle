@@ -1,0 +1,26 @@
+<nav>
+
+
+</nav>
+<main>
+    <table>
+        <thead>
+            <tr>
+                <th>Código</th>
+                <th>Nome</th>
+                <th>Cotação</th>
+                <th>Setor</th>
+                <th>Segmento</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let ativo of this.ativos">
+                <td><a routerLink="{{ativo.id}}" target="_blank"> {{ativo.codigo}} </a></td>
+                <td>{{ativo.nome}}</td>
+                <td>{{ativo.cotacao | currency}}</td>
+                <td>{{ativo.setor.nome}}</td>                
+                <td>{{ativo.segmento.nome}}</td>
+            </tr>
+        </tbody>
+    </table>
+</main>

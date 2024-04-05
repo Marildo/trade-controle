@@ -4,6 +4,8 @@ import { AtivosMainComponent } from './ativos-main/ativos-main.component';
 import { AtivosDashboardComponent } from './ativos-dashboard/ativos-dashboard.component';
 import { SharedModule } from 'src/app/shared/shared.module';
 import { AtivosRoutingModule } from './ativos.routing.module';
+import { AtivosIbovespaComponent } from './ativos-ibovespa/ativos-ibovespa.component';
+import { AtivosIbovespaItemComponent } from './ativos-ibovespa-item/ativos-ibovespa-item.component';
 
 
 
@@ -11,6 +13,9 @@ import { AtivosRoutingModule } from './ativos.routing.module';
   declarations: [
     AtivosMainComponent,
     AtivosDashboardComponent,
+    AtivosIbovespaComponent,
+    AtivosIbovespaItemComponent
+   
   ],
   imports: [
     CommonModule, 

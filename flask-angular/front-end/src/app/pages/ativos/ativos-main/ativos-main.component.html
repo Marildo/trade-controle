@@ -1,16 +1,17 @@
-<header>
-    <nav class="menu">
+<header class="page-menu-container">
+    <nav class="page-menu">
         <ul>
-            <li> <a> <mat-icon fontIcon=" "></mat-icon> <span> Ativos </span> </a> </li>
+            <li> <a routerLink="dashboard" class="page-menu-title"> <mat-icon fontIcon="bookmarks"
+                        color="accent"></mat-icon> <span>Ativos</span> </a> </li>
             <li>
                 <a routerLink="dashboard" routerLinkActive="active"> <mat-icon fontIcon="dashboard"></mat-icon>
                     Dashboard </a>
             </li>
-            <li>
-                <a routerLink="acoes" routerLinkActive="active"> <mat-icon fontIcon="bookmarks"> </mat-icon> Ações </a>
+            <li> <a routerLink="ibovespa" routerLinkActive="active"> <mat-icon fontIcon="account_balance"> </mat-icon>
+                    Ibovespa </a>
             </li>
-
         </ul>
     </nav>
 </header>
+
 <router-outlet></router-outlet>
