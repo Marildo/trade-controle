@@ -2,9 +2,10 @@
  @author Marildo Cesar 24/04/2023
 """
 
-from typing import List, Dict
+from typing import List, Dict, Type
 from datetime import date
 
+import sqlalchemy
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
                         Enum,
                         ForeignKey, text, func)
@@ -51,22 +52,39 @@ class BaseTable(Base):
         _class = type(self)
 
         filters = []
-        if params:
+        params_filter = {k: v for k, v in params.items() if k != 'orderBy'}
+        if params_filter:
             columns = _class.__table__.columns
-            for k, v in params.items():
+            for k, v in params_filter.items():
                 translasted = self.translate_query(field=k, value=v)
                 if translasted is not None:
                     filters.append(translasted)
                 elif k in columns:
                     filters.append(columns[k] == v)
 
+        sort = self.order_field(params)
+
         with db_connection as conn:
             query = (conn.session.query(_class)
                      .filter(*filters)
+                     .order_by(sort)
                      )
             return query.all()
 
     def translate_query(self, field: str, value: str):
+        return None
+
+    def order_field(self, params: Dict):
+        sort_function = {'DESC': sqlalchemy.desc, 'ASC': sqlalchemy.asc}
+        sort_params = {k: v for k, v in params.items() if k == 'orderBy'}
+        if sort_params:
+            field = str(sort_params['orderBy'])
+            if field != "":
+                sort = 'ASC'
+                if field.endswith('DESC'):
+                    sort = 'DESC'
+                field = field.replace(sort, '')
+                return sort_function[sort](field)
         return None
 
 

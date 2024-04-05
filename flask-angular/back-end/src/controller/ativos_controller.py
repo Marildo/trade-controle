@@ -5,8 +5,7 @@ from datetime import datetime
 from typing import Tuple, Optional
 
 from src.settings import logger
-from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento
-
+from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento, AtivosRepository
 from src.services import StatusInvest, YFinanceService
 from .schemas import AtivoSchema
 
@@ -15,7 +14,7 @@ class AtivoController:
 
     @classmethod
     def readAll(cls):
-        data = Ativo().read_by_params({})
+        data = Ativo().read_by_params({'orderBy': 'nome'})
         response = AtivoSchema().dump(data, many=True)
         return response
 
