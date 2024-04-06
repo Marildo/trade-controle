@@ -1,6 +1,7 @@
 # @author Marildo Cesar 14/02/2024
 
 from datetime import date, timedelta
+import math
 
 from webargs.flaskparser import parser
 from marshmallow import fields
@@ -10,9 +11,11 @@ from src.utils.number_util import marred_five
 from src.utils.date_util import uteis_days
 from ..model import Setup, Ativo, HistoricoAtivos
 from .schemas import SetupSchema
+from .wind_calculations import get_wind_fut, calc_win_price_expectation, calc_volatiliadade
 
 
 class SetupController:
+    WIN_ID = 900000
 
     @classmethod
     def load(cls, request):
@@ -37,7 +40,7 @@ class SetupController:
         data = {}
 
         advfn = ADVFNService()
-        code, expiration = cls.__get_wind_fut(date.today())
+        code, expiration = get_wind_fut(date.today())
         winfut_values = advfn.get_winfut_values(code)
         data['win'] = winfut_values
         wind = data['win']
@@ -45,22 +48,27 @@ class SetupController:
         wind['expiration'] = str(expiration)
         wind['expiration_days'] = uteis_days(date.today(), expiration, holidays)
 
-        win_id = 900000
         win_hist = HistoricoAtivos()
-        win_hist.ativo_id = win_id
+        win_hist.ativo_id = cls.WIN_ID
         win_hist.abertura = wind['open']
         win_hist.fechamento = wind['close']
         win_hist.maxima = wind['high']
         win_hist.minima = wind['low']
         win_hist.data = wind['date']
-        win_hist.save(ignore_duplicate=True)
+        win_hist.save(update_on_duplicate=True)
+
+        params = {
+            'ativo_id': cls.WIN_ID,
+            'orderBy': 'dataDESC',
+            'LIMIT': 121
+        }
+        historicos = HistoricoAtivos().read_by_params(params)
 
         if wind['date'] == date.today():
-            hist = HistoricoAtivos().read_by_params({'ativo_id': win_id})[-2]
-            wind['open'] = hist.abertura
-            wind['close'] = hist.fechamento
-            wind['high'] = hist.maxima
-            wind['low'] = hist.minima
+            wind['open'] = historicos[1].abertura
+            wind['close'] = historicos[1].fechamento
+            wind['high'] = historicos[1].maxima
+            wind['low'] = historicos[1].minima
 
         ibove = Ativo().read_by_id(810000)
         data['IBOVE'] = advfn.get_ibove_current()
@@ -85,61 +93,7 @@ class SetupController:
         # data['expiration_days'] = 8
         # data['IBOVE']['close'] = 128481.02
 
-        data['win']['expectation'] = cls.__calc_win_price_expectation(data)
+        data['win']['expectation'] = calc_win_price_expectation(data)
+        data['win']['volatility'] = calc_volatiliadade(historicos)
 
         return data
-
-    @staticmethod
-    def __get_wind_fut(reference_date: date):
-        codes = {
-            1: 'G', 2: 'G',
-            3: 'J', 4: 'J',
-            5: 'M', 6: 'M',
-            7: 'Q', 8: 'Q',
-            9: 'V', 10: 'V',
-            11: 'Z', 12: 'Z',
-        }
-
-        expirations_date = {
-            'G': 2,
-            'J': 4,
-            'M': 6,
-            'Q': 8,
-            'V': 10,
-            'Z': 12
-        }
-
-        month = reference_date.month
-        expiration_code = codes[month]
-        code = f'WIN{expiration_code}{reference_date.strftime("%y")}'
-
-        expr = date(day=15, month=expirations_date[expiration_code], year=reference_date.year)
-        WEDNESDAY = 3
-        days_off_wed = (expr.weekday() - WEDNESDAY) % 7
-        expiration = expr + timedelta(days=days_off_wed - 1)
-        return code, expiration
-
-    @staticmethod
-    def __calc_win_price_expectation(data: dict):
-        EULER = 2.71828
-        DIAS_UTEIS_BRASIL = 252
-
-        win = data['win']
-        lclose = win['close']
-
-        sp500fut = data['SP500FUT']
-        var_sp500fut = sp500fut['day_variation'] * 0.01
-
-        open = marred_five(lclose * var_sp500fut + lclose)
-        high = marred_five(sp500fut['high'] / sp500fut['close'] * open)
-        low = marred_five(sp500fut['low'] / sp500fut['close'] * open)
-
-        dividendos_anuais = 3.795 * 0.01
-        di = data['DI']['value'] * 0.01
-
-        fee_by_time = win['expiration_days'] * 1 / DIAS_UTEIS_BRASIL
-        fee = (di - dividendos_anuais) * fee_by_time
-        FPAC = marred_five(data['IBOVE']['close'] * EULER ** fee)  # fair price at closing
-        FPC = marred_five(data['IBOVE']['current'] * EULER ** fee)
-
-        return {'open': open, 'high': high, 'low': low, 'FPAC': FPAC, 'FPC': FPC}

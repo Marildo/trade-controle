@@ -22,13 +22,17 @@ from .scripts import OperacoesSql, ArquivosCorretagemSQL
 class BaseTable(Base):
     __abstract__ = True
 
-    def save(self, ignore_duplicate: bool = False):
+    def save(self, update_on_duplicate: bool = False):
         with db_connection as conn:
             try:
                 conn.session.add(self)
                 conn.session.commit()
-            except IntegrityError:
+            except IntegrityError as e:
                 conn.session.rollback()
+                if update_on_duplicate:
+                    self.update()
+                else:
+                    raise e
 
     def update(self):
         with db_connection as conn:
@@ -52,7 +56,8 @@ class BaseTable(Base):
         _class = type(self)
 
         filters = []
-        params_filter = {k: v for k, v in params.items() if k != 'orderBy'}
+        keysnf = ('ORDERBY', 'LIMIT', 'OFFSET')
+        params_filter = {k: v for k, v in params.items() if k.upper() not in keysnf}
         if params_filter:
             columns = _class.__table__.columns
             for k, v in params_filter.items():
@@ -64,10 +69,15 @@ class BaseTable(Base):
 
         sort = self.order_field(params)
 
+        limit = params.get('LIMIT', 500000)
+        offset = params.get('OFFSET', 0)
+
         with db_connection as conn:
             query = (conn.session.query(_class)
                      .filter(*filters)
                      .order_by(sort)
+                     .limit(limit)
+                     .offset(offset)
                      )
             return query.all()
 
@@ -76,7 +86,7 @@ class BaseTable(Base):
 
     def order_field(self, params: Dict):
         sort_function = {'DESC': sqlalchemy.desc, 'ASC': sqlalchemy.asc}
-        sort_params = {k: v for k, v in params.items() if k == 'orderBy'}
+        sort_params = {k: v for k, v in params.items() if k.upper() == 'ORDERBY'}
         if sort_params:
             field = str(sort_params['orderBy'])
             if field != "":
@@ -260,6 +270,15 @@ class HistoricoAtivos(BaseTable):
     minima = Column(FLOAT(precision=2))
     data = Column(DATE, primary_key=True)
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'), primary_key=True)
+
+    def as_dict(self):
+        return {
+            'abertura': self.abertura,
+            'fechamento': self.fechamento,
+            'maxima': self.maxima,
+            'minima': self.minima,
+            'data': self.data
+        }
 
 
 class Historico(BaseTable):
