@@ -1,9 +1,8 @@
 """
  @author Marildo Cesar 24/04/2023
 """
-
+from datetime import date, datetime
 from typing import List, Dict, Type
-from datetime import date
 
 import sqlalchemy
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
@@ -130,6 +129,8 @@ class Ativo(BaseTable):
     descricao = Column(VARCHAR(90))
     cotacao = Column(FLOAT(precision=3))
     variacao = Column(FLOAT(precision=3))
+    abertura = Column(FLOAT(precision=2))
+    fechamento = Column(FLOAT(precision=2))
     maxima = Column(FLOAT(precision=2))
     minima = Column(FLOAT(precision=2))
     tipo_ativo = Column(VARCHAR(6), nullable=True)
@@ -305,6 +306,32 @@ class HistoricoMensal(BaseTable):
     carteira_id = Column(INTEGER, ForeignKey('carteiras.id', name='fk_carteira_hist_mensal'))
     created_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
     __table_args__ = (Index('idx_referencia', carteira_id, data_referencia, unique=True),)
+
+
+class Indicadores(BaseTable):
+    __tablename__ = 'indicadores'
+    id = Column(INTEGER, primary_key=True)
+    win_code = Column(VARCHAR(8))
+    win_current = Column(FLOAT(precision=2), default=0)
+    win_var = Column(FLOAT(precision=2), default=0)
+    ibove_current = Column(FLOAT(precision=2), default=0)
+    ibove_var = Column(FLOAT(precision=2), default=0)
+    sp500fut_current = Column(FLOAT(precision=2), default=0)
+    sp500fut_var = Column(FLOAT, default=0, )
+    di_code = Column(VARCHAR(12))
+    di_current = Column(FLOAT(precision=2), default=0)
+    update_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
+
+    @staticmethod
+    def update_values(params: Dict):
+        params.setdefault('update_at', datetime.now())
+        values = []
+        for k, v in params.items():
+            values.append(f'{k}="{v}"')
+
+        sql = text(f"UPDATE indicadores SET {' ,'.join(values)} WHERE id=1")
+        with db_connection.engine.begin() as conn:
+            conn.execute(sql)
 
 
 class Movimentacao(BaseTable):

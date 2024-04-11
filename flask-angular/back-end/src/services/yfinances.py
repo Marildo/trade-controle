@@ -31,11 +31,12 @@ class YFinanceService:
         start = date.today() - timedelta(days=5)
         data = yf.download(ativo.codigo, period='1d', start=start)
         data['variation'] = round(data['Adj Close'].pct_change() * 100, 2)
-        ativo.cotacao = data['Adj Close'].iloc[-1]
-        ativo.variacao = data['variation'].iloc[-1]
+        ativo.fechamento = data['Adj Close'].iloc[-1]
+        ativo.abertura = data['Open'].iloc[-1]
         ativo.maxima = data['High'].iloc[-1]
         ativo.minima = data['Low'].iloc[-1]
-        ativo.save()
+        ativo.variacao = data['variation'].iloc[-1]
+        ativo.update()
 
     @staticmethod
     def get_prices(codigo: str, start: date) -> Dict:
@@ -107,6 +108,6 @@ class YFinanceService:
 
     def get_historico_indice(self):
         start = date.today() - timedelta(days=150)
-        data = yf.download( '', period='1d', start=start)
+        data = yf.download('', period='1d', start=start)
         data['variation'] = round(data['Adj Close'].pct_change() * 100, 2)
         ativo.cotacao = data['Adj Close'].iloc[-1]

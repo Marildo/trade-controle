@@ -1,5 +1,7 @@
 # @author Marildo Cesar 31/03/2024
 
+import re
+
 
 def marred_five(value: float):
     """
@@ -19,4 +21,7 @@ def marred_five(value: float):
     else:
         return value - diff
 
+
+def only_numeric(value: str) -> str:
+    return re.sub(r'\D', '', str(value))
 

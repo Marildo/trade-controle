@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Subscription, interval, timeout } from 'rxjs';
+ 
+
+ 
+
 import { SetupService } from 'src/app/service/api/setup.service';
 
 @Component({
@@ -13,6 +17,8 @@ export class SetupDashboardComponent implements OnInit {
   public indiceData?: any;
   public update_at?: Date;
   private timerSubscription: Subscription | undefined;
+
+ 
 
   constructor(
     private setupService: SetupService,
@@ -30,6 +36,7 @@ export class SetupDashboardComponent implements OnInit {
       next: (resp) => {
         this.indiceData = resp.data
         this.update_at = new Date()
+         
       },
       error(err) {
         console.error(err)
@@ -38,8 +45,13 @@ export class SetupDashboardComponent implements OnInit {
     })
   }
 
+ 
+
+   
+
+
   private startTimer(): void {
-    const timerObservable = interval(5 * 60 * 1000); // 5 minutos em milissegundos
+    const timerObservable = interval(1 * 60 * 1000); // 5 minutos em milissegundos
 
     this.timerSubscription = timerObservable
       .subscribe(() => {

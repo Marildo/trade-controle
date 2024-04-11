@@ -10,3 +10,4 @@ from .index_controller import IndexController
 from .dividendos_controller import DividendosController
 from .carteira_controller import CarteiraController
 from .setup_controller import SetupController
+from .task_controller import TaskController

@@ -1,44 +1,109 @@
 <main class="container">
-
-    <div class="data-box">
-        <h2 class="indice">{{indiceData.win.code}}
+    <div class="container-indice">
+        <h2>{{indiceData.win.code}}&nbsp;
             <span class="text-info" class="{{indiceData.win.day_variation >= 0 ?'positive':'negative'}}">
-                {{indiceData.IBOVE.day_variation | number}}%
+                {{indiceData.win.day_variation | number}}%
             </span>
-            <span class="text-info">   Vencimento:
+            <span class="text-info"> Vencimento:
                 {{indiceData.win.expiration |date:'dd/MM/yyy'}} ({{indiceData.win.expiration_days}} dias)
             </span>
         </h2>
-        <div class="data-row">
-            <table>
+        <div class="indice">
+            <table class="indice-tables indice-data">
+                <thead>
+                    <th colspan="2"> Expectativa </th>
+                </thead>
+                <tbody class="expectation">
+                    <tr>
+                        <td>Justo Atual</td>
+                        <td>{{indiceData.win.expectation.FPC}} </td>
+                    </tr>
+                    <tr>
+                        <td>Justo no Fechamento</td>
+                        <td>{{indiceData.win.expectation.FPAC}} </td>
+                    </tr>
+                    <tr>
+                        <td>Abertura</td>
+                        <td>{{indiceData.win.expectation.open}} </td>
+                    </tr>
+                    <tr>
+                        <td>Máxima</td>
+                        <td
+                            class="{{ indiceData.win.high > indiceData.win.expectation.high  ?'text-line-through':''  }}">
+                            {{indiceData.win.expectation.high}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mímima</td>
+                        <td
+                            class="{{indiceData.win.high  < indiceData.win.expectation.high ?'text-line-through':''  }}">
+                            {{indiceData.win.expectation.low}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table class="indice-tables indice-data">
+                <thead>
+                    <th colspan="2"> Atual / Anterior </th>
+                </thead>
+                <tbody>
+                    <tr class="current">
+                        <td>Atual</td>
+                        <td>{{indiceData.win.current}} </td>
+                    </tr>
+                    <tr class="current">
+                        <td>Abertura</td>
+                        <td>{{indiceData.win.open}} </td>
+                    </tr>
+                    <tr class="current">
+                        <td>Máxima</td>
+                        <td>{{indiceData.win.high}} </td>
+                    </tr>
+
+                    <tr class="current">
+                        <td>Mímima</td>
+                        <td>{{indiceData.win.low}} </td>
+                    </tr>
+                    <tr>
+                        <td>Fechamento</td>
+                        <td>{{indiceData.win.close}} </td>
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <table class="indice-tables table-vol">
                 <thead>
                     <tr>
-                        <th colspan="5" class="expectation"> Expectativa </th>
-                        <th class="current"> Atual </th>
-                        <th colspan="3" class="previous"> Anterior </th>
+                        <th colspan="16"> Volatilidade </th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td class="expectation"> Justo atual <span> {{indiceData.win.expectation.FPC}} </span></td>
-                        <td class="expectation"> Justo no Fechamento <span> {{indiceData.win.expectation.FPAC}}</span></td>
-                        <td class="expectation"> Abertura <span> {{indiceData.win.expectation.open}} </span></td>
-                        <td class="expectation"> Máxima <span> {{indiceData.win.expectation.high}} </span></td>
-                        <td class="expectation"> Mímima <span> {{indiceData.win.expectation.low}} </span></td>
-                        <td class="current"> <span> {{indiceData.win.current | number}} </span></td>
-                        <td class="previous">Fechamento <span> {{indiceData.win.close | number}} </span></td>
-                        <td class="previous">Máxima <span> {{indiceData.win.high | number}} </span></td>
-                        <td class="previous">Mímima <span> {{indiceData.win.low | number}} </span></td>
+                        <td *ngFor="let row of indiceData.win.volatility" class="{{row.class}}" class="text-center">
+                            <span class="vol-text"> {{row.percent}} </span>
+                        </td>
+                    </tr>
+                    <tr class="text-center">
+                        <td *ngFor="let row of indiceData.win.volatility" class="{{row.class}}" class="text-center">
+                            <span class="vol-text">{{row.value | number}}</span>
+                        </td>
+                    </tr>
+                    <tr class="arrow">
+                        <td *ngFor="let row of indiceData.win.volatility" class="{{row.class}}" class="arrow">
+                            <img [hidden]="row.percent!='Atual'" src="assets/arrow_up.png" width="25px">
+                        </td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
-
     <hr>
 
     <div class="data-box">
-        <h2 class="indice">IBOVE
+        <h2 class="indice">IBOVE &nbsp;
             <span class="text-info" class="{{indiceData.IBOVE.day_variation >= 0 ?'positive':'negative'}}">
                 {{indiceData.IBOVE.day_variation | number}}%</span>
         </h2>
@@ -66,7 +131,7 @@
     <hr>
 
     <div class="data-box">
-        <h2 class="indice">SP500 FUT
+        <h2 class="indice">SP500 FUT &nbsp;
             <span class="text-info" class="{{indiceData.SP500FUT.day_variation >= 0 ?'positive':'negative'}}">
                 {{indiceData.SP500FUT.day_variation | number}}%</span>
         </h2>
@@ -93,10 +158,12 @@
     <hr>
 
     <div class="data-box">
-        <h2 class="indice">{{indiceData.DI.code}}
+        <h2 class="indice">{{indiceData.DI.code}} &nbsp;
             <span class="text-info"> {{indiceData.DI.value | number}}</span>
         </h2>
     </div>
+
+
 
 
 </main>

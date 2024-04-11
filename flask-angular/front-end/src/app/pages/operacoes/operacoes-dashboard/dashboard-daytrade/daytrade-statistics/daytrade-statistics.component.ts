@@ -135,6 +135,8 @@ export class DaytradeStatisticsComponent {
   }
 
   drawBarChart(labels: any, datasets: any) {
+    console.log('labels', labels)
+    console.log('datasets', datasets)
     this.barChartLabels = labels;
     this.barChartData = datasets;
   }

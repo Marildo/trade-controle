@@ -60,7 +60,7 @@ def calc_win_price_expectation(data: dict):
     return {'open': open, 'high': high, 'low': low, 'FPAC': FPAC, 'FPC': FPC}
 
 
-def calc_volatiliadade(historicos):
+def calc_volatiliadade(historicos, current_value_win):
     historicos = sorted(historicos, key=lambda x: x.data)
     data = []
     for i in historicos:
@@ -89,29 +89,29 @@ def calc_volatiliadade(historicos):
     avg_perct = total_rd / (len(data) - 1) * 100
 
     anchors = {
-        (3.99, 0.001),
-        (2.58, 0.05),
-        (1.64, 0.10),
-        (1.28, 0.20),
-        (0.84, 0.30),
-        (0.53, 0.40),
-        (0.25, 0.50)
+        (3.99, 'p01', '0.0001%'),
+        (2.58, 'p05', '0.05%'),
+        (1.64, 'p5', '5%'),
+        (1.28, 'p10', '10%'),
+        (0.84, 'p20', '20%'),
+        (0.53, 'p30', '30%'),
+        (0.25, 'p40', '40%')
     }
 
-    result = {
-        '+': {},
-        '=': {'0': last_close},
-        '-': {},
-    }
-    for v, p in anchors:
+    result = [
+        {'percent': '50%', 'value': last_close, 'class': 'p50'},
+        {'percent': 'Atual', 'value': current_value_win, 'class': 'atual'}
+    ]
+    for v, c, p in anchors:
         calc = (v * volatilidade) + avg_perct
         value = (last_close * calc) * 0.01
         value = marred_five(last_close + value)
-        result['+'][p] = value
+        result.append({'percent': p, 'value': value, 'class': c})
 
         calc = (-1 * v * volatilidade) + avg_perct
         value = (last_close * calc) * 0.01
         value = marred_five(last_close + value)
-        result['-'][p - 1] = value
+        result.append({'percent': p, 'value': value, 'class': c})
 
+    result = sorted(result, key=lambda d: d['value'], reverse=True)
     return result

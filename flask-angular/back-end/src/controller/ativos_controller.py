@@ -126,13 +126,4 @@ class AtivoController:
 
         return nome.strip(), tipo.strip(), mapead
 
-    def updateIndices(self):
-        def dif_time(dt0, dt1):
-            diff = dt0 - dt1
-            time_diff = diff.total_seconds() / 3600
-            return time_diff
 
-        ativos = Ativo.find_like_name('INDICE')
-        ativos = [i for i in ativos if dif_time(datetime.today(), i.update_at) > 1]
-        for a in ativos:
-            YFinanceService.update_indices(a)
