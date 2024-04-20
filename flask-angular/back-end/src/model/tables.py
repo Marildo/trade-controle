@@ -2,19 +2,18 @@
  @author Marildo Cesar 24/04/2023
 """
 from datetime import date, datetime
-from typing import List, Dict, Type
+from typing import List, Dict
 
 import sqlalchemy
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
                         Enum,
-                        ForeignKey, text, func)
+                        ForeignKey, text, func, extract)
+from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship, Mapper
-from sqlalchemy import event
 
-from .init_db import db_connection, Base
 from .enums import TipoInvestimento, TipoNota, TipoCarteira, TipoMovimentacao, CompraVenda, NotaStatusProcess
-
+from .init_db import db_connection, Base
 from .scripts import OperacoesSql, ArquivosCorretagemSQL
 
 
@@ -35,8 +34,12 @@ class BaseTable(Base):
 
     def update(self):
         with db_connection as conn:
-            conn.session.merge(self)
-            conn.session.commit()
+            try:
+                conn.session.merge(self)
+                conn.session.commit()
+            except Exception as e:
+                conn.session.rollback()
+                raise e
 
     def detele(self):
         with db_connection as conn:
@@ -95,29 +98,6 @@ class BaseTable(Base):
                 field = field.replace(sort, '')
                 return sort_function[sort](field)
         return None
-
-
-class Setor(BaseTable):
-    __tablename__ = 'setores'
-    id = Column(INTEGER, primary_key=True)
-    nome = Column(VARCHAR(60))
-    subsetores = relationship("SubSetor", uselist=True, backref='setores')
-
-    def __str__(self) -> str:
-        return f'{self.id} - {self.nome}'
-
-
-class SubSetor(BaseTable):
-    __tablename__ = 'sub_setores'
-    id = Column(INTEGER, primary_key=True)
-    nome = Column(VARCHAR(60))
-    setor_id = Column(INTEGER, ForeignKey('setores.id'))
-
-
-class Segmento(BaseTable):
-    __tablename__ = 'segmentos'
-    id = Column(INTEGER, primary_key=True)
-    nome = Column(VARCHAR(60))
 
 
 class Ativo(BaseTable):
@@ -202,6 +182,19 @@ class Dividendos(BaseTable):
         with db_connection as conn:
             query = conn.session.query(Dividendos).filter(Dividendos.ativo_id == ativo_id)
             return query.all()
+
+
+class Feriados(BaseTable):
+    __tablename__ = 'feriados'
+    feriado = Column(DATE, primary_key=True)
+
+    @staticmethod
+    def get(year: int) -> List[date]:
+        with db_connection as conn:
+            query = (conn.session.query(Feriados)
+                     .filter(extract('year', Feriados.feriado) == year)
+                     )
+            return [i.feriado for i in query.all()]
 
 
 class FileCorretagem(BaseTable):
@@ -369,14 +362,6 @@ class NotaCorretagem(BaseTable):
             return query.one()
 
 
-class Setup(BaseTable):
-    __tablename__ = 'setups'
-
-    id = Column(INTEGER, primary_key=True)
-    nome = Column(VARCHAR(180), nullable=False)
-    descricao = Column(VARCHAR(510), nullable=False)
-
-
 class Operacao(BaseTable):
     __tablename__ = 'operacoes'
 
@@ -529,6 +514,37 @@ class Operacao(BaseTable):
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, {'start_date': start_date})
             return query.fetchall()
+
+
+class Setor(BaseTable):
+    __tablename__ = 'setores'
+    id = Column(INTEGER, primary_key=True)
+    nome = Column(VARCHAR(60))
+    subsetores = relationship("SubSetor", uselist=True, backref='setores')
+
+    def __str__(self) -> str:
+        return f'{self.id} - {self.nome}'
+
+
+class SubSetor(BaseTable):
+    __tablename__ = 'sub_setores'
+    id = Column(INTEGER, primary_key=True)
+    nome = Column(VARCHAR(60))
+    setor_id = Column(INTEGER, ForeignKey('setores.id'))
+
+
+class Segmento(BaseTable):
+    __tablename__ = 'segmentos'
+    id = Column(INTEGER, primary_key=True)
+    nome = Column(VARCHAR(60))
+
+
+class Setup(BaseTable):
+    __tablename__ = 'setups'
+
+    id = Column(INTEGER, primary_key=True)
+    nome = Column(VARCHAR(180), nullable=False)
+    descricao = Column(VARCHAR(510), nullable=False)
 
 
 @event.listens_for(Operacao, "before_insert")

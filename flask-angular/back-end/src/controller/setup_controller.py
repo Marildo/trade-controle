@@ -8,7 +8,7 @@ from webargs.flaskparser import parser
 from src.utils.date_util import uteis_days
 from .schemas import SetupSchema
 from .wind_calculations import get_wind_fut, calc_win_price_expectation, calc_volatiliadade
-from ..model import Setup, Ativo, Indicadores, HistoricoAtivos
+from ..model import Setup, Ativo, Indicadores, HistoricoAtivos, Feriados
 
 
 class SetupController:
@@ -33,7 +33,7 @@ class SetupController:
 
     @classmethod
     def ind_fut(cls, request):
-        holidays = []  # TODO - Carregar da tabela
+        holidays = Feriados.get(date.today().year)
         data = {}
 
         code, expiration = get_wind_fut(date.today())
@@ -64,7 +64,6 @@ class SetupController:
             'close': ibove.fechamento,
             'low': ibove.minima,
             'high': ibove.maxima,
-
         }
 
         sp500fut = Ativo().read_by_id(910000)

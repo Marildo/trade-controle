@@ -70,6 +70,12 @@
                         <mat-icon>preview</mat-icon>
                     </button>
                 </td>
+                <td>
+                    <button mat-icon-button matTooltip="Arquivo PDF" color="primary"
+                        aria-label="Arquivo PDF" (click)="onPDF(row.id)">
+                        <mat-icon>picture_as_pdf</mat-icon>
+                    </button>
+                </td>
             </tr>
         </tbody>
     </table>

@@ -163,6 +163,10 @@ export class OperacoesArquivosComponent {
       })
   }
 
+  onPDF(id: string) {
+    throw new Error('Method not implemented.');
+    }
+
   onDrop(event: DragEvent) {
     event.preventDefault();
     const files: any = event.dataTransfer?.files;
@@ -179,6 +183,7 @@ export class OperacoesArquivosComponent {
   onCloseModalArquivos() {
     this.modalService.close(this.modalArquivos)
   }
+
 }
 
 

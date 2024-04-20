@@ -461,8 +461,6 @@ class OperacaoController:
 
     @classmethod
     def update_historico(cls):
-        pass
-
         param = dict(compra_hist_id=None, venda_hist_id=None)
         operacoes = Operacao().read_by_params(param)
 

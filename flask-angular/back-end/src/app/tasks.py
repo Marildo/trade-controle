@@ -21,7 +21,7 @@ class Tasks:
 
     @classmethod
     def __tasks(cls):
-        print("Starting tasks")
+        logger.info("Starting tasks")
         OperacaoController().update_historico()
         OperacaoController().update_prices()
         TaskController().update_indices()
@@ -35,7 +35,7 @@ class Tasks:
         # if hour > 19 and minute not in (0, 30):
         #     return
 
-        print("Starting updates")
+        logger.info("Starting updates")
         TaskController().update_winfut()
         TaskController().update_ibove()
         TaskController().update_sp500fut()
