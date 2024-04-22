@@ -70,11 +70,9 @@
                         <mat-icon>preview</mat-icon>
                     </button>
                 </td>
-                <td>
-                    <button mat-icon-button matTooltip="Arquivo PDF" color="primary"
-                        aria-label="Arquivo PDF" (click)="onPDF(row.id)">
+                <td><a href="{{apiUrl}}notas/arquivos/pdf/{{row.id}}" target="_blank">
                         <mat-icon>picture_as_pdf</mat-icon>
-                    </button>
+                    </a>
                 </td>
             </tr>
         </tbody>

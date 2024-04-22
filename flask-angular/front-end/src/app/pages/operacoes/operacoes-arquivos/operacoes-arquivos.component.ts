@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { MessageService } from 'primeng/api';
 import { ModalService } from 'src/app/components/modal/modal-service';
 import { OperacoesService } from '../operacoes.service';
-
+import { environment } from 'src/environments/environment';
 
 
 
@@ -23,6 +23,7 @@ export class OperacoesArquivosComponent {
 
 
   public selectedFiles: File[] = [];
+  public apiUrl:string = environment.apiUrl
 
   public tipoNota!: string;
   public start_processamento!: any;
@@ -163,10 +164,6 @@ export class OperacoesArquivosComponent {
       })
   }
 
-  onPDF(id: string) {
-    throw new Error('Method not implemented.');
-    }
-
   onDrop(event: DragEvent) {
     event.preventDefault();
     const files: any = event.dataTransfer?.files;
@@ -183,7 +180,6 @@ export class OperacoesArquivosComponent {
   onCloseModalArquivos() {
     this.modalService.close(this.modalArquivos)
   }
-
 }
 
 

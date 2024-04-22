@@ -6,7 +6,7 @@ from typing import List
 from datetime import datetime
 from pathlib import Path
 
-from flask import request
+from flask import request, send_file
 from webargs.flaskparser import parser
 from webargs import fields
 
@@ -159,3 +159,11 @@ class NotaController:
             'numero_notas': len(notas),
             'notas': notas
         }
+
+    @classmethod
+    def get_pdf(cls, file_id):
+        filecorr = FileCorretagem().read_by_id(file_id)
+        sufix = filecorr.data_upload.strftime('__%Y_%m_%d_%H_%M')
+        filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
+        path_file = str(Path(config.get_path_notas()).joinpath(filename))
+        return send_file(path_file, as_attachment=True, download_name=filename.replace(sufix, ''))

@@ -31,7 +31,7 @@ def get_wind_fut(reference_date: date):
     expr = date(day=15, month=expirations_date[expiration_code], year=reference_date.year)
     WEDNESDAY = 3
     days_off_wed = (expr.weekday() - WEDNESDAY) % 7
-    expiration = expr + timedelta(days=days_off_wed - 1)
+    expiration = expr + timedelta(days=days_off_wed - 2)
     return code, expiration
 
 

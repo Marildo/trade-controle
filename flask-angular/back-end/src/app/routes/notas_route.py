@@ -61,3 +61,9 @@ def file_proccess(_id: int):
 @format_response
 def search_files():
     return NotaController.search_corretagens()
+
+
+@nota_router.route('/arquivos/pdf/<int:_id>', methods=['GET'])
+@format_response
+def download_pdf(_id: int):
+    return NotaController.get_pdf(_id)
