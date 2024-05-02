@@ -2,11 +2,13 @@
 
 import threading
 
-from datetime import date
+from datetime import date, datetime
 
 from ..model import Ativo, Indicadores, HistoricoAtivos
+from ..model.simple_connection import SimpleConnection
+from ..model.scripts import HistoricoAtivosSQL
 from ..services import ADVFNService, YFinanceService, InvestingService
-from .wind_calculations import get_wind_fut
+from .calculations import get_wind_fut
 
 
 class TaskController:
@@ -14,36 +16,85 @@ class TaskController:
     @classmethod
     def update_winfut(cls):
         def task():
-
             today = date.today()
 
             code, _ = get_wind_fut(today)
             wind = InvestingService.get_winfut_values()
 
-            win_hist = HistoricoAtivos()
             WIN_ID = 800000
-            win_hist.ativo_id = WIN_ID
-            win_hist.fechamento = wind['close']
-            win_hist.abertura = wind['open']
-            win_hist.maxima = wind['high']
-            win_hist.minima = wind['low']
-            win_hist.data = wind['date'].date()
-            win_hist.update()
 
-            ativo = Ativo().read_by_id(WIN_ID)
-            ativo.cotacao = wind['current']
-            ativo.variacao = wind['day_variation']
-            ativo.fechamento = wind['close']
-            ativo.minima = wind['low']
-            ativo.maxima = wind['high']
-            ativo.abertura = wind['open']
-            ativo.update()
+            wind['ativo_id'] = WIN_ID
+            wind['data'] = wind['date'].date()
+            wind['fechamento'] = wind['close']
+            wind['abertura'] = wind['open']
+            wind['maxima'] = wind['high']
+            wind['minima'] = wind['low']
+            with SimpleConnection() as conn:
+                rs = conn.execute(HistoricoAtivosSQL.update, wind)
+                if rs == 0:
+                    win_hist = HistoricoAtivos()
+                    WIN_ID = 800000
+                    win_hist.ativo_id = WIN_ID
+                    win_hist.fechamento = wind['close']
+                    win_hist.abertura = wind['open']
+                    win_hist.maxima = wind['high']
+                    win_hist.minima = wind['low']
+                    win_hist.data = wind['date'].date()
+                    win_hist.update()
 
-            Indicadores.update_values({
-                'win_code': code,
-                'win_var': wind['day_variation'],
-                'win_current': wind['current']
-            })
+            with SimpleConnection() as conn:
+                values = {'cotacao': wind['current'],
+                          'variacao': wind['day_variation'],
+                          'fechamento': wind['close'],
+                          'minima': wind['low'],
+                          'maxima': wind['high'],
+                          'abertura': wind['open'],
+                          'update_at': datetime.now()}
+                conn.update('ativos', values, {'id': WIN_ID})
+
+            with SimpleConnection() as conn:
+                values = {
+                    'win_code': code,
+                    'win_var': wind['day_variation'],
+                    'win_current': wind['current'],
+                    'update_at': datetime.now()
+                }
+                conn.update('indicadores', values, {'1': 1})
+
+        thread = threading.Thread(target=task)
+        thread.start()
+
+    @classmethod
+    def update_dx(cls):
+        def task():
+            dx = InvestingService.get_dx_values()
+
+            with SimpleConnection() as conn:
+                values = {
+                    'fechamento': dx['close'],
+                    'abertura': dx['open'],
+                    'maxima': dx['high'],
+                    'minima': dx['low'],
+                }
+                keys = {'ativo_id': 950000, 'data': dx['date']}
+                rs = conn.update('historico_ativos', values, keys)
+                if rs == 0:
+                    dx_hist = HistoricoAtivos()
+                    dx_hist.ativo_id = 950000
+                    dx_hist.fechamento = dx['close']
+                    dx_hist.abertura = dx['open']
+                    dx_hist.maxima = dx['high']
+                    dx_hist.minima = dx['low']
+                    dx_hist.data = dx['date']
+                    dx_hist.update()
+
+            with SimpleConnection() as conn:
+                values = {
+                    'dx_var': dx['day_variation'],
+                    'dx_current': dx['current'],
+                    'update_at': datetime.now()
+                }
+                conn.update('indicadores', values, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()
@@ -54,10 +105,13 @@ class TaskController:
             advfn = ADVFNService()
             ibove = advfn.get_ibove_current()
 
-            Indicadores.update_values({
-                'ibove_var': ibove['day_variation'],
-                'ibove_current': ibove['current']
-            })
+            with SimpleConnection() as conn:
+                values = {
+                    'ibove_var': ibove['day_variation'],
+                    'ibove_current': ibove['current'],
+                    'update_at': datetime.now()
+                }
+                conn.update('indicadores', values, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()
@@ -66,10 +120,13 @@ class TaskController:
     def update_sp500fut(cls):
         def task():
             sp = InvestingService.get_sp500fut_values()
-            Indicadores.update_values({
-                'sp500fut_var': sp['day_variation'],
-                'sp500fut_current': sp['current']
-            })
+            with SimpleConnection() as conn:
+                values = {
+                    'sp500fut_var': sp['day_variation'],
+                    'sp500fut_current': sp['current'],
+                    'update_at': datetime.now()
+                }
+                conn.update('indicadores', values, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()
@@ -84,7 +141,53 @@ class TaskController:
         def task():
             advfn = ADVFNService()
             di = advfn.get_di()
-            Indicadores.update_values(di)
+            with SimpleConnection() as conn:
+                conn.update('indicadores', di, {'1': 1})
+
+        thread = threading.Thread(target=task)
+        thread.start()
+
+    def update_usb_brl(self):
+        def task():
+            DOL_ID = 900000
+            data = InvestingService.get_usd_brl_fut_values()
+
+            with SimpleConnection() as conn:
+                values = {
+                    'fechamento': data['close'],
+                    'abertura': data['open'],
+                    'maxima': data['high'],
+                    'minima': data['low'],
+                }
+                keys = {'ativo_id': DOL_ID, 'data': data['date']}
+                rs = conn.update('historico_ativos', values, keys)
+                if rs == 0:
+                    dx_hist = HistoricoAtivos()
+                    dx_hist.ativo_id = DOL_ID
+                    dx_hist.fechamento = data['close']
+                    dx_hist.abertura = data['open']
+                    dx_hist.maxima = data['high']
+                    dx_hist.minima = data['low']
+                    dx_hist.data = data['date']
+                    dx_hist.update()
+
+            with SimpleConnection() as conn:
+                values = {'cotacao': data['current'],
+                          'variacao': data['day_variation'],
+                          'fechamento': data['close'],
+                          'minima': data['low'],
+                          'maxima': data['high'],
+                          'abertura': data['open'],
+                          'update_at': datetime.now()}
+                conn.update('ativos', values, {'id': DOL_ID})
+
+            with SimpleConnection() as conn:
+                values = {
+                    'usdbrl_var': data['day_variation'],
+                    'usdbrl_current': data['current'],
+                    'update_at': datetime.now()
+                }
+                conn.update('indicadores', values, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()

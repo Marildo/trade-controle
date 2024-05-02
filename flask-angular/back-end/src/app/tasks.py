@@ -12,7 +12,7 @@ class Tasks:
     def __init__(self):
         self.scheduler = BackgroundScheduler()
         self.scheduler.add_job(func=self.__tasks, trigger="interval", minutes=30)
-        self.scheduler.add_job(func=self.__update_indicadores, trigger="interval", minutes=1)
+        self.scheduler.add_job(func=self.__update_indicadores, trigger="interval", minutes=3)
 
     def start(self):
         self.__tasks()
@@ -24,7 +24,6 @@ class Tasks:
         logger.info("Starting tasks")
         OperacaoController().update_historico()
         OperacaoController().update_prices()
-        TaskController().update_indices()
         CarteiraController.update_saldos()
         CarteiraController.generate_historico()
 
@@ -40,3 +39,6 @@ class Tasks:
         TaskController().update_ibove()
         TaskController().update_sp500fut()
         TaskController().update_di()
+        TaskController().update_dx()
+        TaskController().update_usb_brl()
+        TaskController().update_indices()
