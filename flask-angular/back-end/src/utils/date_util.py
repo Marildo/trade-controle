@@ -16,7 +16,6 @@ def str_date(value: str) -> date:
 
 
 def ptbr_to_date(value: str) -> date:
-
     months_map = {
         'Jan': 1,
         'Feb': 2,
@@ -58,3 +57,18 @@ def uteis_days(start_date: date, end_date: date, holidays: list):
             dias_uteis += 1
         data_atual += timedelta(days=1)
     return dias_uteis
+
+
+def uteis_days_of_year(year: int, holidays: list) -> int:
+    start_date = date.today().replace(day=1, month=1)
+    end_date = start_date.replace(month=12, day=31)
+    ndays = uteis_days(start_date, end_date, holidays)
+    return ndays
+
+
+def last_day_util(reference_date, holidays: list) -> date:
+    wd = 8 - reference_date.isoweekday()
+    nday = reference_date + timedelta(days=wd) if wd in (1, 2) else reference_date
+    if nday in holidays:
+        nday = last_day_util(nday + timedelta(days=1), holidays)
+    return nday

@@ -7,3 +7,5 @@ from .corretagem import ReadPDFCorretagem, ToroService
 from .yfinances import YFinanceService
 from .advfnservice import ADVFNService
 from .investing import InvestingService
+from .bcb import BCBService
+

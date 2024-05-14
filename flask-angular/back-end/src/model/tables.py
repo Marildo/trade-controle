@@ -264,6 +264,7 @@ class HistoricoAtivos(BaseTable):
     minima = Column(FLOAT(precision=2))
     data = Column(DATE, primary_key=True)
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'), primary_key=True)
+    update_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
 
     def as_dict(self):
         return {
@@ -313,6 +314,11 @@ class Indicadores(BaseTable):
     sp500fut_var = Column(FLOAT, default=0, )
     di_code = Column(VARCHAR(12))
     di_current = Column(FLOAT(precision=2), default=0)
+    dx_current = Column(FLOAT(precision=2), default=0)
+    dx_var = Column(FLOAT, default=0, )
+    usdbrl_current = Column(FLOAT(precision=2), default=0)
+    usdbrl_var = Column(FLOAT, default=0, )
+    ptax = Column(FLOAT, default=0, )
     update_at = Column(TIMESTAMP, onupdate=text('CURRENT_TIMESTAMP'), default=text('CURRENT_TIMESTAMP'))
 
     @staticmethod

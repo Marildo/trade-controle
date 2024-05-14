@@ -40,5 +40,7 @@ class Tasks:
         TaskController().update_sp500fut()
         TaskController().update_di()
         TaskController().update_dx()
+        TaskController().update_ptax()
         TaskController().update_usb_brl()
-        TaskController().update_indices()
+        TaskController().update_usb_brl_fut()
+        # TaskController().update_indices()

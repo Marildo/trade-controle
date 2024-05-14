@@ -1,4 +1,82 @@
 <main class="container">
+    <div class="container-dollar">
+        <h2>USD/BRL Futuro&nbsp;
+            <span class="text-info" class="{{indiceData.USD_BRL_FUT.day_variation >= 0 ?'positive':'negative'}}">
+                {{indiceData.USD_BRL_FUT.day_variation | number}}%
+            </span>
+        </h2>
+
+        <div class="indice">
+            <table class="indice-tables indice-data">
+                <thead>
+                    <th colspan="2"> Expectativa </th>
+                </thead>
+                <tbody class="expectation">
+                    <tr>
+                        <td>Máxima PTax </td>
+                        <td>{{indiceData.USD_BRL_FUT.expectation.high_ptax}} </td>
+                    </tr>
+                    <tr>
+                        <td>Mímima PTax </td>
+                        <td>{{indiceData.USD_BRL_FUT.expectation.low_ptax}} </td>
+                    </tr>
+                    <tr>
+                        <td>Justo na Abertura</td>
+                        <td>{{indiceData.USD_BRL_FUT.expectation.FPC}} </td>
+                    </tr>
+                    <tr>
+                        <td>Abertura</td>
+                        <td>{{indiceData.USD_BRL_FUT.expectation.open}} </td>
+                    </tr>
+                    <tr>
+                        <td>Máxima</td>
+                        <td
+                            class="{{ indiceData.USD_BRL_FUT.high > indiceData.USD_BRL_FUT.expectation.high  ?'text-line-through':''  }}">
+                            {{indiceData.USD_BRL_FUT.expectation.high}}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Mímima</td>
+                        <td
+                            class="{{indiceData.USD_BRL_FUT.low  < indiceData.USD_BRL_FUT.expectation.low ?'text-line-through':''  }}">
+                            {{indiceData.USD_BRL_FUT.expectation.low}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            
+            <table class="indice-tables indice-data">
+                <thead>
+                    <th colspan="2"> Atual / Anterior </th>
+                </thead>
+                <tbody>
+                    <tr class="current">
+                        <td>Atual</td>
+                        <td>{{indiceData.USD_BRL_FUT.current}} </td>
+                    </tr>
+                    <tr class="current">
+                        <td>Abertura</td>
+                        <td>{{indiceData.USD_BRL_FUT.open}} </td>
+                    </tr>
+                    <tr class="current">
+                        <td>Máxima</td>
+                        <td>{{indiceData.USD_BRL_FUT.high}} </td>
+                    </tr>
+
+                    <tr class="current">
+                        <td>Mímima</td>
+                        <td>{{indiceData.USD_BRL_FUT.low}} </td>
+                    </tr>
+                    <tr>
+                        <td>Fechamento</td>
+                        <td>{{indiceData.USD_BRL_FUT.close}} </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
     <div class="container-indice">
         <h2>{{indiceData.win.code}}&nbsp;
             <span class="text-info" class="{{indiceData.win.day_variation >= 0 ?'positive':'negative'}}">
@@ -35,8 +113,7 @@
                     </tr>
                     <tr>
                         <td>Mímima</td>
-                        <td
-                            class="{{indiceData.win.high  < indiceData.win.expectation.high ?'text-line-through':''  }}">
+                        <td class="{{indiceData.win.low  < indiceData.win.expectation.low ?'text-line-through':''  }}">
                             {{indiceData.win.expectation.low}}
                         </td>
                     </tr>
@@ -159,7 +236,10 @@
 
     <div class="data-box">
         <h2 class="indice">{{indiceData.DI.code}} &nbsp;
-            <span class="text-info"> {{indiceData.DI.value | number}}</span>
+            <span class="text-info"> {{indiceData.DI.value | number}}</span>&nbsp;
+            <span class="text-info"> Vencimento:
+                {{indiceData.DI.expiration |date:'dd/MM/yyy'}} ({{indiceData.DI.expiration_days}} dias)
+            </span>
         </h2>
     </div>
 

@@ -1,7 +1,9 @@
 # @author Marildo Cesar 06/04/2024
 import math
+from decimal import Decimal
 from datetime import date, timedelta
 
+from ..utils.date_util import uteis_days, last_day_util, uteis_days_of_year
 from ..utils.number_util import marred_five
 
 
@@ -33,6 +35,30 @@ def get_wind_fut(reference_date: date):
     days_off_wed = (expr.weekday() - WEDNESDAY) % 7
     expiration = expr + timedelta(days=days_off_wed - 2)
     return code, expiration
+
+
+def get_expiration_di(code: str, holidays: list):
+    expirations_date = {
+        'F': 1,
+        'G': 2,
+        'H': 3,
+        'J': 4,
+        'K': 5,
+        'M': 6,
+        'N': 7,
+        'Q': 8,
+        'U': 9,
+        'V': 10,
+        'X': 11,
+        'Z': 12
+    }
+    year = int(code[-2:]) + 2000
+    mes = code[-3:-2]
+    month = expirations_date[mes]
+    exp_date = date(year=year, month=month, day=1) - timedelta(days=1)
+    exp_date = last_day_util(exp_date, holidays)
+    exp_days = uteis_days(date.today(), exp_date, holidays)
+    return exp_days, exp_date
 
 
 def calc_win_price_expectation(data: dict):
@@ -114,4 +140,36 @@ def calc_volatiliadade(historicos, current_value_win):
         result.append({'percent': p, 'value': value, 'class': c})
 
     result = sorted(result, key=lambda d: d['value'], reverse=True)
+    return result
+
+
+def calc_dol_price_expectation(data: dict, holidays):
+    result = {}
+    DELTA = 24
+    days_of_year = uteis_days_of_year(date.today().year, holidays)
+    di = data['DI']['value']
+    dvdi = data['DI']['expiration_days']
+    y = di + 1
+    x = 1 / days_of_year
+    x = y ** x
+    tx_over = x * dvdi - dvdi
+
+    dol_com = round(data['USD_BRL']['close'] * 1000)
+    FPC = dol_com + dol_com * (tx_over * 0.01)
+    result['FPC'] = round(FPC, 2)
+
+    dx = data['DX']['day_variation'] * 0.01
+    dol_x = round(data['USD_BRL_FUT']['close'])
+    _open = dol_x + dol_x * dx
+    result['open'] = round(_open, 2)
+
+    fx_open = _open + (_open * tx_over) * 0.01
+    result['high'] = round(fx_open + DELTA, 2)
+    result['low'] = round(fx_open - DELTA, 2)
+
+    ptax = int(data['USD_BRL']['ptax'] * 1000)
+    fx_ptax = ptax + (ptax * tx_over) * 0.01
+    result['high_ptax'] = round(fx_ptax + DELTA, 2)
+    result['low_ptax'] = round(fx_ptax - DELTA, 2)
+
     return result

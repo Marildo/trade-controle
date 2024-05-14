@@ -7,7 +7,7 @@ from webargs.flaskparser import parser
 
 from src.utils.date_util import uteis_days
 from .schemas import SetupSchema
-from .wind_calculations import get_wind_fut, calc_win_price_expectation, calc_volatiliadade
+from .calculations import get_wind_fut, calc_win_price_expectation, calc_volatiliadade, calc_dol_price_expectation, get_expiration_di
 from ..model import Setup, Ativo, Indicadores, HistoricoAtivos, Feriados
 
 
@@ -32,7 +32,7 @@ class SetupController:
         return SetupSchema().dump(setup)
 
     @classmethod
-    def ind_fut(cls, request):
+    def daily_calcs(cls, request):
         holidays = Feriados.get(date.today().year)
         data = {}
 
@@ -76,9 +76,33 @@ class SetupController:
             'high': sp500fut.maxima,
         }
 
+        exp_days, expiration = get_expiration_di(indicatores.di_code, holidays)
         data['DI'] = {
             'code': indicatores.di_code,
-            'value': indicatores.di_current
+            'value': indicatores.di_current,
+            'expiration_days': exp_days,
+            'expiration': str(expiration)
+        }
+
+        dol = Ativo().read_by_id(900000)
+        data['USD_BRL_FUT'] = {
+            'day_variation': indicatores.usdbrl_var,
+            'current': indicatores.usdbrl_current,
+            'open': dol.abertura,
+            'close': dol.fechamento,
+            'low': dol.minima,
+            'high': dol.maxima,
+        }
+
+        dol = Ativo().read_by_id(905000)
+        data['USD_BRL'] = {
+            'close': dol.fechamento,
+            'ptax': indicatores.ptax
+        }
+
+        data['DX'] = {
+            'day_variation': indicatores.dx_var,
+            'current': indicatores.dx_current,
         }
 
         # data['win']['close'] = 128805
@@ -91,6 +115,8 @@ class SetupController:
         # data['IBOVE']['close'] = 128481.02
 
         data['win']['expectation'] = calc_win_price_expectation(data)
+
+        data['USD_BRL_FUT']['expectation'] = calc_dol_price_expectation(data, holidays)
 
         params = {
             'ativo_id': cls.WIN_ID,

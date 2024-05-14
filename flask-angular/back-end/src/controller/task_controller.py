@@ -6,8 +6,7 @@ from datetime import date, datetime
 
 from ..model import Ativo, Indicadores, HistoricoAtivos
 from ..model.simple_connection import SimpleConnection
-from ..model.scripts import HistoricoAtivosSQL
-from ..services import ADVFNService, YFinanceService, InvestingService
+from ..services import ADVFNService, YFinanceService, InvestingService, BCBService
 from .calculations import get_wind_fut
 
 
@@ -23,14 +22,19 @@ class TaskController:
 
             WIN_ID = 800000
 
-            wind['ativo_id'] = WIN_ID
-            wind['data'] = wind['date'].date()
-            wind['fechamento'] = wind['close']
-            wind['abertura'] = wind['open']
-            wind['maxima'] = wind['high']
-            wind['minima'] = wind['low']
+            values = {}
+            values['fechamento'] = wind['close']
+            values['abertura'] = wind['open']
+            values['maxima'] = wind['high']
+            values['minima'] = wind['low']
+            values['update_at'] = datetime.now()
+
+            keys = {}
+            keys['ativo_id'] = WIN_ID
+            keys['data'] = wind['date'].date()
+
             with SimpleConnection() as conn:
-                rs = conn.execute(HistoricoAtivosSQL.update, wind)
+                rs = conn.update('historico_ativos', values, keys)
                 if rs == 0:
                     win_hist = HistoricoAtivos()
                     WIN_ID = 800000
@@ -39,7 +43,7 @@ class TaskController:
                     win_hist.abertura = wind['open']
                     win_hist.maxima = wind['high']
                     win_hist.minima = wind['low']
-                    win_hist.data = wind['date'].date()
+                    win_hist.data = keys['data']
                     win_hist.update()
 
             with SimpleConnection() as conn:
@@ -68,25 +72,33 @@ class TaskController:
     def update_dx(cls):
         def task():
             dx = InvestingService.get_dx_values()
+            DX_ID = 950000
+            values = {
+                'fechamento': dx['close'],
+                'abertura': dx['open'],
+                'maxima': dx['high'],
+                'minima': dx['low'],
+                'update_at': datetime.now()
+            }
 
             with SimpleConnection() as conn:
-                values = {
-                    'fechamento': dx['close'],
-                    'abertura': dx['open'],
-                    'maxima': dx['high'],
-                    'minima': dx['low'],
-                }
-                keys = {'ativo_id': 950000, 'data': dx['date']}
+                keys = {'ativo_id': DX_ID, 'data': dx['date']}
                 rs = conn.update('historico_ativos', values, keys)
                 if rs == 0:
                     dx_hist = HistoricoAtivos()
-                    dx_hist.ativo_id = 950000
+                    dx_hist.ativo_id = DX_ID
                     dx_hist.fechamento = dx['close']
                     dx_hist.abertura = dx['open']
                     dx_hist.maxima = dx['high']
                     dx_hist.minima = dx['low']
                     dx_hist.data = dx['date']
                     dx_hist.update()
+
+            with SimpleConnection() as conn:
+                values['cotacao'] = dx['current']
+                values['variacao'] = dx['day_variation']
+                keys = {'id': DX_ID}
+                conn.update('ativos', values, keys)
 
             with SimpleConnection() as conn:
                 values = {
@@ -147,7 +159,7 @@ class TaskController:
         thread = threading.Thread(target=task)
         thread.start()
 
-    def update_usb_brl(self):
+    def update_usb_brl_fut(self):
         def task():
             DOL_ID = 900000
             data = InvestingService.get_usd_brl_fut_values()
@@ -158,6 +170,7 @@ class TaskController:
                     'abertura': data['open'],
                     'maxima': data['high'],
                     'minima': data['low'],
+                    'update_at': datetime.now()
                 }
                 keys = {'ativo_id': DOL_ID, 'data': data['date']}
                 rs = conn.update('historico_ativos', values, keys)
@@ -188,6 +201,55 @@ class TaskController:
                     'update_at': datetime.now()
                 }
                 conn.update('indicadores', values, {'1': 1})
+
+        thread = threading.Thread(target=task)
+        thread.start()
+
+    def update_usb_brl(self):
+        def task():
+            DOL_ID = 905000
+            data = InvestingService.get_usd_brl_values()
+
+            with SimpleConnection() as conn:
+                values = {
+                    'fechamento': data['close'],
+                    'abertura': data['open'],
+                    'maxima': data['high'],
+                    'minima': data['low'],
+                    'update_at': datetime.now()
+                }
+                ref_date = data['date'].date()
+                keys = {'ativo_id': DOL_ID, 'data': ref_date}
+                rs = conn.update('historico_ativos', values, keys)
+                if rs == 0:
+                    dx_hist = HistoricoAtivos()
+                    dx_hist.ativo_id = DOL_ID
+                    dx_hist.fechamento = data['close']
+                    dx_hist.abertura = data['open']
+                    dx_hist.maxima = data['high']
+                    dx_hist.minima = data['low']
+                    dx_hist.data = ref_date
+                    dx_hist.update()
+
+            with SimpleConnection() as conn:
+                values = {'cotacao': data['current'],
+                          'variacao': data['day_variation'],
+                          'fechamento': data['close'],
+                          'minima': data['low'],
+                          'maxima': data['high'],
+                          'abertura': data['open'],
+                          'update_at': datetime.now()}
+                conn.update('ativos', values, {'id': DOL_ID})
+
+        thread = threading.Thread(target=task)
+        thread.start()
+
+    def update_ptax(self):
+        def task():
+            ptax = BCBService().get_last_ptax()
+
+            with SimpleConnection() as conn:
+                conn.update('indicadores', {'ptax': ptax}, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()

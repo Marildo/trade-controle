@@ -23,10 +23,10 @@ def process():
     return SetupController.save(request)
 
 
-@setups_router.route('/indfut', methods=['GET'])
+@setups_router.route('/calcs/daly', methods=['GET'])
 @format_response
 def ind_fut():
-    return SetupController.ind_fut(request)
+    return SetupController.daily_calcs(request)
 
 
 @setups_router.route('/backtest', methods=['POST'])
