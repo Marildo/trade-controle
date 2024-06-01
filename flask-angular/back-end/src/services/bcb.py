@@ -22,8 +22,13 @@ class BCBService:
 
         today = datetime.today()
         last_day = today.time() < time(hour=10, minute=10)
+        today.weekday()
         if last_day:
             today = today - timedelta(days=1)
+
+        if today.isoweekday() in (6, 7):
+            wd = 7 - today.isoweekday()
+            today = today - timedelta(days=wd)
 
         dataini = today.strftime('%d/%m/%Y')
 
@@ -38,6 +43,9 @@ class BCBService:
 
         table = html.find('table', {'class': 'tabela'})
         body = table.find('tbody')
+        if not body:
+            return None
+
         trs = body.find_all('tr')
 
         if last_day:

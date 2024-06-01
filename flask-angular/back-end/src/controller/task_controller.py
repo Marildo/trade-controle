@@ -2,7 +2,7 @@
 
 import threading
 
-from datetime import date, datetime
+from datetime import date, datetime, time
 
 from ..model import Ativo, Indicadores, HistoricoAtivos
 from ..model.simple_connection import SimpleConnection
@@ -247,9 +247,13 @@ class TaskController:
     def update_ptax(self):
         def task():
             ptax = BCBService().get_last_ptax()
+            if ptax:
+                with SimpleConnection() as conn:
+                    conn.update('indicadores', {'ptax': ptax}, {'1': 1})
 
-            with SimpleConnection() as conn:
-                conn.update('indicadores', {'ptax': ptax}, {'1': 1})
+        today = datetime.today()
+        if today.time() > time(hour=16, minute=10) or today.isoweekday() in (6, 7):
+            return
 
         thread = threading.Thread(target=task)
         thread.start()
