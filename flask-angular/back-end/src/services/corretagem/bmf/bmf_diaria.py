@@ -20,6 +20,7 @@ class BMFDiaria(Investiment):
 
         _id = 0
         operacoes = []
+        last_ativo = 0
         for page in self.document:
             self._lines = page.get_text().split('\n')
             if len(self._lines) == 1:
@@ -27,7 +28,7 @@ class BMFDiaria(Investiment):
 
             # j = 0
             # for y in self.lines:
-            #     print(j, ';', y)
+            #     print(j, ':', y)
             #     j += 1
 
             data_operacao = self.__data_operacao()
@@ -42,17 +43,30 @@ class BMFDiaria(Investiment):
             begin = self.__locate_index('DAY TRADE', self.lines) - 4
             end = begin + 7
 
+            code_atvs = {}
+            for i in range(len(self._lines)):
+                if self._lines[i] == 'C/V':
+                    code_atvs[i - 1] = self._lines[i - 1]
+
             while begin >= 0:
                 cutting = self.lines[begin: end]
                 _id += 1
                 qtd = self.__find_qtd(cutting)
                 pm = self.__find_preco_medio(cutting)
-                ativo = self.__find_nome_ativo(pm)
+
+                type_ativo = [v for k, v in code_atvs.items() if k <= end]
+                if type_ativo:
+                    ativo = self.__find_nome_ativo(type_ativo[-1])
+                    last_ativo = ativo
+                else:
+                    ativo = last_ativo
+
                 tipo = cutting[0][0]
 
                 operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0, daytrade=True)
                 # print(operacao)
                 operacoes.append(operacao)
+
 
                 begin = self.__locate_index('DAY TRADE', self.lines, end) - 4
                 end = begin + 7
@@ -84,11 +98,15 @@ class BMFDiaria(Investiment):
         return custos_total
 
     @staticmethod
-    def __find_nome_ativo(preco_medio) -> str:
-        if preco_medio > 30000:         # se bolsa perder os 50.00 ja era
-            return Investiment.MINI_INDICE
+    def __find_nome_ativo(type_ativo: str) -> str:
+        if type_ativo.strip() == 'BITFUT':
+            return Investiment.BITCOIN
 
-        return Investiment.MINI_DOLAR
+        if type_ativo.strip() == 'WDOFUT':
+            return Investiment.MINI_DOLAR
+
+        if type_ativo.strip() == 'WINFUT':
+            return Investiment.MINI_INDICE
 
     @staticmethod
     def __find_qtd(cutting: List) -> int:
