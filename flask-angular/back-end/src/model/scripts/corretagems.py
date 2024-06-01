@@ -17,8 +17,8 @@ class ArquivosCorretagemSQL:
     '''
 
     delete_operacoes = '''
-        DELETE operacoes WHERE id = :op_id;
-        DELETE historicos WHERE h.id = :compra_hist_id;
-        DELETE historicos WHERE h.id = :venda_hist_id;
-        DELETE notas_corretagem WHERE file_id = :file_id;
+        DELETE FROM operacoes WHERE id = :op_id;
+        DELETE FROM historicos WHERE id = :compra_hist_id;
+        DELETE FROM historicos WHERE id = :venda_hist_id;
+        DELETE FROM notas_corretagem WHERE file_id = :file_id
     '''

@@ -64,7 +64,7 @@ class OperacoesSql:
         FROM operacoes o WHERE data_encerramento >= DATE_FORMAT(CURDATE(), '%Y-%m-01') AND daytrade = :daytrade) AS b,
     (SELECT SUM(o.resultado - o.irpf - o.custos) semanal 
         FROM operacoes o WHERE data_encerramento >= 
-        DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE()) DAY) AND daytrade= :daytrade) AS c,
+        DATE_SUB(CURRENT_DATE(), INTERVAL IF(WEEKDAY(CURRENT_DATE())!=0, WEEKDAY(CURRENT_DATE()), 7) DAY) AND daytrade= :daytrade) AS c,
     (SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
         FROM operacoes o WHERE daytrade = :daytrade) AS d '''
 
