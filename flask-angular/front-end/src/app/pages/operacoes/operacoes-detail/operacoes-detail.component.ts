@@ -35,6 +35,7 @@ export class OperacoesDetailComponent {
     private carteiraService: CarteiraService,
     private setupService: SetupService,
     private ativoService: AtivoService,
+
     private messageService: MessageService, private modalService: ModalService) {
     this.items = [];
     this.carteiras = [];
@@ -88,7 +89,18 @@ export class OperacoesDetailComponent {
       venda_hist_id: new FormControl(),
       setup: new FormControl(),
       setup_id: new FormControl(),
+      payoff: new FormControl(0),
+      tendencia: new FormControl(),
+      quality: new FormControl(),
+      segui_plano: new FormControl(true),
+      contexto: new FormControl(true),
+      obs: new FormControl("")
     });
+
+    this.formOperacao.get('tendencia')?.valueChanges.subscribe(v => this.onCalculeQuality())
+    this.formOperacao.get('payoff')?.valueChanges.subscribe(v => this.onCalculeQuality())
+    this.formOperacao.get('segui_plano')?.valueChanges.subscribe(v => this.onCalculeQuality())
+    this.formOperacao.get('contexto')?.valueChanges.subscribe(v => this.onCalculeQuality())
   }
 
   ngOnInit(): void {
@@ -207,7 +219,40 @@ export class OperacoesDetailComponent {
       })
   }
 
+  private onCalculeQuality(): void {
+    let quality = 0
+    const tendencia = this.formOperacao.get('tendencia')?.value
+    const payoff = this.formOperacao.get('payoff')?.value
+    const segui_plano = this.formOperacao.get('segui_plano')?.value
+    const contexto = this.formOperacao.get('contexto')?.value
 
+
+    if (tendencia === 'FAVOR') {
+      quality += 30
+    }
+    else if (tendencia === 'LATERAL') {
+      quality += 10
+    }
+    else {
+      quality += 0
+    }
+
+    quality += payoff * 5
+    quality += segui_plano ? 25 : 0
+    quality += contexto ? 25 : 0
+
+    quality = quality /10
+    if (quality > 10) {
+      quality = 10
+    } else {
+      if (quality < 0)
+        quality = 0
+    }
+
+
+    this.formOperacao.get('quality')?.setValue(quality);
+
+  }
 }
 
 

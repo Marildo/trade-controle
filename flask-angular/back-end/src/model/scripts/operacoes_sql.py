@@ -108,7 +108,8 @@ class OperacoesSql:
             SELECT 
             resultado gross,
             custos + irpf costs,
-            resultado - (custos + irpf) net
+            resultado - (custos + irpf) net,
+            quality
             FROM operacoes o
             WHERE data_encerramento >= :start_date AND daytrade=1)
 
@@ -118,6 +119,7 @@ class OperacoesSql:
                 ROUND(SUM(gross),2) gross_total,
                 ROUND(SUM(costs),2) costs_total,
                 ROUND(AVG(gross),2) avg_total,
+                ROUND(AVG(quality),2) avg_quality,
                 COUNT(1) total_trades
              FROM  QUERY01	)
 

@@ -12,7 +12,7 @@ from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship, Mapper
 
-from .enums import TipoInvestimento, TipoNota, TipoCarteira, TipoMovimentacao, CompraVenda, NotaStatusProcess
+from .enums import TipoInvestimento, TipoNota, TipoCarteira, TipoMovimentacao, CompraVenda, NotaStatusProcess, Tendencia
 from .init_db import db_connection, Base
 from .scripts import OperacoesSql, ArquivosCorretagemSQL
 
@@ -385,6 +385,12 @@ class Operacao(BaseTable):
     encerrada = Column(BOOLEAN, default=False, nullable=False)
     data_encerramento = Column(DATE, nullable=True)
     compra_venda = Column(Enum(CompraVenda))
+    tendencia = Column(Enum(Tendencia))
+    segui_plano = Column(BOOLEAN, default=False)
+    contexto = Column(BOOLEAN, default=False)
+    payoff = Column(FLOAT(precision=2), default=0)
+    quality = Column(FLOAT(precision=2), default=0)
+    obs = Column(VARCHAR(255))
     ativo_id = Column(INTEGER, ForeignKey('ativos.id'))
     ativo = relationship("Ativo")
     carteira_id = Column(INTEGER, ForeignKey('carteiras.id'))

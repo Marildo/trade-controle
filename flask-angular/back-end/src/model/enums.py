@@ -34,6 +34,12 @@ class CompraVenda(Enum):
     VENDA = 'V'
 
 
+class Tendencia(Enum):
+    FAVOR = 10
+    LATERAL = -1
+    CONTRA = -10
+
+
 # TODO salvar o numeral no banco
 class NotaStatusProcess(BaseIntEnum):
     AGUARDANDO = 0

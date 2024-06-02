@@ -59,6 +59,12 @@ class OperacaoController:
             'setup': fields.Str(required=False, allow_none=True),
             'encerrada': fields.Bool(required=False),
             'daytrade': fields.Bool(required=False),
+            'tendencia': fields.Str(required=False),
+            'contexto': fields.Bool(required=False),
+            'segui_plano': fields.Bool(required=False),
+            'payoff': fields.Float(required=False),
+            'quality': fields.Float(required=False),
+            'obs': fields.Str(required=False, allow_none=True),
         }
         args = parser.parse(input_schema, request, location='json')
         del args['ativo']
