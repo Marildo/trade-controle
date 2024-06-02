@@ -20,6 +20,7 @@ interface TradingStats {
   net_total: number;
   perc_gain: number;
   total_trades: number;
+  avg_quality: number;
 }
 
 @Component({
@@ -82,7 +83,8 @@ export class DaytradeStatisticsComponent {
       gross_total: 0,
       net_total: 0,
       perc_gain: 0,
-      total_trades: 0
+      total_trades: 0,
+      avg_quality: 0
     }
 
   }
