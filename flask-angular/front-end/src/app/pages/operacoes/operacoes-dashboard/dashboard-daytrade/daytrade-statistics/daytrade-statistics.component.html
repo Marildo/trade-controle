@@ -13,11 +13,15 @@
       <h3 class="subtitle">Performance</h3>
       <div class="gauge">
         <ngx-gauge [type]="gaugeType" [value]="statistics.avg_total" label='Média trade' append="R$" [size]="110"
-          [thick]="5" [thresholds]="thresholdConfig" [min]="-200" [max]="200" [foregroundColor]="foregroundColor">
+          [thick]="10" [thresholds]="thresholdConfig" [min]="-200" [max]="200" [foregroundColor]="foregroundColor">
+        </ngx-gauge>
+
+        <ngx-gauge [type]="gaugeType" [value]="statistics.avg_quality" [label]="'Qualidade'" [size]="110" [thick]="10"
+          [min]="0" [max]="10">
         </ngx-gauge>
 
         <ngx-gauge [type]="gaugeType" [value]="statistics.perc_gain" [label]="'Taxa Acerto'" [append]="'%'" [size]="110"
-          [thick]="5">
+          [thick]="10">
         </ngx-gauge>
       </div>
       <table>
@@ -68,7 +72,7 @@
           <tr>
             <td>Qualidade do trades</td>
             <td class="result"
-              [ngClass]="{ positive: statistics.avg_quality >= 50,  negative: statistics.avg_quality < 50 }">
+              [ngClass]="{ positive: statistics.avg_quality >= 5,  negative: statistics.avg_quality < 5 }">
               {{ statistics.avg_quality }}</td>
           </tr>
         </tbody>

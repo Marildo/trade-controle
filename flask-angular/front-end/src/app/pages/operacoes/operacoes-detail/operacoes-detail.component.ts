@@ -241,7 +241,7 @@ export class OperacoesDetailComponent {
     quality += segui_plano ? 25 : 0
     quality += contexto ? 25 : 0
 
-    quality = quality /10
+    quality = quality / 10
     if (quality > 10) {
       quality = 10
     } else {

@@ -9,6 +9,7 @@ from flask import request
 from webargs import fields
 from webargs import validate
 from webargs.flaskparser import parser
+import statistics
 
 from .carteira_controller import CarteiraController
 from .importador_nota import ImportadorNota
@@ -103,9 +104,11 @@ class OperacaoController:
         numero_operacoes = len(data)
         items = rows_to_dicts(data)
         total = sum([i.resultado for i in data])
+        liquido = total - (custos + irpf)
+        quality = round(statistics.mean([i.quality for i in data]), 2)
         response = dict(items=items,
-                        summary=dict(resultado=total, liquido=total - (custos + irpf), custos=custos, irpf=irpf,
-                                     numero_operacoes=numero_operacoes))
+                        summary=dict(resultado=total, liquido=liquido, custos=custos, irpf=irpf,
+                                     numero_operacoes=numero_operacoes, quality=quality))
         return response
 
     @classmethod

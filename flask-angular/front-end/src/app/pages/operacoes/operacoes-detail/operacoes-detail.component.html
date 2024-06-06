@@ -28,6 +28,7 @@
 
                 <th>Nt. Compra</th>
                 <th>Nt. Venda</th>
+                <th>Qualidade</th>
                 <th>Setup</th>
                 <th> </th>
             </tr>
@@ -51,6 +52,7 @@
 
                 <td><a (click)="onFilterNotaCompra(row.nota_compra)"> {{ row.nota_compra }}</a></td>
                 <td><a (click)="onFilterNotaVenda(row.nota_venda)"> {{ row.nota_venda }}</a></td>
+                <td>{{ row.quality }}</td>
                 <td>{{ row.setup }}</td>
                 <td> <button mat-icon-button matTooltip="Editar" color="primary" aria-label="Editar"
                         (click)="onEditar(row.id)">
@@ -60,11 +62,13 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="4">Número de Operações {{summary.numero_operacoes}}</td>
+                <td colspan="3">Número de Operações {{summary.numero_operacoes}}</td>
+                <td colspan="2">Qualidade {{summary.quality | number}}</td>
+                <td colspan="2"></td>
                 <td colspan="2">Bruto {{summary.resultado | currency}}</td>
                 <td colspan="2">Custos {{summary.custos | currency}}</td>
                 <td colspan="2">IRPF {{summary.irpf | currency}}</td>
-                <td colspan="4">Líquido {{summary.liquido | currency}}</td>
+                <td colspan="2">Líquido {{summary.liquido | currency}}</td>
             </tr>
         </tfoot>
     </table>
@@ -224,12 +228,12 @@
         </div>
 
         <div class="form-group-inline">
-            <div>               
-                <input id="plan" type="checkbox" formControlName="segui_plano" >
+            <div>
+                <input id="plan" type="checkbox" formControlName="segui_plano">
                 <label for="plan">Plano </label>
             </div>
-            <div>              
-                <input id="contexto" type="checkbox" formControlName="contexto" >
+            <div>
+                <input id="contexto" type="checkbox" formControlName="contexto">
                 <label for="contexto">Contexto </label>
             </div>
             <div>
@@ -238,13 +242,14 @@
             </div>
             <div>
                 <label>Qualidade: </label>
-                <input type="text" formControlName="quality"  size="5" readonly>
+                <input type="text" formControlName="quality" size="5" readonly>
             </div>
         </div>
-        <div class="form-group-inline">
-            <label>Observação: </label>
-            <input type="text" formControlName="obs"  size="50">
-        </div>
+        <fieldset class="form-group-inline">
+            <legend>Observação</legend>
+            <textarea id="obs" formControlName="obs" rows="2"></textarea>
+        </fieldset>
+
 
     </form>
     <hr>

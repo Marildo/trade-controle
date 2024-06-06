@@ -411,6 +411,7 @@ class Operacao(BaseTable):
         self.pm_compra = 0.0
         self.custos = 0.0
         self.irpf = 0.0
+        self.quality = 0
         for key, value in kwargs.items():
             setattr(self, key, value)
 
