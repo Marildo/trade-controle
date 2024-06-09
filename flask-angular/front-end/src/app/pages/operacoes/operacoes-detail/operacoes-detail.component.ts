@@ -202,7 +202,6 @@ export class OperacoesDetailComponent {
         console.log(err)
       },
     })
-
   }
 
   private onLoad(): void {

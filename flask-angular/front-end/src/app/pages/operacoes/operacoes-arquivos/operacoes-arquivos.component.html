@@ -41,7 +41,7 @@
                 <th>Data processamento</th>
                 <th>Status</th>
                 <th>Tipo</th>
-                <th></th>
+                <th colspan="5"></th>
             </tr>
         </thead>
         <tbody>
@@ -68,6 +68,12 @@
                     <button mat-icon-button matTooltip="Visualizar Transações" color="primary"
                         aria-label="Visualizar Transações" (click)="onView(row.id)">
                         <mat-icon>preview</mat-icon>
+                    </button>
+                </td>
+                <td [hidden]=" row.status != 'Finalizado'">
+                    <button mat-icon-button matTooltip="Upload de informações" color="primary"
+                        aria-label="Upload de informações" (click)="showFormInfos(row.id)">
+                        <mat-icon>dns</mat-icon>
                     </button>
                 </td>
                 <td><a href="{{apiUrl}}notas/arquivos/pdf/{{row.id}}" target="_blank">
@@ -122,5 +128,25 @@
     </table>
     <div class="container-end">
         <button mat-raised-button color="accent" (click)="onCloseModalArquivos()">Fechar</button>
+    </div>
+</app-modal>
+
+<app-modal #modal id="modalInfos">
+    <div>
+        <h3 class="title">Upload de informações complementares no formato CSV</h3>
+        <form [formGroup]="formInfoComp">
+            <div class="form-group-inline">
+                <textarea cols="80" rows="12" formControlName="info"></textarea>
+                <input type="hidden" formControlName="file_id">
+            </div>
+        </form>
+        <div class="contener-footer">
+            <div class="new-carteira-footer">
+                <footer class="container-buttons">
+                    <button mat-raised-button color="accent" (click)="onCloseModalInfos()">Cancelar</button>
+                    <button mat-raised-button color="primary" (click)="onSendInfos()">Enviar</button>
+                </footer>
+            </div>
+        </div>
     </div>
 </app-modal>

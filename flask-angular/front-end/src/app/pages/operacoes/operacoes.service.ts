@@ -38,9 +38,14 @@ export class OperacoesService extends BaseAPIService {
     return this.get('/notas/arquivos', filter)
   }
 
-  search_files(): Observable<any> {
+  public search_files(): Observable<any> {
     const url = '/notas/arquivos/search'
     return this.put(url)
+  }
+
+  public uploadInfoComplementares(body: any): Observable<any> {
+    const url = '/notas/arquivos/infocomp'
+    return this.put(url, body)
   }
 
   public upload_file(files: File[]): Observable<any> {

@@ -6,8 +6,7 @@ from typing import List, Dict
 
 import sqlalchemy
 from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
-                        Enum,
-                        ForeignKey, text, func, extract)
+                        Enum, ForeignKey, text, func, extract, and_, or_)
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import relationship, Mapper
@@ -436,6 +435,28 @@ class Operacao(BaseTable):
         value = value - total_custos
         return value
 
+    def calc_quality(self):
+        quality = 0
+        tendencias_values = {
+            'FAVOR': 30,
+            'LATERAL': 10,
+            'CONTRA': 0
+        }
+        quality += tendencias_values[self.tendencia]
+        quality += 25 if self.segui_plano else 0
+        quality += 25 if self.contexto else 0
+        quality += self.payoff * 5
+        if self.setup_id == -1:
+            quality -= 50
+
+        quality = quality / 10
+        if quality > 10:
+            quality = 10
+        elif quality < 0:
+            quality = 0
+
+        self.quality = quality
+
     @staticmethod
     def find_not_closed(ativo: Ativo, compra_venda: CompraVenda, daytrade: bool) -> List:
         with db_connection as conn:
@@ -449,12 +470,16 @@ class Operacao(BaseTable):
             return query
 
     @staticmethod
-    def find_by_nota(id_nota: int) -> List:
+    def find_by_file_id(file_id: int) -> List:
         with db_connection as conn:
-            filters = [Operacao.nota_venda_id == id_nota, Operacao.encerrada == 1]
-            query = (conn.session.query(Operacao).filter(*filters)).all()
-
-            return query
+            query = (conn.session
+                     .query(Operacao)
+                     .join(NotaCorretagem,
+                           or_(Operacao.nota_venda_id == NotaCorretagem.id,
+                               Operacao.nota_compra_id == NotaCorretagem.id)
+                           )
+                     .filter(NotaCorretagem.file_id == file_id))
+            return query.all()
 
     @staticmethod
     def fetch_detail(params: Dict) -> List:

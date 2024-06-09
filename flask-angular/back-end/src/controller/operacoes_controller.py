@@ -13,7 +13,7 @@ import statistics
 
 from .carteira_controller import CarteiraController
 from .importador_nota import ImportadorNota
-from ..model import Operacao, Historico
+from ..model import Operacao, Historico, Setup
 from ..model.dtos import Nota
 from ..services import YFinanceService
 from ..settings import logger
@@ -225,3 +225,41 @@ class OperacaoController:
                     op.compra_hist_id = hist.id
 
             op.save()
+
+    @classmethod
+    def update_info_complementares(cls, data):
+        infos = data['info'].split('\n')
+
+        header = infos[0].split(';')
+
+        operacoes = Operacao().find_by_file_id(data['file_id'])
+        setups = Setup().read_by_params({})
+
+        infos = infos[1:]
+        for i in range(len(infos)):
+            row = infos[i].split(';')
+            if len(row) < 2:
+                continue
+            oper = operacoes[i]
+            resultado = cls.__find_attr(header, 'Resultado', row, [])
+            resultado = float(resultado.replace('R$', ''))
+            if resultado == oper.resultado:
+                oper.setup_id = cls.__find_attr(header, 'Setup', row, setups)
+                oper.tendencia = cls.__find_attr(header, 'Tendência', row, []).upper()
+                oper.segui_plano = cls.__find_attr(header, 'Segui o Plano', row, []) == 'Sim'
+                oper.contexto = cls.__find_attr(header, 'Contexto', row, []) == 'Sim'
+                oper.payoff = float(cls.__find_attr(header, 'Payoff', row, []))
+                oper.obs = cls.__find_attr(header, 'Obs', row, [])
+                oper.calc_quality()
+                oper.save()
+
+
+    @staticmethod
+    def __find_attr(header: List, field: str, row: List, setups: List):
+        index = header.index(field)
+        value = row[index]
+        if field == 'Setup':
+            items = [i for i in setups if i.nome == value]
+            value = items[0].id if items else 0
+
+        return value

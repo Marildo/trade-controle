@@ -167,3 +167,12 @@ class NotaController:
         filename = filecorr.name.replace('.pdf', f'{sufix}.pdf')
         path_file = str(Path(config.get_path_notas()).joinpath(filename))
         return send_file(path_file, as_attachment=True, download_name=filename.replace(sufix, ''))
+
+    @classmethod
+    def add_info_complementares(cls):
+        input_schema = {
+            'file_id': fields.Int(required=True),
+            'info': fields.Str(required=True),
+        }
+        args = parser.parse(input_schema, request, location='json')
+        OperacaoController.update_info_complementares(args)

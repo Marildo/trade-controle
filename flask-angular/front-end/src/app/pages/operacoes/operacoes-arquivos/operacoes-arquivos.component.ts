@@ -4,6 +4,7 @@ import { MessageService } from 'primeng/api';
 import { ModalService } from 'src/app/components/modal/modal-service';
 import { OperacoesService } from '../operacoes.service';
 import { environment } from 'src/environments/environment';
+import { FormControl, FormGroup } from '@angular/forms';
 
 
 
@@ -14,7 +15,9 @@ import { environment } from 'src/environments/environment';
 })
 export class OperacoesArquivosComponent {
 
+
   private modalArquivos = 'modalArquivos'
+  private modalInfos = 'modalInfos'
 
   public hiddenForm = true;
   public items: any[];
@@ -23,7 +26,7 @@ export class OperacoesArquivosComponent {
 
 
   public selectedFiles: File[] = [];
-  public apiUrl:string = environment.apiUrl
+  public apiUrl: string = environment.apiUrl
 
   public tipoNota!: string;
   public start_processamento!: any;
@@ -32,6 +35,8 @@ export class OperacoesArquivosComponent {
   public end_referencia!: any;
 
   private filter = new Map();
+
+  public formInfoComp: FormGroup;
 
 
 
@@ -52,6 +57,11 @@ export class OperacoesArquivosComponent {
     this.items = [];
     this.uploadedFiles = [];
     this.tipoNota = '-1';
+
+    this.formInfoComp = new FormGroup({
+      file_id: new FormControl(),
+      info: new FormControl(),
+    })
   }
 
   ngOnInit(): void {
@@ -180,6 +190,29 @@ export class OperacoesArquivosComponent {
   onCloseModalArquivos() {
     this.modalService.close(this.modalArquivos)
   }
+
+  showFormInfos(id: string) {
+    this.formInfoComp.get('file_id')?.setValue(id);
+    this.modalService.open(this.modalInfos)
+  }
+
+  onCloseModalInfos() {
+    this.modalService.close(this.modalInfos)
+  }
+
+
+  onSendInfos() {
+    this.service.uploadInfoComplementares(this.formInfoComp.value).subscribe({
+      next: value => {
+        this.modalService.close(this.modalInfos)
+        this.onView(this.formInfoComp.get('file_id')?.value)
+      },
+      error(err) {
+        console.log(err)
+      },
+    })
+  }
+
 }
 
 
