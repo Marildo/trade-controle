@@ -110,6 +110,7 @@
                 <th>Arquivo</th>
                 <th>Status</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -121,6 +122,12 @@
                     <button mat-icon-button matTooltip="Visualizar Transações" color="primary"
                         aria-label="Visualizar Transações" (click)="onView(row.id)">
                         <mat-icon>preview</mat-icon>
+                    </button>
+                </td>
+                <td>
+                    <button mat-icon-button matTooltip="Upload de informações" color="primary"
+                        aria-label="Upload de informações" (click)="showFormInfos(row.id)">
+                        <mat-icon>dns</mat-icon>
                     </button>
                 </td>
             </tr>

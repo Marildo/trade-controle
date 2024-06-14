@@ -470,6 +470,14 @@ class Operacao(BaseTable):
             return query
 
     @staticmethod
+    def find_by_nota(id_nota: int) -> List:
+        with db_connection as conn:
+            filters = [Operacao.nota_venda_id == id_nota, Operacao.encerrada == 1]
+            query = (conn.session.query(Operacao).filter(*filters)).all()
+
+            return query
+
+    @staticmethod
     def find_by_file_id(file_id: int) -> List:
         with db_connection as conn:
             query = (conn.session

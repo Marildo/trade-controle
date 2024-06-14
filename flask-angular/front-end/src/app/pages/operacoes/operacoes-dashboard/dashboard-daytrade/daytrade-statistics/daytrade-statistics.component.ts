@@ -3,7 +3,7 @@ import { formatCurrency } from '@angular/common';
 
 import { ChartType } from 'chart.js';
 
- 
+
 import { NgxGaugeType } from 'ngx-gauge/gauge/gauge';
 import { OperacoesService } from '../../../operacoes.service';
 
@@ -45,29 +45,43 @@ export class DaytradeStatisticsComponent {
   private filter = new Map();
 
 
-    // https://ashish-chopra.github.io/ngx-gauge/
-    gaugeType:NgxGaugeType =  'full';
- 
-    foregroundColor= "red"
+  // https://ashish-chopra.github.io/ngx-gauge/
+  gaugeType: NgxGaugeType = 'full';
 
-    thresholdConfig = {
-      "-50": {
-        "color": "red",
-        "bgOpacity": 0.6
-      },
-      "0": {
-        "color": "#8ac926",
-        "bgOpacity": 0.3
-      },
-      "50": {
-        "color": "#73A960",
-        "bgOpacity": 0.3
-      },
-      "100": {
-        "color": "green",
-        "bgOpacity": 0.3
-      }
+  foregroundColor = "red"
+
+  qualityConfig = {
+    "0": {
+      "color": "red",
+      "bgOpacity": 0.6
+    },
+    "6": {
+      "color": "orange",
+      "bgOpacity": 0.3
+    },
+    "7": {
+      "color": "green",
+      "bgOpacity": 0.3
     }
+  }
+
+
+  avgTradeConfig = {
+    "-10": {
+      "color": "red",
+      "bgOpacity": 0.6
+    },
+
+    "5": {
+      "color": "orange",
+      "bgOpacity": 0.3
+    },
+
+    "10": {
+      "color": "green",
+      "bgOpacity": 0.3
+    }
+  }
 
 
   constructor(private service: OperacoesService) {
@@ -98,7 +112,7 @@ export class DaytradeStatisticsComponent {
     this.service.load_statistics_daytrade(this.filter).subscribe({
       next: (resp) => {
         this.statistics = resp.data.statistics
-        
+
         const labels_set = new Set();
         const ativos = new Set();
         const items = resp.data.operacoes;

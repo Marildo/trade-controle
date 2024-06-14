@@ -4,6 +4,7 @@
 
 from datetime import date, timedelta, datetime
 from typing import Dict, List
+import csv
 
 from flask import request
 from webargs import fields
@@ -228,38 +229,72 @@ class OperacaoController:
 
     @classmethod
     def update_info_complementares(cls, data):
+
         infos = data['info'].split('\n')
-
         header = infos[0].split(';')
-
-        operacoes = Operacao().find_by_file_id(data['file_id'])
-        setups = Setup().read_by_params({})
-
         infos = infos[1:]
+
+        infos_list = []
         for i in range(len(infos)):
             row = infos[i].split(';')
             if len(row) < 2:
                 continue
+
+            row_dict = {}
+            for h in range(len(header)):
+                row_dict[header[h].lower()] = row[h]
+
+            row_dict['processed'] = False
+            infos_list.append(row_dict)
+
+        operacoes = Operacao().find_by_file_id(data['file_id'])
+        setups = Setup().read_by_params({})
+
+        def find_value(field: str, info_row: Dict):
+            field = field.lower()
+            value = info_row.get(field, None)
+            if field == 'setup':
+                items = [s for s in setups if s.nome == value]
+                value = items[0].id if items else 0
+            elif field == 'resultado':
+                value = float(value.replace('R$', ''))
+            elif field == 'tendência':
+                value = value.upper()
+            elif field == 'payoff':
+                value = float(value)
+            elif field in ('contexto', 'segui o plano'):
+                value = value == 'Sim'
+
+            return value
+
+        i = 0
+        for info in infos_list:
             oper = operacoes[i]
-            resultado = cls.__find_attr(header, 'Resultado', row, [])
-            resultado = float(resultado.replace('R$', ''))
-            if resultado == oper.resultado:
-                oper.setup_id = cls.__find_attr(header, 'Setup', row, setups)
-                oper.tendencia = cls.__find_attr(header, 'Tendência', row, []).upper()
-                oper.segui_plano = cls.__find_attr(header, 'Segui o Plano', row, []) == 'Sim'
-                oper.contexto = cls.__find_attr(header, 'Contexto', row, []) == 'Sim'
-                oper.payoff = float(cls.__find_attr(header, 'Payoff', row, []))
-                oper.obs = cls.__find_attr(header, 'Obs', row, [])
+            resultado = find_value('resultado', info)
+            if oper.resultado == resultado:
+                oper.setup_id = find_value('Setup', info)
+                oper.tendencia = find_value('Tendência', info)
+                oper.segui_plano = find_value('Segui o Plano', info)
+                oper.contexto = find_value('Contexto', info)
+                oper.payoff = find_value('Payoff', info)
+                oper.obs = find_value('Obs', info)
                 oper.calc_quality()
                 oper.save()
+                info['processed'] = True
 
+            i += 1
 
-    @staticmethod
-    def __find_attr(header: List, field: str, row: List, setups: List):
-        index = header.index(field)
-        value = row[index]
-        if field == 'Setup':
-            items = [i for i in setups if i.nome == value]
-            value = items[0].id if items else 0
-
-        return value
+        operacoes = [o for o in operacoes if o.setup_id is None]
+        infos_np = [i for i in infos_list if i['processed'] is False]
+        for oper in operacoes:
+            infs = [i for i in infos_np if find_value('resultado', i) == oper.resultado]
+            if len(infs) == 1:
+                info = infs[0]
+                oper.setup_id = find_value('Setup', info)
+                oper.tendencia = find_value('Tendência', info)
+                oper.segui_plano = find_value('Segui o Plano', info)
+                oper.contexto = find_value('Contexto', info)
+                oper.payoff = find_value('Payoff', info)
+                oper.obs = find_value('Obs', info)
+                oper.calc_quality()
+                oper.save()
