@@ -176,3 +176,9 @@ class NotaController:
         }
         args = parser.parse(input_schema, request, location='json')
         OperacaoController.update_info_complementares(args)
+
+    @classmethod
+    def load_info_complementares(cls):
+        input_schema = {'file_id': fields.Int(required=True)}
+        args = parser.parse(input_schema, request, location='json')
+        OperacaoController.update_info_complementares_from_sheet(args['file_id'])

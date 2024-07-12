@@ -6,18 +6,21 @@ from datetime import date, timedelta, datetime
 from typing import Dict, List
 import csv
 
+import gspread
 from flask import request
 from webargs import fields
 from webargs import validate
 from webargs.flaskparser import parser
 import statistics
 
+from werkzeug.exceptions import BadRequest
+
 from .carteira_controller import CarteiraController
 from .importador_nota import ImportadorNota
 from ..model import Operacao, Historico, Setup
 from ..model.dtos import Nota
 from ..services import YFinanceService
-from ..settings import logger
+from ..settings import logger, config
 from ..utils.dict_util import rows_to_dicts
 
 
@@ -229,7 +232,6 @@ class OperacaoController:
 
     @classmethod
     def update_info_complementares(cls, data):
-
         infos = data['info'].split('\n')
         header = infos[0].split(';')
         infos = infos[1:]
@@ -288,6 +290,76 @@ class OperacaoController:
         infos_np = [i for i in infos_list if i['processed'] is False]
         for oper in operacoes:
             infs = [i for i in infos_np if find_value('resultado', i) == oper.resultado]
+            if len(infs) == 1:
+                info = infs[0]
+                oper.setup_id = find_value('Setup', info)
+                oper.tendencia = find_value('Tendência', info)
+                oper.segui_plano = find_value('Segui o Plano', info)
+                oper.contexto = find_value('Contexto', info)
+                oper.payoff = find_value('Payoff', info)
+                oper.obs = find_value('Obs', info)
+                oper.calc_quality()
+                oper.save()
+
+    @classmethod
+    def update_info_complementares_from_sheet(cls, file_id: int):
+        credential = config.get_path_google_credential()
+        gc = gspread.service_account(filename=credential)
+        try:
+            url = config.get_path_google_url()
+            sheet = gc.open_by_url(url).worksheet('Daytrade')
+        except ConnectionError:
+            raise BadRequest('Falha ao conectar no google sheets')
+
+        dados = sheet.get_all_values()
+        header = [i.lower() for i in dados[11]]
+        dados = [i for i in dados[12:-1] if i[0] != '']
+
+        operacoes = Operacao().find_by_file_id(file_id)
+        setups = Setup().read_by_params({})
+
+        def find_value(field: str, row: List):
+            field = field.lower()
+            index = header.index(field)
+            value = row[index]
+            if field == 'setup':
+                items = [s for s in setups if s.nome == value]
+                value = items[0].id if items else 0
+            elif field == 'resultado':
+                value = float(value.replace('R$', ''))
+            elif field == 'tendência':
+                value = value.upper()
+            elif field == 'payoff':
+                value = float(value)
+            elif field in ('contexto', 'segui o plano'):
+                value = value == 'Sim'
+
+            return value
+
+        not_processed = []
+        i = 0
+        for info in dados:
+            oper = operacoes[i]
+            resultado = find_value('resultado', info)
+            ativo = find_value('ativo', info)
+            if oper.resultado == resultado and ativo == oper.ativo.codigo:
+                oper.setup_id = find_value('Setup', info)
+                oper.tendencia = find_value('Tendência', info)
+                oper.segui_plano = find_value('Segui o Plano', info)
+                oper.contexto = find_value('Contexto', info)
+                oper.payoff = find_value('Payoff', info)
+                oper.obs = find_value('Obs', info)
+                oper.calc_quality()
+                oper.save()
+            else:
+                not_processed.append(info)
+
+            i += 1
+
+        operacoes = [o for o in operacoes if o.setup_id is None]
+        for oper in operacoes:
+            infs = [i for i in not_processed if
+                    find_value('resultado', i) == oper.resultado and find_value('ativo', i) == oper.ativo.codigo]
             if len(infs) == 1:
                 info = infs[0]
                 oper.setup_id = find_value('Setup', info)

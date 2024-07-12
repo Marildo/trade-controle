@@ -31,6 +31,15 @@ class Settings:
         os.makedirs(path, exist_ok=True)
         return path
 
+    def get_path_google_credential(self) -> str:
+        path = self.load_value('GOOGLE_CREDENTIAL', '../src/settings/google_credential.json')
+        return path
+
+    def get_path_google_url(self) -> str:
+        sheets = 'https://docs.google.com/spreadsheets'
+        path = self.load_value('GOOGLE_URL', '/d/1WLskHUTkR2z9slYjZhb748MzHEhcQEvFClKEQ_Xz-GQ/edit?gid=1172805333#gid=1172805333')
+        return sheets + path
+
     def set_token(self, token: int, expires_in: int):
         self.__toro_token = token
         self.__toro_token_expires = datetime.today() + timedelta(seconds=expires_in)

@@ -59,8 +59,14 @@ def file_proccess(_id: int):
 
 @nota_router.route('/arquivos/infocomp', methods=['PUT'])
 @format_response
-def addd_info_complementares():
+def add_info_complementares():
     return NotaController.add_info_complementares()
+
+
+@nota_router.route('/arquivos/infocomp/load', methods=['PUT'])
+@format_response
+def load_info_complementares():
+    return NotaController.load_info_complementares()
 
 
 @nota_router.route('/arquivos/search', methods=['PUT'])
