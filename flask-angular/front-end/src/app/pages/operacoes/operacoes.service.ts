@@ -48,6 +48,11 @@ export class OperacoesService extends BaseAPIService {
     return this.put(url, body)
   }
 
+  public loadInfoComplementares(body: any): Observable<any> {
+    const url = '/notas/arquivos/infocomp/load'
+    return this.put(url, body)
+  }
+
   public upload_file(files: File[]): Observable<any> {
     const formData: FormData = new FormData();
     const headers = new HttpHeaders({})

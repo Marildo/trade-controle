@@ -17,7 +17,7 @@ export class OperacoesArquivosComponent {
 
 
   private modalArquivos = 'modalArquivos'
-  private modalInfos = 'modalInfos'
+  // private modalInfos = 'modalInfos'
 
   public hiddenForm = true;
   public items: any[];
@@ -191,28 +191,39 @@ export class OperacoesArquivosComponent {
     this.modalService.close(this.modalArquivos)
   }
 
-  showFormInfos(id: string) {
-    this.formInfoComp.get('file_id')?.setValue(id);
-    this.modalService.open(this.modalInfos)
-  }
+  // showFormInfos(id: string) {
+  //   this.formInfoComp.get('file_id')?.setValue(id);
+  //   this.modalService.open(this.modalInfos)
+  // }
 
-  onCloseModalInfos() {
-    this.modalService.close(this.modalInfos)
-  }
+  // onCloseModalInfos() {
+  //   this.modalService.close(this.modalInfos)
+  // }
 
 
-  onSendInfos() {
-    this.service.uploadInfoComplementares(this.formInfoComp.value).subscribe({
+  // onSendInfos() {
+  //   this.service.uploadInfoComplementares(this.formInfoComp.value).subscribe({
+  //     next: value => {
+  //       this.modalService.close(this.modalInfos)
+  //       this.onView(this.formInfoComp.get('file_id')?.value)
+  //     },
+  //     error(err) {
+  //       console.log(err)
+  //     },
+  //   })
+  // }
+
+  onLoadInfos(id: string) {
+    const body = { 'file_id': id }
+    this.service.loadInfoComplementares(body).subscribe({
       next: value => {
-        this.modalService.close(this.modalInfos)
-        this.onView(this.formInfoComp.get('file_id')?.value)
+        this.onView(id)
       },
       error(err) {
         console.log(err)
       },
     })
   }
-
 }
 
 

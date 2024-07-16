@@ -1,6 +1,7 @@
 """
  @author Marildo Cesar 06/05/2023
 """
+import logging
 import os
 from typing import List
 from datetime import datetime
@@ -14,7 +15,7 @@ from werkzeug.datastructures import FileStorage
 from werkzeug.exceptions import BadRequest
 
 from ..exceptions import EmptyFileException
-from ..settings import config
+from ..settings import config, logger
 from ..model.enums import NotaStatusProcess, TipoNota
 from ..model import FileCorretagem, NotaCorretagem, ArquivosRepository
 from ..exceptions import DuplicationProcessingException
@@ -95,7 +96,10 @@ class NotaController:
                 filecorr.tipo = notas[0].tipo_nota
                 filecorr.data_processamento = datetime.today()
                 filecorr.update()
-
+                try:
+                    OperacaoController().update_info_complementares_from_sheet(file_id)
+                except Exception as ex:
+                    logger.error(ex)
             return cls.load_notas(file_id)
         except EmptyFileException as ex:
             filecorr.detele()

@@ -34,6 +34,7 @@ services:
       - DATABASE_USER=user_api
       - DATABASE_PORT=3306
       - PATH_NOTAS=/backend/notas_pdf
+      - GOOGLE_CREDENTIAL=/backend/src/settings/google_credential.json
     depends_on:
       - mysql_service
     networks:

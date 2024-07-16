@@ -71,8 +71,8 @@
                     </button>
                 </td>
                 <td [hidden]=" row.status != 'Finalizado'">
-                    <button mat-icon-button matTooltip="Upload de informações" color="primary"
-                        aria-label="Upload de informações" (click)="showFormInfos(row.id)">
+                    <button mat-icon-button matTooltip="Carregar infos complementares" color="primary"
+                        aria-label="Carregar infos complementares" (click)="onLoadInfos(row.id)">
                         <mat-icon>dns</mat-icon>
                     </button>
                 </td>
@@ -126,7 +126,7 @@
                 </td>
                 <td>
                     <button mat-icon-button matTooltip="Upload de informações" color="primary"
-                        aria-label="Upload de informações" (click)="showFormInfos(row.id)">
+                        aria-label="Upload de informações" (click)="onLoadInfos(row.id)">
                         <mat-icon>dns</mat-icon>
                     </button>
                 </td>
@@ -138,7 +138,7 @@
     </div>
 </app-modal>
 
-<app-modal #modal id="modalInfos">
+<!-- <app-modal #modal id="modalInfos">
     <div>
         <h3 class="title">Upload de informações complementares no formato CSV</h3>
         <form [formGroup]="formInfoComp">
@@ -156,4 +156,4 @@
             </div>
         </div>
     </div>
-</app-modal>
+</app-modal> -->
