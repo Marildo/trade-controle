@@ -42,10 +42,9 @@ class BCBService:
         html = BeautifulSoup(response.text, 'html.parser')
 
         table = html.find('table', {'class': 'tabela'})
-        body = table.find('tbody')
-        if not body:
+        if not table:
             return None
-
+        body = table.find('tbody')
         trs = body.find_all('tr')
 
         if last_day:

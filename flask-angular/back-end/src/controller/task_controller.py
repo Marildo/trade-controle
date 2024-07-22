@@ -116,14 +116,14 @@ class TaskController:
         def task():
             advfn = ADVFNService()
             ibove = advfn.get_ibove_current()
-
-            with SimpleConnection() as conn:
-                values = {
-                    'ibove_var': ibove['day_variation'],
-                    'ibove_current': ibove['current'],
-                    'update_at': datetime.now()
-                }
-                conn.update('indicadores', values, {'1': 1})
+            if ibove:
+                with SimpleConnection() as conn:
+                    values = {
+                        'ibove_var': ibove['day_variation'],
+                        'ibove_current': ibove['current'],
+                        'update_at': datetime.now()
+                    }
+                    conn.update('indicadores', values, {'1': 1})
 
         thread = threading.Thread(target=task)
         thread.start()

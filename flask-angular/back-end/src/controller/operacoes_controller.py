@@ -312,8 +312,8 @@ class OperacaoController:
             raise BadRequest('Falha ao conectar no google sheets')
 
         dados = sheet.get_all_values()
-        header = [i.lower() for i in dados[11]]
-        dados = [i for i in dados[12:-1] if i[0] != '']
+        header = [i.lower() for i in dados[1]]
+        dados = [i for i in dados[2:-1] if i[0] != '']
 
         operacoes = Operacao().find_by_file_id(file_id)
         setups = Setup().read_by_params({})

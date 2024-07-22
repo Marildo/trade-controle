@@ -46,7 +46,10 @@ class BMFDiaria(Investiment):
             code_atvs = {}
             for i in range(len(self._lines)):
                 if self._lines[i] == 'C/V':
-                    code_atvs[i - 1] = self._lines[i - 1]
+                    if i != 0:
+                        code_atvs[i - 1] = self._lines[i - 1]
+                    else:
+                        code_atvs[i - 1] = self._lines[i + 9]
 
             while begin >= 0:
                 cutting = self.lines[begin: end]
@@ -66,7 +69,6 @@ class BMFDiaria(Investiment):
                 operacao = dict(id=_id, ativo=ativo, tipo=tipo, qtd=qtd, preco=pm, irpf=0, custos=0, daytrade=True)
                 # print(operacao)
                 operacoes.append(operacao)
-
 
                 begin = self.__locate_index('DAY TRADE', self.lines, end) - 4
                 end = begin + 7
@@ -106,6 +108,9 @@ class BMFDiaria(Investiment):
             return Investiment.MINI_DOLAR
 
         if type_ativo.strip() == 'WINFUT':
+            return Investiment.MINI_INDICE
+
+        if type_ativo[0] in ('G', 'J', 'M', 'Q', 'V', 'Z'):
             return Investiment.MINI_INDICE
 
     @staticmethod

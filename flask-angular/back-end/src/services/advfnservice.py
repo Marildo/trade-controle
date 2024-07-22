@@ -44,7 +44,11 @@ class ADVFNService:
         response = self.__execute(url)
         soup = BeautifulSoup(response.text, 'html.parser')
 
-        # Encontrando o elemento com base nos id        variation = soup.select('#quoteElementPiece4')[0].text
+        # Encontrando o elemento com base nos id
+        node = soup.select('#quoteElementPiece4')
+        if not node:
+            return
+        variation = node[0].text
         variation = float(variation.replace('.', '').replace(',', '.').replace("%", ''))
 
         current = soup.select('#quoteElementPiece5')[0].text
