@@ -548,6 +548,13 @@ class Operacao(BaseTable):
             return query.fetchall()
 
     @staticmethod
+    def fetch_summary_month_daytrade():
+        sql = text(OperacoesSql.query_summary_month_daytrade)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql)
+            return query.fetchall()
+
+    @staticmethod
     def fetch_daytrade_operations(start_date: date) -> List:
         sql = text(OperacoesSql.query_daytrade_operations)
         with db_connection.engine.begin() as conn:
@@ -559,6 +566,13 @@ class Operacao(BaseTable):
         sql = text(OperacoesSql.query_statistics_daytrade)
         with db_connection.engine.begin() as conn:
             query = conn.execute(sql, {'start_date': start_date})
+            return query.fetchall()
+
+    @staticmethod
+    def fetch_observacoes():
+        sql = text(OperacoesSql.query_observacoes)
+        with db_connection.engine.begin() as conn:
+            query = conn.execute(sql)
             return query.fetchall()
 
 

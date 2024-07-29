@@ -130,8 +130,12 @@ class OperacaoController:
     @classmethod
     def fetch_dashboard_data(cls):
         totais = Operacao.fetch_summary_total(True)
-        group_quarter = Operacao.fetch_summary_quarter_daytrade()
-        daytrade_operations = dict(group_trimestral=rows_to_dicts(group_quarter),
+        quarterly_grouping = Operacao.fetch_summary_quarter_daytrade()
+        monthly_grouping = Operacao.fetch_summary_month_daytrade()
+        obs = Operacao.fetch_observacoes()
+        daytrade_operations = dict(quarterly_grouping=rows_to_dicts(quarterly_grouping),
+                                   monthly_grouping=rows_to_dicts(monthly_grouping),
+                                   observacoes=rows_to_dicts(obs),
                                    total_mensal=totais.mensal or 0,
                                    total_semanal=totais.semanal or 0,
                                    total_anual=totais.anual or 0,

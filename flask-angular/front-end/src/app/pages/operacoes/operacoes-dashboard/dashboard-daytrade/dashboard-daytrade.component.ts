@@ -16,8 +16,14 @@ export class DashboardDaytradeComponent implements OnInit {
 
   public results: ParValues[] = [];
   public lineChartType: ChartType = 'line';
-  private lineChartLabels: string[] = [];
-  private lineChartDataRows: number[] = [];
+
+  private lineChartQuarterLabels: string[] = [];
+  private lineChartQuarterDataRows: number[] = [];
+
+  private lineChartMonthyLabels: string[] = [];
+  private lineChartMonthyDataRows: number[] = [];
+
+  public observacoes: any[] = []
 
 
   constructor() { }
@@ -37,36 +43,44 @@ export class DashboardDaytradeComponent implements OnInit {
     this.results.push({ label: 'Mês', value: daytrade_operations.total_mensal })
     this.results.push({ label: 'Ano', value: daytrade_operations.total_anual })
     this.results.push({ label: 'Acumulado', value: daytrade_operations.total_acumulado })
+    this.observacoes = data.daytrade_operations.observacoes
 
-    for (const item of daytrade_operations.group_trimestral) {
-      this.lineChartLabels.push(item.data_group)
-      this.lineChartDataRows.push(item.total)
+
+
+    for (const item of daytrade_operations.quarterly_grouping) {
+      this.lineChartQuarterLabels.push(item.data_group)
+      this.lineChartQuarterDataRows.push(item.total)
+    }
+
+    for (const item of daytrade_operations.monthly_grouping) {
+      this.lineChartMonthyLabels.push(item.data_group)
+      this.lineChartMonthyDataRows.push(item.total)
     }
   }
 
 
-  public lineChartData(): ChartConfiguration['data'] {
+  public lineChartQuarterData(): ChartConfiguration['data'] {
     const data = {
       datasets: [
         {
-          data: this.lineChartDataRows,
-          label: 'Evolução de resultados',
+          data: this.lineChartQuarterDataRows,
+          label: 'Evolução de resultados Trimestral',
           backgroundColor: 'rgba(148,159,177,0.2)',
           borderColor: 'rgba(148,159,177,1)',
-          pointBackgroundColor: 'rgba(148,159,177,1)',
+          pointBackgroundColor: 'red',
           pointBorderColor: '#fff',
           pointHoverBackgroundColor: '#fff',
           pointHoverBorderColor: 'rgba(148,159,177,0.8)',
           fill: 'origin',
         }
       ],
-      labels: this.lineChartLabels
+      labels: this.lineChartQuarterLabels
     }
     return data
   };
 
 
-  public lineChartOptions() {
+  public lineChartQuarterOptions() {
     const lineChartOptions: ChartConfiguration['options'] = {
       responsive: true,
       elements: {
@@ -86,4 +100,47 @@ export class DashboardDaytradeComponent implements OnInit {
     return lineChartOptions
   }
 
+
+  public lineChartMonthyData(): ChartConfiguration['data'] {
+    const data = {
+      datasets: [
+        {
+          data: this.lineChartMonthyDataRows,
+          label: 'Evolução de resultados Mensal',
+          backgroundColor: 'rgba(148,159,177,0.2)',
+          borderColor: 'rgba(148,159,177,1)',
+          pointBackgroundColor: 'blue',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(148,159,177,0.8)',
+          fill: 'origin',
+        }
+      ],
+      labels: this.lineChartMonthyLabels
+    }
+    return data
+  };
+
+  public lineChartMonthyOptions() {
+    const lineChartOptions: ChartConfiguration['options'] = {
+      responsive: true,
+      elements: {
+        line: {
+          tension: 0.2
+        }
+      },
+      scales: {
+        y: {
+          grid: {
+            color: 'rgba(71, 124, 171, 0.459)',
+          },
+        }
+      }
+
+    }
+    return lineChartOptions
+  }
+
+
+  
 }

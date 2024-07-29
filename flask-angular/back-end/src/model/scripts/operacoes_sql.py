@@ -68,13 +68,28 @@ class OperacoesSql:
     (SELECT SUM(o.resultado - o.irpf - o.custos) acumulado 
         FROM operacoes o WHERE daytrade = :daytrade) AS d '''
 
+    query_summary_month_daytrade = '''
+  WITH QUERY01 AS(
+    SELECT 
+      CONCAT(LPAD(MONTH(o.data_encerramento),2,'0') ,'/',YEAR(o.data_encerramento)) data_group,
+      MAX(data_encerramento) encerramento,  
+      SUM(o.resultado - o.irpf - o.custos) AS total	
+      FROM operacoes o
+    WHERE o.encerrada=1 AND daytrade=1
+    GROUP BY 1
+    ORDER BY 2 DESC LIMIT 12    
+    ) 
+    SELECT * FROM QUERY01 
+    ORDER BY 2 
+    '''
+
     query_summary_quarter_daytrade = '''
     WITH QUERY01 AS(
     SELECT 
-    	YEAR(o.data_encerramento) ano, 
-    	MONTH(o.data_encerramento) mes, 
-    	MAX(data_encerramento) encerramento,  
-    	SUM(o.resultado - o.irpf - o.custos) AS resultado	
+        YEAR(o.data_encerramento) ano, 
+        MONTH(o.data_encerramento) mes, 
+        MAX(data_encerramento) encerramento,  
+        SUM(o.resultado - o.irpf - o.custos) AS resultado	
     FROM
      operacoes o
     WHERE o.encerrada=1 AND daytrade=1
@@ -163,4 +178,12 @@ class OperacoesSql:
         JOIN ativos a ON a.id = o.ativo_id
         LEFT JOIN historicos h ON h.venda_id = o.id
         WHERE h.venda_id IS NULL
+    """
+
+    query_observacoes = """
+        SELECT COUNT(1) nrg, obs, max(o.data_encerramento ) datax
+        FROM operacoes o WHERE LENGTH(obs) > 1
+        GROUP BY obs
+        ORDER by nrg DESC , datax DESC 
+        LIMIT 10
     """
