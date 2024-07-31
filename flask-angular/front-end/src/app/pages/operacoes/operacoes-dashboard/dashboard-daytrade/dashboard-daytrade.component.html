@@ -23,9 +23,9 @@
 
     <div>
       <hr>
-      <span class="title">Pontos de antenção</span>
+      <span class="title">Pontos de atenção</span>
       <div class="obs">
-        <h5 *ngFor="let row of observacoes">{{row.obs}}</h5>
+        <div *ngFor="let row of observacoes" class="card">{{row.obs}}</div>
       </div>
     </div>
   </div>

@@ -317,7 +317,13 @@ class OperacaoController:
 
         dados = sheet.get_all_values()
         header = [i.lower() for i in dados[1]]
-        dados = [i for i in dados[2:-1] if i[0] != '']
+        dados = [i for i in dados[2:-1] if i[header.index('ativo')] != '']
+
+        wdos = [i for i in dados if i[header.index('ativo')] == 'WDO']
+        bits = [i for i in dados if i[header.index('ativo')] == 'BIT']
+        wins = [i for i in dados if i[header.index('ativo')] == 'WIN']
+        others = [i for i in dados if i[header.index('ativo')] not in ('WIN', 'WDO', 'BIT')]
+        trades = wdos + bits + wins + others
 
         operacoes = Operacao().find_by_file_id(file_id)
         setups = Setup().read_by_params({})
@@ -342,7 +348,7 @@ class OperacaoController:
 
         not_processed = []
         i = 0
-        for info in dados:
+        for info in trades:
             oper = operacoes[i]
             resultado = find_value('resultado', info)
             ativo = find_value('ativo', info)

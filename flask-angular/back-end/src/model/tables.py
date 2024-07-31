@@ -427,10 +427,21 @@ class Operacao(BaseTable):
             else:
                 value = (self.pm_venda - self.ativo.cotacao) * self.qtd_venda
 
-        if self.ativo_id == 800000:
-            value = value / 5
-        elif self.ativo_id == 900000:
-            value = value * 10
+        multiplier_calc = {
+            700000: lambda x: x * 0.1,
+            800000: lambda x: x / 5,
+            900000: lambda x: x * 10
+        }
+
+        value = multiplier_calc[self.ativo_id](value)
+
+        # if self.ativo_id == 800000:
+        #     value = value / 5
+        # elif self.ativo_id == 900000:
+        #     value = value * 10
+        # elif self.ativo_id == 700000:
+        #     value = value * 0.1
+
         total_custos = self.irpf + self.custos
         value = value - total_custos
         return value

@@ -185,5 +185,5 @@ class OperacoesSql:
         FROM operacoes o WHERE LENGTH(obs) > 1
         GROUP BY obs
         ORDER by nrg DESC , datax DESC 
-        LIMIT 10
+        LIMIT 15
     """
