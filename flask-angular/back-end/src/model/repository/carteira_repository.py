@@ -41,10 +41,12 @@ class CarteiraRepository:
     @classmethod
     def delete_movimentacao(cls, id_mov):
         with db_connection as conn:
-            hist = conn.session.query(Historico).filter(Historico.movimento_id == id_mov).one()
-            conn.session.delete(hist)
-            item = conn.session.query(Movimentacao).filter(Movimentacao.id == id_mov).one()
-            conn.session.delete(item)
+            hist = conn.session.query(Historico).filter(Historico.movimento_id == id_mov).first()
+            if hist:
+                conn.session.delete(hist)
+            item = conn.session.query(Movimentacao).filter(Movimentacao.id == id_mov).first()
+            if item:
+                conn.session.delete(item)
 
     @classmethod
     def get_historicos(cls):
