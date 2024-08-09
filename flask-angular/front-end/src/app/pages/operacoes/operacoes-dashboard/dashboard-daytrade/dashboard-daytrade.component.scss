@@ -8,7 +8,7 @@
   height: 100%;
 }
 
-.chart-panel{
+.chart-panel {
   display: flex;
   flex-direction: row;
   justify-content: start;
@@ -29,18 +29,19 @@
   justify-content: start;
 }
 
-.obs { 
+.obs {
+  margin-top: 5px;
   display: flex;
   flex-direction: row;
   align-items: flex-start;
   align-content: flex-start;
   flex-wrap: wrap;
-  gap: 3px;
+  gap: 8px;
   width: 100%;
 
-  & .card{
-    font-size: 10px;   
-    padding: 4px;
+  & .card {
+    font-size: 10px;
+    padding-right: 5px;
     border-radius: 3px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s;
@@ -51,6 +52,19 @@
     &.card:hover {
       transform: translateY(-5px);
       background-color: rgb(219, 227, 233);
-  }
+    }
+
+    span {
+      background-color: #e5841c;
+      color: #f1f1f3;
+      font-weight: 500;
+      padding: 0.4em;
+
+      top: -7px;
+      left: -5px;
+      position: relative;
+
+      border-radius: 85px;
+    }
   }
 }

@@ -25,7 +25,10 @@
       <hr>
       <span class="title">Pontos de atenção</span>
       <div class="obs">
-        <div *ngFor="let row of observacoes" class="card">{{row.obs}}</div>
+        <div *ngFor="let row of observacoes" class="card">
+          <span>{{row.nrg}}</span>
+          {{row.obs}}
+        </div>
       </div>
     </div>
   </div>
