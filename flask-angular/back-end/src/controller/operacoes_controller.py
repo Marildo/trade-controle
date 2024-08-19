@@ -196,8 +196,8 @@ class OperacaoController:
 
     @classmethod
     def update_historico(cls):
-        param = dict(compra_hist_id=None, venda_hist_id=None)
-        operacoes = Operacao().read_by_params(param)
+        operacoes = Operacao().read_by_params(dict(compra_hist_id=None))
+        operacoes += Operacao().read_by_params(dict(venda_hist_id=None))
 
         for op in operacoes:
             if op.carteira_id is None:
@@ -212,7 +212,7 @@ class OperacaoController:
                 op.compra_hist_id = hist.id
                 op.venda_hist_id = hist.id
             else:
-                if op.data_compra is not None:
+                if op.data_compra is not None and op.compra_hist_id is None:
                     hist = Historico()
                     hist.carteira_id = op.carteira_id
                     hist.data_referencia = op.data_compra
@@ -222,7 +222,7 @@ class OperacaoController:
                     hist.save()
                     op.compra_hist_id = hist.id
 
-                if op.data_venda is not None:
+                if op.data_venda is not None and op.venda_hist_id is None:
                     hist = Historico()
                     hist.carteira_id = op.carteira_id
                     hist.data_referencia = op.data_venda
@@ -230,7 +230,7 @@ class OperacaoController:
                     custos = 0 if op.compra_venda == 'VENDA' else op.custos - op.irpf
                     hist.valor = op.pm_venda * op.qtd_venda - custos
                     hist.save()
-                    op.compra_hist_id = hist.id
+                    op.venda_hist_id = hist.id
 
             op.save()
 

@@ -430,10 +430,11 @@ class Operacao(BaseTable):
         multiplier_calc = {
             700000: lambda x: x * 0.1,
             800000: lambda x: x / 5,
-            900000: lambda x: x * 10
+            900000: lambda x: x * 10,
+            0: lambda x: x
         }
-
-        value = multiplier_calc[self.ativo_id](value)
+        calc = multiplier_calc[self.ativo_id] if self.ativo_id in multiplier_calc else multiplier_calc[0]
+        value = calc(value)
 
         # if self.ativo_id == 800000:
         #     value = value / 5
