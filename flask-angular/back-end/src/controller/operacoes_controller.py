@@ -196,9 +196,8 @@ class OperacaoController:
 
     @classmethod
     def update_historico(cls):
-        operacoes = Operacao().read_by_params(dict(compra_hist_id=None))
-        operacoes += Operacao().read_by_params(dict(venda_hist_id=None))
 
+        operacoes = Operacao().fetch_without_historico()
         for op in operacoes:
             if op.carteira_id is None:
                 continue
@@ -349,10 +348,13 @@ class OperacaoController:
         not_processed = []
         i = 0
         for info in trades:
-            oper = operacoes[i]
-            resultado = find_value('resultado', info)
-            ativo = find_value('ativo', info)
-            if oper.resultado == resultado and ativo == oper.ativo.codigo:
+            oper = None
+            if i < len(operacoes):
+                oper = operacoes[i]
+                resultado = find_value('resultado', info)
+                ativo = find_value('ativo', info)
+
+            if oper and oper.resultado == resultado and ativo == oper.ativo.codigo:
                 oper.setup_id = find_value('Setup', info)
                 oper.tendencia = find_value('Tendência', info)
                 oper.segui_plano = find_value('Segui o Plano', info)

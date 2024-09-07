@@ -1,48 +1,4 @@
 
 <div class="container">
-    <div class="card">
-       Valor 01
-       <p>1263.336</p>
-    </div>
-    <div class="card">
-        Valor 02
-        <p>13.336</p>
-     </div>
-     <div class="card">
-        Valor 03
-        <p>1.336</p>
-     </div>
-     <div class="card">
-        Valor 04
-        <p>163.336</p>
-     </div>
+   <iframe class="grafana-frame" src="http://localhost:3000/d/fdw48lrvtfr40e/operacoes?orgId=1&refresh=5m&showCategory=Value%20options&var-setup=Pullback%20no%20OB&from=1599696000000&to=1724630400000" frameborder="0"></iframe>
 </div>
-
-
-<button (click)="openModal()">
-    Mostrar modal
-</button>
-
-<app-modal #modal  id="10">
-    <h1>Lorem, ipsum dolor.</h1>
-    <p>
-        Lorem ipsum, dolor sit amet
-        consectetur adipisicing elit.
-        Earum dicta non alias distinctio,
-        aliquid aperiam ipsum provident
-        quae nihil voluptatibus veniam
-        fuga similique facilis consequatur
-        reiciendis recusandae. Velit magni
-        distinctio corporis eaque ad itaque
-        ex impedit accusamus. Debitis pariatur
-        cum quam rerum reprehenderit quod
-        iure, in explicabo facere vero nemo?
-    </p>
-
-    <button class="btn-secundario" (click)="closeModal()">Fechar 2</button>
-</app-modal>
-
-
- 
-<button (click)="showLoader()">Show</button>
-<button (click)="hideLoader()">Hide</button>

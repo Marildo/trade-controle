@@ -1,4 +1,4 @@
-<nav>
+<!-- <nav>
     <div class="patrimonio">
         <div>
             <span> Saldo Caixa:</span> {{summarized.saldo_caixa | currency}}
@@ -31,7 +31,9 @@
         <div>Resultado: {{item.resultado | currency}}</div>
         <div>Total: {{item.saldo_caixa + item.saldo_ativos | currency}}</div>
     </div>
-</div>
+</div> -->
+
+<iframe class="grafana-frame" src="http://localhost:3000/d/ddx6o1oadb18ge/carteira?orgId=1&var-_carteira=All&from=1725697134804&to=1725718734804&theme=dark&kiosk" frameborder="0"></iframe>
 
 
 <app-modal #modal id="modalCarteira">

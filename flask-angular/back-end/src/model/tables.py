@@ -502,6 +502,18 @@ class Operacao(BaseTable):
             return query.all()
 
     @staticmethod
+    def fetch_without_historico() -> List:
+        with db_connection as conn:
+            filters = [or_(
+                and_(Operacao.compra_hist_id == None, Operacao.data_compra != None),
+                and_(Operacao.venda_hist_id == None, Operacao.data_venda != None)
+            )]
+            query = (conn.session
+                     .query(Operacao)
+                     .filter(*filters))
+            return query.all()
+
+    @staticmethod
     def fetch_detail(params: Dict) -> List:
         filters_map = {key: value for key, value in params.items() if key not in ['size', 'page', 'orderby']}
 

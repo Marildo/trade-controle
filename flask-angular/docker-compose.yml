@@ -57,6 +57,18 @@ services:
     networks:
       - tdc-network
 
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    restart: unless-stopped
+    volumes:
+      -  E:/data/docker_volumes/grafana-storage:/var/lib/grafana
+      -  E:/data/docker_volumes/grafana-storage/logs:/var/log/grafana
+      - ./grafana.ini:/etc/grafana/grafana.ini
+    ports:
+      - '3000:3000'
+    networks:
+      - tdc-network
 
 networks:
   tdc-network:
