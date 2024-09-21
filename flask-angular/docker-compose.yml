@@ -57,7 +57,7 @@ services:
     networks:
       - tdc-network
 
-  grafana:
+  grafana-service:
     image: grafana/grafana-enterprise
     container_name: grafana
     restart: unless-stopped

@@ -70,6 +70,7 @@ class TaskController:
 
     @classmethod
     def update_dx(cls):
+        return
         def task():
             dx = InvestingService.get_dx_values()
             DX_ID = 950000
@@ -160,6 +161,7 @@ class TaskController:
         thread.start()
 
     def update_usb_brl_fut(self):
+        return
         def task():
             DOL_ID = 900000
             data = InvestingService.get_usd_brl_fut_values()

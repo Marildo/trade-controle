@@ -28,24 +28,26 @@ def load_dividendos(codigo: str) -> List[Dict]:
         i = 0
         row = {}
         map_row = {
-            0: 'data_com',
-            1: 'data_pgto',
-            2: 'cotacao',
-            3: 'div_yield',
-            4: 'valor',
+            0: 'title',
+            1: 'data_com',
+            2: 'data_pgto',
+            3: 'cotacao',
+            4: 'div_yield',
+            5: 'valor',
         }
         map_convert = {
-            0: str_date,
+            0: lambda x: x,
             1: str_date,
-            2: str_to_float,
+            2: str_date,
             3: str_to_float,
-            4: str_to_float
+            4: str_to_float,
+            5: str_to_float
         }
         for line in lines:
             value = [c.get_text(strip=True) for c in line][0]
             row[map_row[i]] = map_convert[i](value)
             i += 1
-            if i == 5:
+            if i == 6:
                 row['jcp'] = False
                 result.append(row)
                 row = {}
