@@ -454,6 +454,9 @@ class Operacao(BaseTable):
             'LATERAL': 10,
             'CONTRA': 0
         }
+
+        self.payoff = self.payoff if self.payoff > 1 else 1 - self.payoff
+
         quality += tendencias_values[self.tendencia]
         quality += 25 if self.segui_plano else 0
         quality += 25 if self.contexto else 0
