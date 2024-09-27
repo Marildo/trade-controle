@@ -455,7 +455,7 @@ class Operacao(BaseTable):
             'CONTRA': 0
         }
 
-        self.payoff = self.payoff if self.payoff > 1 else 1 - self.payoff
+        self.payoff = self.payoff if self.payoff >= 1 else (1 - self.payoff) * -1
 
         quality += tendencias_values[self.tendencia]
         quality += 25 if self.segui_plano else 0
