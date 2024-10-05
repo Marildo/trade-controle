@@ -372,7 +372,7 @@ class OperacaoController:
         for oper in operacoes:
             infs = [i for i in not_processed if
                     find_value('resultado', i) == oper.resultado and find_value('ativo', i) == oper.ativo.codigo]
-            if len(infs) == 1:
+            if len(infs) >= 1:
                 info = infs[0]
                 oper.setup_id = find_value('Setup', info)
                 oper.tendencia = find_value('Tendência', info)
@@ -382,3 +382,4 @@ class OperacaoController:
                 oper.obs = find_value('Obs', info)
                 oper.calc_quality()
                 oper.save()
+                operacoes = [o for o in operacoes if o.setup_id is None]
