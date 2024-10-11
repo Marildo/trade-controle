@@ -9,3 +9,4 @@ from .advfnservice import ADVFNService
 from .investing import InvestingService
 from .bcb import BCBService
 
+from .rapid_api import RapidAPI

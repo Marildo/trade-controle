@@ -4,7 +4,6 @@
 
 from datetime import date, timedelta, datetime
 from typing import Dict, List
-import csv
 
 import gspread
 from flask import request
@@ -327,7 +326,7 @@ class OperacaoController:
         operacoes = Operacao().find_by_file_id(file_id)
         setups = Setup().read_by_params({})
 
-        def find_value(field: str, row: List):
+        def __find_value(field: str, row: List):
             field = field.lower()
             index = header.index(field)
             value = row[index]
@@ -351,18 +350,11 @@ class OperacaoController:
             oper = None
             if i < len(operacoes):
                 oper = operacoes[i]
-                resultado = find_value('resultado', info)
-                ativo = find_value('ativo', info)
+                resultado = __find_value('resultado', info)
+                ativo = __find_value('ativo', info)
 
             if oper and oper.resultado == resultado and ativo == oper.ativo.codigo:
-                oper.setup_id = find_value('Setup', info)
-                oper.tendencia = find_value('Tendência', info)
-                oper.segui_plano = find_value('Segui o Plano', info)
-                oper.contexto = find_value('Contexto', info)
-                oper.payoff = find_value('Payoff', info)
-                oper.obs = find_value('Obs', info)
-                oper.calc_quality()
-                oper.save()
+                cls.fill_and_save_operacao(__find_value, info, oper)
             else:
                 not_processed.append(info)
 
@@ -371,15 +363,27 @@ class OperacaoController:
         operacoes = [o for o in operacoes if o.setup_id is None]
         for oper in operacoes:
             infs = [i for i in not_processed if
-                    find_value('resultado', i) == oper.resultado and find_value('ativo', i) == oper.ativo.codigo]
+                    __find_value('resultado', i) == oper.resultado and __find_value('ativo', i) == oper.ativo.codigo]
             if len(infs) >= 1:
                 info = infs[0]
-                oper.setup_id = find_value('Setup', info)
-                oper.tendencia = find_value('Tendência', info)
-                oper.segui_plano = find_value('Segui o Plano', info)
-                oper.contexto = find_value('Contexto', info)
-                oper.payoff = find_value('Payoff', info)
-                oper.obs = find_value('Obs', info)
-                oper.calc_quality()
-                oper.save()
+                cls.fill_and_save_operacao(__find_value, info, oper)
                 operacoes = [o for o in operacoes if o.setup_id is None]
+
+    @classmethod
+    def fill_and_save_operacao(cls, find_value, info, oper):
+        oper.setup_id = find_value('Setup', info)
+        oper.tendencia = find_value('Tendência', info)
+        oper.segui_plano = find_value('Segui o Plano', info)
+        oper.contexto = find_value('Contexto', info)
+        oper.payoff = find_value('Payoff', info)
+        oper.obs = find_value('Obs', info)
+        entrada = find_value('Entrada', info)
+        saida = find_value('Saida', info)
+        if oper.compra_venda == CompraVenda.VENDA:
+            oper.hora_venda = entrada
+            oper.hora_compra = saida
+        else:
+            oper.hora_compra = entrada
+            oper.hora_venda = saida
+        oper.calc_quality()
+        oper.save()

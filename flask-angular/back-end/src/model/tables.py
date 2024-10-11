@@ -5,7 +5,7 @@ from datetime import date, datetime
 from typing import List, Dict
 
 import sqlalchemy
-from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,
+from sqlalchemy import (Column, Index, INTEGER, VARCHAR, CHAR, FLOAT, DATE, DATETIME, TIMESTAMP, BOOLEAN, DECIMAL,TIME,
                         Enum, ForeignKey, text, func, extract, and_, or_)
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
@@ -114,11 +114,16 @@ class Ativo(BaseTable):
     minima = Column(FLOAT(precision=2))
     tipo_ativo = Column(VARCHAR(6), nullable=True)
     tipo_investimento = Column(Enum(TipoInvestimento))
-    update_at = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
+
     setor_id = Column(INTEGER, ForeignKey('setores.id'))
     setor = relationship("Setor")
     segmento_id = Column(INTEGER, ForeignKey('segmentos.id'))
     segmento = relationship("Segmento")
+    preco_lucro = Column(FLOAT(precision=2))
+    roe = Column(FLOAT(precision=2))
+    margem_liquida = Column(FLOAT(precision=2))
+
+    update_at = Column(DATETIME, server_default=text('CURRENT_TIMESTAMP'), onupdate=text('CURRENT_TIMESTAMP'))
 
     def __str__(self):
         return f'{self.codigo} - {self.nome}'
@@ -133,6 +138,18 @@ class Ativo(BaseTable):
     def find_like_name(nome: str):
         with db_connection as conn:
             query = conn.session.query(Ativo).filter(Ativo.nome.ilike(f'%{nome.strip()}%'))
+            return query.all()
+
+    @staticmethod
+    def find_top_by_fundamentals():
+        with db_connection as conn:
+            filters = [
+                # Ativo.preco_lucro > 5,
+                # Ativo.preco_lucro < 20,
+                Ativo.roe > 0.1,
+                Ativo.margem_liquida > 0.1,
+            ]
+            query = conn.session.query(Ativo).filter(*filters)
             return query.all()
 
 
@@ -372,7 +389,9 @@ class Operacao(BaseTable):
 
     id = Column(INTEGER, primary_key=True)
     data_compra = Column(DATE, nullable=True)
+    hora_compra = Column(TIME, nullable=True)
     data_venda = Column(DATE, nullable=True)
+    hora_venda = Column(TIME, nullable=True)
     pm_compra = Column(FLOAT(precision=2), default=0)
     pm_venda = Column(FLOAT(precision=2), default=0)
     qtd_compra = Column(FLOAT(precision=2), default=0)

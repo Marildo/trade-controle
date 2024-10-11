@@ -1,12 +1,18 @@
 """
  @author Marildo Cesar 25/04/2023
 """
+import threading
+import time
 from datetime import datetime
 from typing import Tuple, Optional
 
+from webargs import fields
+from webargs.flaskparser import parser
+from flask import request
+
 from src.settings import logger
 from src.model import Ativo, Setor, SubSetor, Segmento, TipoInvestimento, AtivosRepository
-from src.services import StatusInvest, YFinanceService
+from ..services import StatusInvest, YFinanceService, RapidAPI
 from .schemas import AtivoSchema
 
 
@@ -126,4 +132,48 @@ class AtivoController:
 
         return nome.strip(), tipo.strip(), mapead
 
+    @classmethod
+    def register(cls):
+        input_schema = {
+            'tickers': fields.List(fields.Str(), required=False),
+        }
+        args = parser.parse(input_schema, request, location='json')
+        tickers = args.get('tickers')
 
+        def check_and_register():
+            for i in tickers:
+                cls.find_by_or_save(i)
+
+        thread = threading.Thread(target=check_and_register)
+        thread.start()
+
+        return 200
+
+    @classmethod
+    def load_fundamental_data(cls):
+
+        def __load():
+            data = Ativo().read_by_params({'tipo_investimento': TipoInvestimento.ACOES})
+            rp = RapidAPI()
+            for ativo in data:
+                try:
+                    info = rp.buscar_dados_fundamentalistas(ativo.codigo)
+                    if info:
+                        ativo = Ativo().read_by_id(ativo.id)
+                        ativo.roe = info['roe']
+                        ativo.margem_liquida = info['margem_lucro']
+                        ativo.preco_lucro = info['preco_lucro']
+                        ativo.save()
+                except Exception as ex:
+                    print(ex)
+
+        thread = threading.Thread(target=__load)
+        thread.start()
+
+        return 200
+
+    @classmethod
+    def get_top_by_fundamentals(cls):
+        data = Ativo().find_top_by_fundamentals()
+        response = AtivoSchema().dump(data, many=True)
+        return response
